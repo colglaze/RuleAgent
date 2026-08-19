@@ -19,20 +19,16 @@ from rule_reader.domain.rules.errors import (
     ParseIssue,
     RuleParsingError,
 )
-from rule_reader.domain.rules.models import (
-    ParserMetadata,
-    RuleCandidate,
-    RuleParseResult,
-    SourceMetadata,
-)
-from rule_reader.domain.rules.validation import (
-    SemanticValidationError,
-    enrich_candidate,
-    validate_candidate,
+from rule_reader.domain.rules.models import ParserMetadata, SourceMetadata
+from rule_reader.domain.rules.v2 import RuleCandidateV2, RuleParseResultV2
+from rule_reader.domain.rules.validation_v2 import (
+    SemanticValidationErrorV2,
+    enrich_candidate_v2,
+    validate_candidate_v2,
 )
 
-PROMPT_VERSION = "rule-parser-v1"
-SCHEMA_VERSION: Literal["1.0.0"] = "1.0.0"
+PROMPT_VERSION = "rule-parser-v2"
+SCHEMA_VERSION: Literal["2.0.0"] = "2.0.0"
 
 
 class IssueState(TypedDict):
@@ -109,7 +105,7 @@ class RuleParsingService:
         *,
         source_name: str,
         relative_path: str | None = None,
-    ) -> RuleParseResult:
+    ) -> RuleParseResultV2:
         initial: ParserState = {
             "text": text,
             "source_name": source_name,
@@ -129,7 +125,7 @@ class RuleParsingService:
                     message="Rule parsing ended without a result",
                 )
             )
-        return RuleParseResult.model_validate(result)
+        return RuleParseResultV2.model_validate(result)
 
     async def parse_to_json(
         self,
@@ -212,7 +208,7 @@ class RuleParsingService:
         try:
             raw_candidate = await self._model.generate_candidate(
                 text=state["text"],
-                candidate_schema=RuleCandidate.model_json_schema(
+                candidate_schema=RuleCandidateV2.model_json_schema(
                     by_alias=True,
                     mode="validation",
                 ),
@@ -240,7 +236,7 @@ class RuleParsingService:
             return {"error": _issue_state(issue)}
 
         try:
-            candidate = RuleCandidate.model_validate(decoded)
+            candidate = RuleCandidateV2.model_validate(decoded)
         except ValidationError as error:
             issue = ParseIssue(
                 ParseErrorCode.CANDIDATE_SCHEMA_INVALID,
@@ -251,8 +247,8 @@ class RuleParsingService:
             return {"error": _issue_state(issue)}
 
         try:
-            validate_candidate(candidate)
-        except SemanticValidationError as error:
+            validate_candidate_v2(candidate)
+        except SemanticValidationErrorV2 as error:
             issue = ParseIssue(
                 ParseErrorCode.CANDIDATE_SEMANTIC_INVALID,
                 "DeepSeek output failed deterministic semantic validation",
@@ -264,8 +260,8 @@ class RuleParsingService:
         return {"candidate": candidate.model_dump(mode="json"), "error": None}
 
     def _build_result(self, state: ParserState) -> ParserState:
-        candidate = RuleCandidate.model_validate(state["candidate"])
-        parsed_rule = enrich_candidate(candidate)
+        candidate = RuleCandidateV2.model_validate(state["candidate"])
+        parsed_rule = enrich_candidate_v2(candidate)
         now = self._clock()
         if now.tzinfo is None:
             now = now.replace(tzinfo=UTC)
@@ -273,7 +269,7 @@ class RuleParsingService:
             now = now.astimezone(UTC)
         timestamp = now.strftime("%Y%m%dT%H%M%S%fZ")
         source_hash = state["source_hash"]
-        result = RuleParseResult(
+        result = RuleParseResultV2(
             schema_version=SCHEMA_VERSION,
             rule_version=f"{candidate.rule_id}@{timestamp}-{source_hash[:12]}",
             generated_at=now,

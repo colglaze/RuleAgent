@@ -15,7 +15,7 @@ from rule_reader.application.rule_versions.ports import (
     SavedRuleVersion,
     StoredRuleVersion,
 )
-from rule_reader.domain.rules.models import RuleParseResult
+from rule_reader.domain.rules.versioned import RuleDocument, validate_rule_document
 from rule_reader.infrastructure.migrations import RULE_VERSIONS_COLLECTION
 
 Document = dict[str, Any]
@@ -30,7 +30,7 @@ class MongoRuleVersionRepository:
     def _database(self) -> Database:
         return self._database_provider()
 
-    async def save(self, result: RuleParseResult) -> SavedRuleVersion:
+    async def save(self, result: RuleDocument) -> SavedRuleVersion:
         stored_at = _mongodb_datetime(datetime.now(UTC))
         document: Document = {
             "_id": result.rule_version,
@@ -74,7 +74,7 @@ class MongoRuleVersionRepository:
             return None
 
         try:
-            parsed = RuleParseResult.model_validate(stored["document"])
+            parsed = validate_rule_document(stored["document"])
             stored_at = stored["stored_at"]
         except (KeyError, TypeError, ValidationError) as error:
             raise RuleVersionPersistenceError("Stored rule version is invalid") from error

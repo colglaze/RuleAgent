@@ -6,6 +6,7 @@
 - 前置需求：[REQ-20260818-01](REQ-20260818-01-vibe-coding-bootstrap.md)
 - 业务决策：[BIZ-20260818-05](BIZ-20260818-05-rule-json-version-mapping.md)
 - 技术方案：[DEV-20260818-02](DEV-20260818-02-rule-parser.md)
+- 契约演进：Schema `1.0.0` 新解析输出已由 [REQ-20260819-01](REQ-20260819-01-rule-contract-v2-agent2-handoff.md) 替代；本需求其余输入、Provider 和安全边界继续有效。
 
 ## 1. 背景
 

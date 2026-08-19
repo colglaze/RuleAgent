@@ -8,7 +8,8 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from rule_reader.domain.rules.models import RuleParseResult
+from rule_reader.domain.rules.bindings import FactBindingRequest
+from rule_reader.domain.rules.versioned import RuleDocument
 
 
 class RootResponse(BaseModel):
@@ -59,7 +60,18 @@ class StoredRuleVersionResponse(BaseModel):
 
     rule_version: str
     stored_at: datetime
-    document: RuleParseResult
+    document: RuleDocument
+
+
+class FactBindingRequestsResponse(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=to_camel,
+        populate_by_name=True,
+        extra="forbid",
+    )
+
+    rule_version: str
+    requests: list[FactBindingRequest]
 
 
 class ParseErrorDetail(BaseModel):

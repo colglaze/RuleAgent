@@ -4,6 +4,7 @@
 - 日期：2026-08-18
 - 来源 REQ：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)
 - 关联 BIZ：[BIZ-20260818-05](BIZ-20260818-05-rule-json-version-mapping.md)
+- 契约演进：Schema/Prompt v1 实现已由 [DEV-20260819-01](DEV-20260819-01-rule-contract-v2.md) 替代；工作流和适配器边界继续沿用。
 
 ## 1. 模块与依赖方向
 

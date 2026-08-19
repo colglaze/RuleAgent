@@ -1,8 +1,8 @@
 # RuleReader
 
-RuleReader 当前版本为 `0.3.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块。
+RuleReader 当前版本为 `0.4.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块。
 
-解析结果是带版本和来源信息的待审核 JSON 草稿，不会发布或执行规则。用户可以显式把草稿归档为不可变 MongoDB 版本；默认试解析不写数据库，归档也不代表已审批。
+新解析结果使用 Schema `2.0.0`，以结构化表达式保留公式、分支、派生事实和日期计算，并由确定性解释器执行测试案例。结果始终是带版本和来源信息的待审核 JSON 草稿，不会发布或执行规则。用户可以显式把草稿归档为不可变 MongoDB 版本；默认试解析不写数据库，归档也不代表已审批。
 
 ## 前置条件
 
@@ -107,6 +107,10 @@ $version = [uri]::EscapeDataString($parsed.ruleVersion)
 Invoke-RestMethod `
     -Uri "http://127.0.0.1:8000/api/v1/rules/versions/$version" `
     -Method Get
+
+Invoke-RestMethod `
+    -Uri "http://127.0.0.1:8000/api/v1/rules/versions/$version/fact-binding-requests" `
+    -Method Get
 ```
 
 CLI 入口只允许读取 `RULEREADER_DOCUMENT_ROOT` 内的 Markdown：
@@ -128,11 +132,17 @@ CLI 显式归档：
 - `ruleVersion`：规则编号、UTC 时间戳和源内容哈希前缀；
 - `status=draft`、`executable=false`；
 - `source.sha256`：规范化输入内容 SHA-256；
-- `rule.rootCondition`：保留 AND/OR/NOT、谓词、公式和存在性条件的 AST；
-- `rule.requiredFacts` 与 `rule.fieldMappings`；
+- `schemaVersion=2.0.0`：新解析固定使用的新契约；
+- `rule.rootCondition`：保留 AND/OR/NOT 和左右表达式比较的 AST；
+- `rule.requiredFacts`：包含 `factCode`、事实种类、粒度、参数、空值策略和可选派生表达式；
+- `rule.fieldMappings`：字段目录命中仍只是候选；
 - `rule.testCases`、失败原因、处理建议和责任角色。
 
 字段映射只允许引用内置的四视图目录。不能确认的字段会明确返回 `mappingStatus=unresolved`，不会猜测。
+
+Schema `1.0.0` 的历史归档保持不可变并可精确回读，但新解析不会再写入该版本，也不能从它导出 Agent 2 请求。事实交接入口只为 Schema `2.0.0` 的非 `derived` 事实生成 camelCase `FactBindingRequest`；请求不包含 SQL、数据库凭据或目标库元数据。
+
+RuleReader 只负责 Agent 1 规则理解和事实请求导出。SQL Server 元数据组合、DeepSeek SQL 候选生成、SQL AST、安全校验和审核属于独立的 SqlBot（Agent 2）阶段。
 
 ## 验证
 

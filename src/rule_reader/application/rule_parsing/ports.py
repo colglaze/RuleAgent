@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
-from rule_reader.domain.rules.models import RuleParseResult
+from rule_reader.domain.rules.v2 import RuleParseResultV2
 
 
 class RuleCandidateModel(Protocol):
@@ -36,7 +36,7 @@ class RuleParserLifecycle(Protocol):
         *,
         source_name: str,
         relative_path: str | None = None,
-    ) -> RuleParseResult: ...
+    ) -> RuleParseResultV2: ...
 
     async def parse_to_json(
         self,

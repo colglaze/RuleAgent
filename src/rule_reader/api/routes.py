@@ -15,6 +15,7 @@ from rule_reader.api.dependencies import (
 )
 from rule_reader.api.models import (
     ConfigResponse,
+    FactBindingRequestsResponse,
     HealthResponse,
     ParseErrorResponse,
     ParseRuleRequest,
@@ -23,8 +24,9 @@ from rule_reader.api.models import (
 )
 from rule_reader.application.rule_versions.ports import RuleVersionPersistenceError
 from rule_reader.core.version import __version__
+from rule_reader.domain.rules.bindings import build_fact_binding_requests
 from rule_reader.domain.rules.errors import ParseErrorCode, RuleParsingError
-from rule_reader.domain.rules.models import RuleParseResult
+from rule_reader.domain.rules.v2 import RuleParseResultV2
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -102,7 +104,7 @@ def _parse_error_status(code: ParseErrorCode) -> int:
 
 @router.post(
     "/api/v1/rules/parse",
-    response_model=RuleParseResult,
+    response_model=RuleParseResultV2,
     responses={
         status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ParseErrorResponse},
         status.HTTP_502_BAD_GATEWAY: {"model": ParseErrorResponse},
@@ -112,7 +114,7 @@ def _parse_error_status(code: ParseErrorCode) -> int:
 async def parse_rule(
     request: Request,
     payload: ParseRuleRequest,
-) -> RuleParseResult | JSONResponse:
+) -> RuleParseResultV2 | JSONResponse:
     parser = rule_parser_from(request)
     try:
         result = await parser.parse_text(
@@ -183,6 +185,53 @@ async def get_rule_version(
         rule_version=stored.document.rule_version,
         stored_at=stored.stored_at,
         document=stored.document,
+    )
+
+
+@router.get(
+    "/api/v1/rules/versions/{rule_version}/fact-binding-requests",
+    response_model=FactBindingRequestsResponse,
+    responses={
+        status.HTTP_404_NOT_FOUND: {"model": ParseErrorResponse},
+        status.HTTP_409_CONFLICT: {"model": ParseErrorResponse},
+        status.HTTP_503_SERVICE_UNAVAILABLE: {"model": ParseErrorResponse},
+    },
+)
+async def get_fact_binding_requests(
+    request: Request,
+    rule_version: str = Path(min_length=1, max_length=220),
+) -> FactBindingRequestsResponse | JSONResponse:
+    repository = rule_versions_from(request)
+    if repository is None:
+        return _persistence_error_response(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            RuleVersionPersistenceError.code,
+            "Rule version persistence is unavailable",
+        )
+    try:
+        stored = await repository.get(rule_version)
+    except RuleVersionPersistenceError:
+        logger.warning("Rule version read failed for fact binding export")
+        return _persistence_error_response(
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+            RuleVersionPersistenceError.code,
+            "Rule version could not be read",
+        )
+    if stored is None:
+        return _persistence_error_response(
+            status.HTTP_404_NOT_FOUND,
+            "RULE_VERSION_NOT_FOUND",
+            "Rule version was not found",
+        )
+    if not isinstance(stored.document, RuleParseResultV2):
+        return _persistence_error_response(
+            status.HTTP_409_CONFLICT,
+            "RULE_SCHEMA_UNSUPPORTED_FOR_BINDING",
+            "Only rule schema 2.0.0 can be exported for Agent 2 binding",
+        )
+    return FactBindingRequestsResponse(
+        rule_version=stored.document.rule_version,
+        requests=build_fact_binding_requests(stored.document),
     )
 
 

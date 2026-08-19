@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 
-from rule_reader.domain.rules.models import RuleParseResult
+from rule_reader.domain.rules.versioned import RuleDocument
 
 
 class RuleVersionPersistenceError(RuntimeError):
@@ -17,7 +17,7 @@ class RuleVersionPersistenceError(RuntimeError):
 
 @dataclass(frozen=True, slots=True)
 class StoredRuleVersion:
-    document: RuleParseResult
+    document: RuleDocument
     stored_at: datetime
 
 
@@ -28,6 +28,6 @@ class SavedRuleVersion:
 
 
 class RuleVersionRepository(Protocol):
-    async def save(self, result: RuleParseResult) -> SavedRuleVersion: ...
+    async def save(self, result: RuleDocument) -> SavedRuleVersion: ...
 
     async def get(self, rule_version: str) -> StoredRuleVersion | None: ...

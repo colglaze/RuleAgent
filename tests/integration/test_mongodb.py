@@ -6,7 +6,7 @@ import uuid
 
 import pytest
 from pymongo import AsyncMongoClient
-from tests.support import QueueModel, valid_candidate
+from tests.support import QueueModel, valid_candidate_v2
 
 from rule_reader.application.rule_parsing.workflow import RuleParsingService
 from rule_reader.core.config import Settings
@@ -53,7 +53,7 @@ async def test_mongodb_initialization_is_idempotent() -> None:
         assert metadata["schema_version"] == 2
 
         parser = RuleParsingService(
-            QueueModel([json.dumps(valid_candidate(), ensure_ascii=False)]),
+            QueueModel([json.dumps(valid_candidate_v2(), ensure_ascii=False)]),
             max_characters=10_000,
             max_retries=0,
         )

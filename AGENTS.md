@@ -46,12 +46,12 @@
 - 先交付 **Phase 1.0 后端骨架**，再交付 **Rule Parsing Agent** 的最小可验证闭环。
 - 后端骨架仅包含 FastAPI、集中配置、MongoDB 连接/健康检查和基础设施 Schema migration。
 - 规则来源只使用仓库内或显式配置目录中的本地 Markdown 文档。
-- 解析结果只能是待审核的结构化规则草稿、`requiredFacts`、测试案例和可追溯的来源信息，不能直接成为正式业务决策。
+- 解析结果只能是待审核的结构化规则草稿、`requiredFacts`、测试案例、可追溯的来源信息，以及 [REQ-20260819-01](docs/REQ-20260819-01-rule-contract-v2-agent2-handoff.md) 定义的事实绑定请求；不能直接成为正式业务决策。
 
 除非用户明确改变范围并先更新相关 `REQ`/`BIZ`/`DEV`，当前阶段禁止实现：
 
 - Wiki API、Wiki 同步、页面修订同步、RAG、向量库或知识库问答；
-- Agent 2、数据库元数据发现、Text-to-SQL、SQL 模板生成或 SQL 执行；
+- 在 RuleReader 内实现 Agent 2、数据库元数据发现、Text-to-SQL、SQL 模板生成或 SQL 执行；
 - 事实注册中心、正式规则发布、MongoDB 版本库、规则执行引擎和决策原因树；
 - 销售查询 Agent、业务诊断链路、生产流程集成和业务 UI。
 

@@ -89,6 +89,195 @@ def valid_candidate(*, rule_id: str = "TEST_RELEASE_001") -> dict[str, Any]:
     }
 
 
+def valid_candidate_v2(*, rule_id: str = "TEST_RELEASE_002") -> dict[str, Any]:
+    task_parameter = {
+        "name": "taskId",
+        "dataType": "integer",
+        "description": "正式实验任务 ID",
+        "required": True,
+    }
+    unresolved = {
+        "mappingStatus": "unresolved",
+        "viewName": None,
+        "viewField": None,
+        "note": "等待 Agent 2 结合 SQL Server 元数据确认。",
+    }
+    return {
+        "ruleId": rule_id,
+        "title": "测试释放规则 2.0",
+        "scope": "适用于正式实验任务的结构化金额判断。",
+        "entityType": "formal_test_task",
+        "sourceViews": ["v_test_release", "v_OrderFormaltestsettlement"],
+        "requiredFacts": [
+            {
+                "factCode": "task.status",
+                "name": "任务状态",
+                "factKind": "source",
+                "dataType": "integer",
+                "description": "当前正式实验任务状态",
+                "nullable": False,
+                "nullPolicy": "error",
+                "grain": "formal_test_task",
+                "parameters": [task_parameter],
+            },
+            {
+                "factCode": "task.received_amount",
+                "name": "累计到款",
+                "factKind": "aggregate",
+                "dataType": "money",
+                "description": "任务所属订单累计到款金额",
+                "nullable": False,
+                "nullPolicy": "fail",
+                "grain": "formal_test_task",
+                "parameters": [task_parameter],
+                "unit": "CNY",
+            },
+            {
+                "factCode": "task.base_fee",
+                "name": "基础费用",
+                "factKind": "aggregate",
+                "dataType": "money",
+                "description": "任务基础费用",
+                "nullable": False,
+                "nullPolicy": "error",
+                "grain": "formal_test_task",
+                "parameters": [task_parameter],
+                "unit": "CNY",
+            },
+            {
+                "factCode": "task.extra_fee",
+                "name": "附加费用",
+                "factKind": "aggregate",
+                "dataType": "money",
+                "description": "任务附加费用",
+                "nullable": False,
+                "nullPolicy": "error",
+                "grain": "formal_test_task",
+                "parameters": [task_parameter],
+                "unit": "CNY",
+            },
+            {
+                "factCode": "task.required_fee",
+                "name": "应覆盖费用",
+                "factKind": "derived",
+                "dataType": "money",
+                "description": "基础费用与附加费用之和",
+                "nullable": False,
+                "nullPolicy": "error",
+                "grain": "formal_test_task",
+                "parameters": [],
+                "unit": "CNY",
+                "derivation": {
+                    "kind": "add",
+                    "children": [
+                        {"kind": "fact", "factCode": "task.base_fee"},
+                        {"kind": "fact", "factCode": "task.extra_fee"},
+                    ],
+                },
+            },
+            {
+                "factCode": "task.settlement_fee",
+                "name": "任务结算费用",
+                "factKind": "source",
+                "dataType": "money",
+                "description": "正式实验任务最终采用费用",
+                "nullable": False,
+                "nullPolicy": "error",
+                "grain": "formal_test_task",
+                "parameters": [task_parameter],
+                "unit": "CNY",
+            },
+        ],
+        "rootCondition": {
+            "id": "root",
+            "kind": "all",
+            "description": "状态和金额条件全部满足",
+            "children": [
+                {
+                    "id": "task-finished",
+                    "kind": "compare",
+                    "description": "任务状态为完成",
+                    "left": {"kind": "fact", "factCode": "task.status"},
+                    "operator": "eq",
+                    "right": {"kind": "literal", "value": 19},
+                    "nullPolicy": "fail",
+                },
+                {
+                    "id": "amount-covered",
+                    "kind": "compare",
+                    "description": "累计到款加容差覆盖应覆盖费用",
+                    "left": {
+                        "kind": "add",
+                        "children": [
+                            {"kind": "fact", "factCode": "task.received_amount"},
+                            {"kind": "literal", "value": 0.1},
+                        ],
+                    },
+                    "operator": "gte",
+                    "right": {"kind": "fact", "factCode": "task.required_fee"},
+                    "nullPolicy": "fail",
+                },
+                {
+                    "id": "settlement-non-negative",
+                    "kind": "compare",
+                    "description": "任务结算费用非负",
+                    "left": {"kind": "fact", "factCode": "task.settlement_fee"},
+                    "operator": "gte",
+                    "right": {"kind": "literal", "value": 0},
+                    "nullPolicy": "fail",
+                },
+            ],
+        },
+        "exceptionNotes": ["特殊申请仍需人工审核。"],
+        "failureReasons": ["任务状态或金额条件不满足。"],
+        "recommendations": ["核对任务状态、到款和费用。"],
+        "responsibleRoles": ["项目负责人"],
+        "testCases": [
+            {
+                "id": "pass-case",
+                "description": "状态完成且金额覆盖",
+                "given": {
+                    "task.status": 19,
+                    "task.received_amount": 100,
+                    "task.base_fee": 70,
+                    "task.extra_fee": 30,
+                    "task.settlement_fee": 100,
+                },
+                "expected": "pass",
+                "rationale": "100+0.1 大于等于 70+30",
+            },
+            {
+                "id": "fail-case",
+                "description": "金额未覆盖",
+                "given": {
+                    "task.status": 19,
+                    "task.received_amount": 99,
+                    "task.base_fee": 70,
+                    "task.extra_fee": 30,
+                    "task.settlement_fee": 100,
+                },
+                "expected": "fail",
+                "rationale": "99+0.1 小于 70+30",
+            },
+        ],
+        "fieldMappings": [
+            {"factCode": "task.status", **unresolved},
+            {"factCode": "task.received_amount", **unresolved},
+            {"factCode": "task.base_fee", **unresolved},
+            {"factCode": "task.extra_fee", **unresolved},
+            {"factCode": "task.required_fee", **unresolved},
+            {
+                "factCode": "task.settlement_fee",
+                "mappingStatus": "mapped",
+                "viewName": "v_OrderFormaltestsettlement",
+                "viewField": "zssyjsfy",
+                "note": "使用正式实验任务最终采用费用。",
+            },
+        ],
+        "warnings": ["所有映射均需人工审核。"],
+    }
+
+
 class QueueModel:
     def __init__(self, responses: list[str | ParseIssue]) -> None:
         self._responses = responses
