@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rule-reader"
+version = "0.3.0"
+description = "RuleReader backend and rule parsing agent"
+readme = "README.md"
+requires-python = "==3.11.9"
+dependencies = [
+    "fastapi==0.141.1",
+    "httpx==0.28.1",
+    "langgraph==1.2.11",
+    "pydantic-settings==2.15.0",
+    "pymongo==4.17.0",
+    "uvicorn[standard]==0.52.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy==2.3.1",
+    "pytest==9.1.1",
+    "pytest-asyncio==1.4.0",
+    "ruff==0.16.3",
+]
+
+[project.scripts]
+rule-reader = "rule_reader.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -p no:cacheprovider -m 'not integration and not provider_integration'"
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "integration: requires an explicitly available MongoDB instance",
+    "provider_integration: requires explicitly configured DeepSeek credentials",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["ASYNC", "B", "E", "F", "I", "RUF", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/rule_reader/domain/rules/catalog.py" = ["RUF001"]
+"src/rule_reader/infrastructure/deepseek.py" = ["RUF001"]
+"tests/**/*.py" = ["RUF001"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src"]
+pretty = true
+show_error_codes = true

@@ -1,0 +1,226 @@
+{
+  "main": {
+    "id": "89569d85578aa7d0",
+    "type": "split",
+    "children": [
+      {
+        "id": "5e8f2e2aacc206b6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ef028b03760f8fda",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "docs/PRD.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "PRD"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "77b2715f135dd85a",
+    "type": "split",
+    "children": [
+      {
+        "id": "66bca023059c1314",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "be552bfa0c13a09a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "85b2d3f341a1fa9d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "e0e4f1d74c8c0db4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "82b6e7ef3a0969e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "40f4c30241071a67",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0cd60bcb48ec82f1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "AGENTS.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "反向链接"
+            }
+          },
+          {
+            "id": "e94c29d737e6506c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "AGENTS.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "出链"
+            }
+          },
+          {
+            "id": "62b58962cdbaaba1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "fc50b33adce6986b",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "添加笔记属性"
+            }
+          },
+          {
+            "id": "1f9a51d5c6bfb7eb",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "AGENTS.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false
+    }
+  },
+  "active": "be552bfa0c13a09a",
+  "lastOpenFiles": [
+    "src/rule_reader/application/rule_versions/__pycache__/__init__.cpython-311.pyc",
+    "src/rule_reader/application/rule_versions/__pycache__/ports.cpython-311.pyc",
+    "src/rule_reader/application/rule_versions/__pycache__",
+    "src/rule_reader/infrastructure/__pycache__/rule_versions.cpython-311.pyc",
+    "src/rule_reader/infrastructure/rule_versions.py",
+    "src/rule_reader/application/rule_versions/__init__.py",
+    "src/rule_reader/application/rule_versions/ports.py",
+    "src/rule_reader/application/rule_versions",
+    "docs/DEV-20260818-03-rule-version-persistence.md",
+    "docs/BIZ-20260818-06-draft-rule-version-storage.md",
+    "docs/REQ-20260818-04-rule-version-persistence.md",
+    "README.md",
+    "tests/__pycache__/support.cpython-311.pyc",
+    "tests/__pycache__/__init__.cpython-311.pyc",
+    "tests/__pycache__",
+    "docs/DEV-20260818-02-rule-parser.md",
+    "docs/BIZ-20260818-05-rule-json-version-mapping.md",
+    "docs/REQ-20260818-03-rule-parser.md",
+    "docs/进度文档.md",
+    "docs/PROG-20260818.md",
+    "docs/DEV-20260818-01-backend-skeleton.md",
+    "docs/BIZ-20260818-04-backend-fastapi-mongodb.md",
+    "docs/REQ-20260818-02-backend-skeleton.md",
+    "project_release_double_agent_solution.md",
+    "docs/BIZ-20260818-03-python311-deepseek.md",
+    "docs/BIZ-20260818-02-python-langgraph.md",
+    "AGENTS.md",
+    "docs/BIZ-20260818-01-phase1-local-documents.md",
+    "docs/REQ-20260818-01-vibe-coding-bootstrap.md",
+    "docs/技术设计文档.md",
+    "docs/实施文档.md",
+    "docs/PRD.md"
+  ]
+}
