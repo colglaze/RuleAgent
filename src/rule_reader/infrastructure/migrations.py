@@ -16,10 +16,11 @@ from rule_reader.core.version import __version__
 Document = dict[str, Any]
 Database = AsyncDatabase[Document]
 MigrationFunction = Callable[[Database], Awaitable[None]]
-LATEST_SCHEMA_VERSION = 2
+LATEST_SCHEMA_VERSION = 3
 MIGRATIONS_COLLECTION = "schema_migrations"
 APP_METADATA_COLLECTION = "app_metadata"
 RULE_VERSIONS_COLLECTION = "rule_versions"
+FACT_BINDING_HANDOFFS_COLLECTION = "fact_binding_handoffs"
 
 
 class DatabaseSchemaTooNewError(RuntimeError):
@@ -99,9 +100,38 @@ async def _apply_v2(database: Database) -> None:
     )
 
 
+async def _apply_v3(database: Database) -> None:
+    await _ensure_collection(database, FACT_BINDING_HANDOFFS_COLLECTION)
+    handoffs = database.get_collection(FACT_BINDING_HANDOFFS_COLLECTION)
+    await handoffs.create_index(
+        [("request_id", ASCENDING)],
+        unique=True,
+        name="uq_fact_binding_handoffs_request_id",
+    )
+    await handoffs.create_index(
+        [("rule_version", ASCENDING), ("fact_code", ASCENDING)],
+        unique=True,
+        name="uq_fact_binding_handoffs_rule_version_fact_code",
+    )
+    now = datetime.now(UTC)
+    await database.get_collection(APP_METADATA_COLLECTION).update_one(
+        {"key": "database_schema"},
+        {
+            "$set": {
+                "schema_version": 3,
+                "service": "rule-reader",
+                "service_version": __version__,
+                "updated_at": now,
+            }
+        },
+        upsert=False,
+    )
+
+
 MIGRATIONS = (
     Migration(version=1, name="bootstrap_metadata", apply=_apply_v1),
     Migration(version=2, name="create_rule_versions", apply=_apply_v2),
+    Migration(version=3, name="create_fact_binding_handoffs", apply=_apply_v3),
 )
 
 

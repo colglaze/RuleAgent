@@ -14,6 +14,9 @@ def test_default_configuration_uses_local_mongodb() -> None:
     assert settings.mongodb_uri == "mongodb://localhost:27017/"
     assert settings.mongodb_database == "rule_reader"
     assert settings.port == 8000
+    assert settings.deepseek_retry_base_delay_seconds == 1.0
+    assert settings.deepseek_retry_max_delay_seconds == 8.0
+    assert settings.deepseek_idempotency_cache_max_entries == 64
 
 
 def test_environment_variables_override_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -61,3 +64,12 @@ def test_public_summary_never_contains_secrets_or_uri() -> None:
     assert "secret-key" not in serialized
     assert "mongodb://" not in serialized
     assert settings.public_summary()["deepseek"]["api_key_configured"] is True
+
+
+def test_deepseek_max_retry_delay_cannot_be_less_than_base_delay() -> None:
+    with pytest.raises(ValidationError, match="maximum retry delay"):
+        Settings(
+            _env_file=None,
+            deepseek_retry_base_delay_seconds=2,
+            deepseek_retry_max_delay_seconds=1,
+        )

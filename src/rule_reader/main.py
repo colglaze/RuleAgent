@@ -34,6 +34,9 @@ def create_app(
         DeepSeekChatModel(resolved_settings),
         max_characters=resolved_settings.rule_max_characters,
         max_retries=resolved_settings.deepseek_max_retries,
+        retry_base_delay_seconds=(resolved_settings.deepseek_retry_base_delay_seconds),
+        retry_max_delay_seconds=resolved_settings.deepseek_retry_max_delay_seconds,
+        idempotency_cache_max_entries=(resolved_settings.deepseek_idempotency_cache_max_entries),
     )
     resolved_rule_versions = rule_version_repository
     if resolved_rule_versions is None and isinstance(resolved_database, MongoManager):

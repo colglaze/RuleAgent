@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import logging
+from typing import Annotated, Literal
 
-from fastapi import APIRouter, Path, Request, status
+from fastapi import APIRouter, Header, Path, Query, Request, Response, status
 from fastapi.responses import JSONResponse
 
 from rule_reader.api.dependencies import (
@@ -24,7 +25,10 @@ from rule_reader.api.models import (
 )
 from rule_reader.application.rule_versions.ports import RuleVersionPersistenceError
 from rule_reader.core.version import __version__
-from rule_reader.domain.rules.bindings import build_fact_binding_requests
+from rule_reader.domain.rules.bindings_v2 import (
+    FactBindingRequestV2,
+    build_fact_binding_requests_v2,
+)
 from rule_reader.domain.rules.errors import ParseErrorCode, RuleParsingError
 from rule_reader.domain.rules.v2 import RuleParseResultV2
 
@@ -90,8 +94,11 @@ def _parse_error_status(code: ParseErrorCode) -> int:
         ParseErrorCode.DOCUMENT_OUTSIDE_ROOT,
         ParseErrorCode.DOCUMENT_TYPE_UNSUPPORTED,
         ParseErrorCode.DOCUMENT_ENCODING_INVALID,
+        ParseErrorCode.IDEMPOTENCY_KEY_INVALID,
     }:
         return status.HTTP_422_UNPROCESSABLE_CONTENT
+    if code is ParseErrorCode.IDEMPOTENCY_KEY_CONFLICT:
+        return status.HTTP_409_CONFLICT
     if code in {
         ParseErrorCode.PROVIDER_NOT_CONFIGURED,
         ParseErrorCode.PROVIDER_TIMEOUT,
@@ -107,6 +114,7 @@ def _parse_error_status(code: ParseErrorCode) -> int:
     response_model=RuleParseResultV2,
     responses={
         status.HTTP_422_UNPROCESSABLE_CONTENT: {"model": ParseErrorResponse},
+        status.HTTP_409_CONFLICT: {"model": ParseErrorResponse},
         status.HTTP_502_BAD_GATEWAY: {"model": ParseErrorResponse},
         status.HTTP_503_SERVICE_UNAVAILABLE: {"model": ParseErrorResponse},
     },
@@ -114,19 +122,34 @@ def _parse_error_status(code: ParseErrorCode) -> int:
 async def parse_rule(
     request: Request,
     payload: ParseRuleRequest,
+    response: Response,
+    idempotency_key: Annotated[
+        str | None,
+        Header(alias="Idempotency-Key"),
+    ] = None,
 ) -> RuleParseResultV2 | JSONResponse:
     parser = rule_parser_from(request)
     try:
         result = await parser.parse_text(
             payload.text,
             source_name=payload.source_name,
+            idempotency_key=idempotency_key,
         )
     except RuleParsingError as error:
-        logger.warning("Rule parsing failed code=%s", error.issue.code.value)
+        request_id = str(error.issue.audit.request_id) if error.issue.audit is not None else None
+        logger.warning(
+            "Rule parsing failed code=%s request_id=%s",
+            error.issue.code.value,
+            request_id,
+        )
         return JSONResponse(
             status_code=_parse_error_status(error.issue.code),
             content={"error": error.issue.to_dict()},
+            headers=_request_id_headers(request_id),
         )
+    request_id = str(result.parser.audit.request_id) if result.parser.audit else None
+    if request_id is not None:
+        response.headers["X-RuleReader-Request-ID"] = request_id
     if payload.persist:
         repository = rule_versions_from(request)
         if repository is None:
@@ -134,6 +157,7 @@ async def parse_rule(
                 status.HTTP_503_SERVICE_UNAVAILABLE,
                 RuleVersionPersistenceError.code,
                 "Rule version persistence is unavailable",
+                request_id=request_id,
             )
         try:
             await repository.save(result)
@@ -143,6 +167,7 @@ async def parse_rule(
                 status.HTTP_503_SERVICE_UNAVAILABLE,
                 RuleVersionPersistenceError.code,
                 "Rule version could not be saved",
+                request_id=request_id,
             )
     return result
 
@@ -200,6 +225,10 @@ async def get_rule_version(
 async def get_fact_binding_requests(
     request: Request,
     rule_version: str = Path(min_length=1, max_length=220),
+    contract_version: Literal["2.0.0"] = Query(
+        default="2.0.0",
+        alias="contractVersion",
+    ),
 ) -> FactBindingRequestsResponse | JSONResponse:
     repository = rule_versions_from(request)
     if repository is None:
@@ -229,13 +258,22 @@ async def get_fact_binding_requests(
             "RULE_SCHEMA_UNSUPPORTED_FOR_BINDING",
             "Only rule schema 2.0.0 can be exported for Agent 2 binding",
         )
+    binding_requests: list[FactBindingRequestV2] = [
+        *build_fact_binding_requests_v2(stored.document)
+    ]
     return FactBindingRequestsResponse(
         rule_version=stored.document.rule_version,
-        requests=build_fact_binding_requests(stored.document),
+        requests=binding_requests,
     )
 
 
-def _persistence_error_response(status_code: int, code: str, message: str) -> JSONResponse:
+def _persistence_error_response(
+    status_code: int,
+    code: str,
+    message: str,
+    *,
+    request_id: str | None = None,
+) -> JSONResponse:
     return JSONResponse(
         status_code=status_code,
         content={
@@ -246,4 +284,11 @@ def _persistence_error_response(status_code: int, code: str, message: str) -> JS
                 "details": [],
             }
         },
+        headers=_request_id_headers(request_id),
     )
+
+
+def _request_id_headers(request_id: str | None) -> dict[str, str]:
+    if request_id is None:
+        return {}
+    return {"X-RuleReader-Request-ID": request_id}

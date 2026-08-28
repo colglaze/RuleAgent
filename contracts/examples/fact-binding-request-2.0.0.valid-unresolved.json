@@ -1,0 +1,263 @@
+{
+  "contractVersion": "2.0.0",
+  "examples": [
+    {
+      "evidenceIds": [
+        "test.pass-case"
+      ],
+      "expectedRuleResult": "pass",
+      "testCaseId": "pass-case",
+      "value": 100
+    },
+    {
+      "evidenceIds": [
+        "test.fail-case"
+      ],
+      "expectedRuleResult": "fail",
+      "testCaseId": "fail-case",
+      "value": 100
+    }
+  ],
+  "fact": {
+    "allowedValues": [],
+    "dataType": "money",
+    "defaultValue": null,
+    "derivation": null,
+    "description": "正式实验任务最终采用费用",
+    "factCode": "task.settlement_fee",
+    "factKind": "source",
+    "grain": "formal_test_task",
+    "name": "任务结算费用",
+    "nullPolicy": "error",
+    "nullable": false,
+    "parameters": [
+      {
+        "dataType": "integer",
+        "description": "正式实验任务 ID",
+        "name": "taskId",
+        "required": true
+      }
+    ],
+    "unit": "CNY"
+  },
+  "mappingCandidate": {
+    "factCode": "task.settlement_fee",
+    "mappingStatus": "mapped",
+    "note": "使用正式实验任务最终采用费用。",
+    "reviewStatus": "candidate",
+    "viewActive": true,
+    "viewField": "zssyjsfy",
+    "viewName": "v_OrderFormaltestsettlement"
+  },
+  "provenance": {
+    "evidence": [
+      {
+        "evidenceId": "fact.declaration",
+        "kind": "factDeclaration",
+        "sourcePath": "/rule/requiredFacts/5"
+      },
+      {
+        "evidenceId": "mapping.candidate",
+        "kind": "mappingCandidate",
+        "sourcePath": "/rule/fieldMappings/5"
+      },
+      {
+        "evidenceId": "condition.settlement-non-negative",
+        "kind": "conditionUsage",
+        "sourcePath": "/rule/rootCondition/children/2"
+      },
+      {
+        "evidenceId": "test.pass-case",
+        "kind": "testCase",
+        "sourcePath": "/rule/testCases/0"
+      },
+      {
+        "evidenceId": "test.fail-case",
+        "kind": "testCase",
+        "sourcePath": "/rule/testCases/1"
+      }
+    ],
+    "generatedAt": "2026-08-24T00:00:00Z",
+    "parser": {
+      "model": "fake-deepseek",
+      "parserVersion": "0.6.0",
+      "promptVersion": "rule-parser-v6",
+      "provider": "deepseek"
+    },
+    "source": {
+      "characterCount": 100,
+      "relativePath": "examples/test-release-rule.md",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "sourceName": "test-release-rule.md"
+    }
+  },
+  "queryRequirements": {
+    "aggregation": {
+      "distinct": null,
+      "evidenceIds": [
+        "fact.declaration",
+        "mapping.candidate"
+      ],
+      "function": null,
+      "groupByFieldIds": [],
+      "inputFieldIds": [],
+      "mode": "none",
+      "resolutionStatus": "declared"
+    },
+    "entity": {
+      "entityType": "formal_test_task",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "grain": "formal_test_task",
+      "keyParameters": [],
+      "keyResolutionStatus": "unresolved",
+      "resolutionStatus": "declared"
+    },
+    "fields": [
+      {
+        "dataType": "money",
+        "evidenceIds": [
+          "fact.declaration",
+          "mapping.candidate"
+        ],
+        "fieldId": "factValue",
+        "logicalName": "task.settlement_fee",
+        "required": true,
+        "resolutionStatus": "candidate",
+        "role": "value",
+        "sourceCandidate": {
+          "fieldName": "zssyjsfy",
+          "relationActive": true,
+          "relationName": "v_OrderFormaltestsettlement",
+          "reviewStatus": "candidate"
+        }
+      },
+      {
+        "dataType": "integer",
+        "evidenceIds": [
+          "fact.declaration"
+        ],
+        "fieldId": "parameter.taskId",
+        "logicalName": "taskId",
+        "required": true,
+        "resolutionStatus": "unresolved",
+        "role": "filter",
+        "sourceCandidate": null
+      }
+    ],
+    "filters": {
+      "completeness": "unresolved",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "items": [
+        {
+          "evidenceIds": [
+            "fact.declaration"
+          ],
+          "fieldId": "parameter.taskId",
+          "filterId": "parameter.taskId",
+          "operator": "eq",
+          "required": true,
+          "resolutionStatus": "unresolved",
+          "value": {
+            "kind": "parameter",
+            "parameterName": "taskId"
+          }
+        }
+      ]
+    },
+    "result": {
+      "cardinality": "scalar",
+      "columnName": "fact_value",
+      "dataType": "money",
+      "nullPolicy": "error",
+      "nullable": false,
+      "unit": "CNY"
+    },
+    "timeRange": {
+      "end": null,
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "mode": "unresolved",
+      "resolutionStatus": "unresolved",
+      "start": null,
+      "timeFieldId": null,
+      "timezone": null
+    }
+  },
+  "requestId": "TEST_RELEASE_002@20260824T000000000000Z-000000000000#task.settlement_fee",
+  "requiresMetadataSnapshot": true,
+  "ruleRef": {
+    "ruleId": "TEST_RELEASE_002",
+    "ruleVersion": "TEST_RELEASE_002@20260824T000000000000Z-000000000000",
+    "schemaVersion": "2.0.0",
+    "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "status": "candidate",
+  "targetDialect": "sqlserver",
+  "tempTableAllowed": false,
+  "uncertainties": [
+    {
+      "category": "entity",
+      "code": "ENTITY_KEY_UNRESOLVED",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "fieldPath": "/queryRequirements/entity/keyParameters",
+      "impact": "blocking",
+      "reason": "Fact parameters are lookup inputs but the rule draft does not identify which parameters are entity identity keys.",
+      "resolutionHint": "Resolve entity identity parameters and their fields against governed metadata.",
+      "uncertaintyId": "entity.key-parameters"
+    },
+    {
+      "category": "field",
+      "code": "FILTER_FIELD_UNRESOLVED",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "fieldPath": "/queryRequirements/fields/1/sourceCandidate",
+      "impact": "blocking",
+      "reason": "The validated rule draft does not identify an approved physical field.",
+      "resolutionHint": "Resolve the logical field against the governed metadata snapshot.",
+      "uncertaintyId": "field.parameter.taskId"
+    },
+    {
+      "category": "filter",
+      "code": "FILTER_SET_INCOMPLETE",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "fieldPath": "/queryRequirements/filters/completeness",
+      "impact": "blocking",
+      "reason": "Rule schema 2.0 declares lookup parameters but has no separate, complete fact-retrieval predicate contract.",
+      "resolutionHint": "Confirm all parameter, literal, status, and scope predicates before SQL generation.",
+      "uncertaintyId": "filter.completeness"
+    },
+    {
+      "category": "timeRange",
+      "code": "TIME_RANGE_UNRESOLVED",
+      "evidenceIds": [
+        "fact.declaration"
+      ],
+      "fieldPath": "/queryRequirements/timeRange",
+      "impact": "blocking",
+      "reason": "The current rule fact contract does not state whether a time range is required.",
+      "resolutionHint": "Confirm not-applicable or provide a governed time field, bounds, and timezone.",
+      "uncertaintyId": "time-range.mode"
+    }
+  ],
+  "usages": [
+    {
+      "conditionId": "settlement-non-negative",
+      "conditionPath": "root/settlement-non-negative",
+      "evidenceIds": [
+        "condition.settlement-non-negative"
+      ],
+      "expressionSide": "left",
+      "operator": "gte"
+    }
+  ]
+}

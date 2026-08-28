@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import Counter
 from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
@@ -45,9 +46,40 @@ class _Missing:
 MISSING = _Missing()
 EvaluationValue = str | int | float | bool | Decimal | date | datetime | list[Any] | None | _Missing
 
+_EXECUTABLE_SQL_PATTERN = re.compile(
+    r"(?i)(?:^|[;\s])(?:select|insert|update|delete|drop|alter|create|merge|exec|execute)\s+"
+)
+_CONNECTION_OR_CREDENTIAL_PATTERN = re.compile(
+    r"(?i)(?:mongodb(?:\+srv)?|postgres(?:ql)?|mysql|sqlserver)://|"
+    r"\b(?:password|passwd|pwd|user\s*id|uid|account)\s*[:=]"
+)
+
 
 def _duplicates(values: list[str]) -> set[str]:
     return {value for value, count in Counter(values).items() if count > 1}
+
+
+def _sensitive_text_issues(value: object, path: str = "$") -> list[str]:
+    issues: list[str] = []
+    if isinstance(value, dict):
+        for key, item in value.items():
+            issues.extend(_sensitive_text_issues(item, f"{path}.{key}"))
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            issues.extend(_sensitive_text_issues(item, f"{path}[{index}]"))
+    elif isinstance(value, str):
+        if _EXECUTABLE_SQL_PATTERN.search(value):
+            issues.append(f"{path} contains executable SQL text")
+        if _CONNECTION_OR_CREDENTIAL_PATTERN.search(value):
+            issues.append(f"{path} contains a database connection or credential pattern")
+    return issues
+
+
+def validate_safe_structured_payload(value: object) -> None:
+    """Reject executable query text and connection or credential material."""
+
+    if issues := _sensitive_text_issues(value):
+        raise SemanticValidationErrorV2(issues)
 
 
 def _walk_conditions(node: ConditionNodeV2) -> list[ConditionNodeV2]:
@@ -133,9 +165,63 @@ def _literal_type(value: Any) -> FactDataType:
 
 
 def _compatible(left: FactDataType, right: FactDataType) -> bool:
-    return left == right or (left in NUMERIC_TYPES and right in NUMERIC_TYPES) or (
-        left is FactDataType.ENUM and right is FactDataType.STRING
+    return (
+        left == right
+        or (left in NUMERIC_TYPES and right in NUMERIC_TYPES)
+        or (left is FactDataType.ENUM and right is FactDataType.STRING)
     )
+
+
+def _matches_fact_data_type(value: Any, data_type: FactDataType) -> bool:
+    if data_type is FactDataType.UNKNOWN:
+        return True
+    if data_type is FactDataType.BOOLEAN:
+        return isinstance(value, bool)
+    if data_type is FactDataType.INTEGER:
+        return isinstance(value, int) and not isinstance(value, bool)
+    if data_type in {FactDataType.NUMBER, FactDataType.MONEY}:
+        return isinstance(value, (int, float, Decimal)) and not isinstance(value, bool)
+    if data_type is FactDataType.STRING:
+        return isinstance(value, str)
+    if data_type is FactDataType.LIST:
+        return isinstance(value, list)
+    if data_type is FactDataType.ENUM:
+        return isinstance(value, (str, int, float, bool))
+    if not isinstance(value, str):
+        return False
+    try:
+        if data_type is FactDataType.DATE:
+            if "T" in value:
+                return False
+            date.fromisoformat(value)
+            return True
+        if data_type is FactDataType.DATETIME:
+            if "T" not in value:
+                return False
+            datetime.fromisoformat(value.replace("Z", "+00:00"))
+            return True
+    except ValueError:
+        return False
+    return False
+
+
+def _validate_test_value(
+    *,
+    test_id: str,
+    fact: RequiredFactV2,
+    value: Any,
+    issues: list[str],
+) -> None:
+    path = f"test case {test_id} given[{fact.fact_code}]"
+    if value is None:
+        if not fact.nullable:
+            issues.append(f"{path} is null but the fact is not nullable")
+        return
+    if not _matches_fact_data_type(value, fact.data_type):
+        issues.append(f"{path} does not match dataType {fact.data_type.value}")
+        return
+    if fact.allowed_values and value not in fact.allowed_values:
+        issues.append(f"{path} is not in allowedValues")
 
 
 def infer_expression_type(
@@ -259,9 +345,7 @@ def _evaluate_expression(
         finally:
             resolving.remove(code)
 
-    values = [
-        _evaluate_expression(child, given, facts, resolving) for child in expression.children
-    ]
+    values = [_evaluate_expression(child, given, facts, resolving) for child in expression.children]
     if expression.kind is ExpressionKind.COALESCE:
         return next(
             (item for item in values if not isinstance(item, _Missing) and item is not None),
@@ -346,9 +430,7 @@ def _evaluate_compare(
             right_value: Any = right
             left_decimal = _as_decimal(left)
             right_decimal = _as_decimal(right)
-            if not isinstance(left_decimal, _Missing) and not isinstance(
-                right_decimal, _Missing
-            ):
+            if not isinstance(left_decimal, _Missing) and not isinstance(right_decimal, _Missing):
                 left_value, right_value = left_decimal, right_decimal
             if operator is RuleOperator.GT:
                 matched = left_value > right_value
@@ -393,6 +475,7 @@ def evaluate_condition(
 
 def validate_candidate_v2(candidate: RuleCandidateV2) -> None:
     issues: list[str] = []
+    issues.extend(_sensitive_text_issues(candidate.model_dump(mode="json")))
     fact_codes = [fact.fact_code for fact in candidate.required_facts]
     facts = {fact.fact_code: fact for fact in candidate.required_facts}
     duplicate_facts = _duplicates(fact_codes)
@@ -434,6 +517,16 @@ def validate_candidate_v2(candidate: RuleCandidateV2) -> None:
         unknown = sorted(set(test.given) - set(fact_codes))
         if unknown:
             issues.append(f"test case {test.id} uses unknown facts: {unknown}")
+            continue
+        issue_count = len(issues)
+        for code, value in test.given.items():
+            _validate_test_value(
+                test_id=test.id,
+                fact=facts[code],
+                value=value,
+                issues=issues,
+            )
+        if len(issues) != issue_count:
             continue
         actual = evaluate_condition(candidate.root_condition, test.given, facts)
         if actual.value != test.expected.value:
@@ -490,14 +583,13 @@ def enrich_candidate_v2(candidate: RuleCandidateV2) -> ParsedRuleV2:
                     f"{candidate_mapping.view_name}.{candidate_mapping.view_field}"
                 ]
             )
-        view, field = resolved
+        view, _ = resolved
         mappings.append(
             FieldMappingV2(
                 fact_code=candidate_mapping.fact_code,
                 mapping_status=MappingStatus.MAPPED,
                 view_name=candidate_mapping.view_name,
                 view_field=candidate_mapping.view_field,
-                source_expression=field.expression,
                 view_active=view.active,
                 note=candidate_mapping.note,
             )

@@ -70,6 +70,15 @@ class TestExpectationV2(StrEnum):
     FAIL = "fail"
 
 
+class TestCategoryV2(StrEnum):
+    NORMAL = "normal"
+    FAILURE = "failure"
+    BOUNDARY = "boundary"
+    NULL = "null"
+    MUTUALLY_EXCLUSIVE_BRANCH = "mutuallyExclusiveBranch"
+    TIME_BOUNDARY = "timeBoundary"
+
+
 ScalarValue: TypeAlias = str | int | float | bool | None
 ExpressionValue: TypeAlias = str | int | float | bool | list[str | int | float | bool]
 
@@ -138,7 +147,13 @@ class RequiredFactV2(ContractModelV2):
     nullable: bool
     null_policy: NullPolicy
     grain: str = Field(pattern=r"^[a-z][a-z0-9_]*$", max_length=100)
-    parameters: list[FactParameterV2] = Field(default_factory=list)
+    parameters: list[FactParameterV2] = Field(
+        default_factory=list,
+        description=(
+            "Runtime business parameters for the fact context. "
+            "source/aggregate/exists facts require at least one parameter."
+        ),
+    )
     unit: str | None = Field(default=None, max_length=80)
     allowed_values: list[ExpressionValue] = Field(default_factory=list)
     default_value: ScalarValue = None
@@ -194,6 +209,7 @@ class ConditionNodeV2(ContractModelV2):
 
 class RuleTestCaseV2(ContractModelV2):
     id: str = Field(pattern=r"^[a-z][a-z0-9_-]*$", max_length=120)
+    category: TestCategoryV2
     description: str = Field(min_length=1, max_length=1_000)
     given: dict[str, ExpressionValue | None] = Field(min_length=1)
     expected: TestExpectationV2
@@ -245,7 +261,6 @@ class FieldMappingV2(ContractModelV2):
     mapping_status: MappingStatus
     view_name: str | None = None
     view_field: str | None = None
-    source_expression: str | None = None
     view_active: bool | None = None
     review_status: Literal["candidate"] = "candidate"
     note: str

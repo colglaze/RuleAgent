@@ -1,6 +1,6 @@
 # BUG-20260819-01：规则 AST 语义丢失未被现有校验阻止
 
-- 状态：`FIX_IMPLEMENTED_REPARSE_PENDING`
+- 状态：`TECHNICALLY_RESOLVED_BUSINESS_REVIEW_BLOCKED`
 - 日期：2026-08-19
 - 来源 REQ：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)
 - 发现于：已归档规则 JSON 向 Agent 2 交接的兼容性评审
@@ -70,3 +70,44 @@
 - 默认测试、MongoDB integration、Ruff、Mypy 和依赖检查均通过，且未调用真实 DeepSeek。
 
 剩余验收仅为第 7 项：重新解析同一真实来源并由业务人员审核新草稿。现有 Schema `1.0.0` 版本不会被修改，在该步骤完成前仍不得作为 Agent 2 输入。
+
+## 2026-08-24 真实重解析结果
+
+- 用户已明确授权使用同一来源执行真实 DeepSeek 重解析并在全部门禁通过后持久化；规范化哈希复核为原值 `562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d`。
+- 应用和 Prompt 分别升级到 `0.6.0`、`rule-parser-v6`；校验重试会把上一候选交给同一 Provider 原位修正，字段反馈上限为 100，可信代码不自动补字段。
+- 最终按既定上限执行首个候选加最多 2 次修正，仍因 `allowedValues` 非数组、`derived` 缺少 `derivation` 和契约外条件节点被 `CANDIDATE_SCHEMA_INVALID` 拒绝。
+- 专项审计和持久化位于 Schema/语义校验之后，因此失败候选没有形成草稿，也没有写入 MongoDB；历史 Schema `1.0.0` 版本保持不变。
+- 第 7 项仍未完成。后续若继续真实调用，必须先明确新的调用上限；不得持久化、手工补齐或降级接受本次非法候选。
+
+## 2026-08-24 追加三次调用结果
+
+- 用户随后明确追加调用“最多三次”；执行入口使用独立计数硬上限，确认恰好发出 3 次 Provider 请求，没有超限。
+- 三次均使用 `rule-parser-v6`、`deepseek-v4-flash` 和同一 7,501 字符来源；来源 SHA-256 保持为 `562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d`。
+- 第三次候选仍被 `CANDIDATE_SCHEMA_INVALID` 拒绝：大量 `requiredFacts.factCode` 及其在 `derivation`、`rootCondition`、`fieldMappings` 中的引用不满足稳定点分小写格式 `^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$`。
+- 解析失败发生在专项业务审计、`FactBindingRequest 2.0.0` 导出验证和 MongoDB 保存之前。正式库只读复核仍为总计 1 条、Schema `1.0.0` 1 条、Schema `2.0.0` 0 条，历史版本未改变。
+- 追加授权已经耗尽，第 7 项仍未完成。下一步不能继续相同的整篇生成调用；若采用分段或分层候选构建等不同方案，必须先同步 REQ/DEV 和离线验收，且继续禁止手工补齐、降低门禁或实现 Agent 2/SQL。
+
+## 2026-08-24 受控导入关闭结果
+
+- 用户明确授权不再调用 DeepSeek 的受控 `reviewed_import`，并要求完成业务结构审计、确定性案例、持久化、回读和全部事实请求导出。该决定已同步到 REQ/BIZ/DEV。
+- 应用升级到 `0.7.0`；Parser 追溯明确记录 `provider=reviewed_import`、`promptVersion=reviewed-import-v1`、`model=codex-gpt-5`，没有冒充 DeepSeek 输出。
+- 同一 7,501 字符来源及 SHA-256 `562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d` 形成 41 个事实、65 个条件和 20 个案例。专项审计覆盖 `R+0.1>=F`、`F=B+E+C+M`、`T=E+C+M`、759 两个互斥分档、显式 `NOT` 未结束流程、60/75/180 天日期相等和六类测试。
+- 新不可变草稿 `REPORT_RELEASE_ALL_001@20260824T080726492666Z-562eabd40e5a` 已保存并精确回读一致；Schema `2.0.0`、`status=draft`、`executable=false`，旧 Schema `1.0.0` 版本未修改。
+- 33 个非派生事实逐一导出 `FactBindingRequest 2.0.0`，全部通过 Pydantic 与独立 Draft 2020-12 Schema；8 个 `derived` 事实未导出。33 个请求均包含 `blocking` 不确定性，因此不得进入 SqlBot SQL 候选生成。
+- 默认离线测试 `52 passed, 2 deselected`，MongoDB 隔离集成 `1 passed, 53 deselected`；Ruff、严格 Mypy（37 个源码文件）和 `pip check` 通过。
+- 技术修复和重新归档已完成。该草稿仍需业务人员审核后才能用于后续治理；人工批准、发布、执行及 Agent 2/SQL 均不属于本缺陷关闭动作。
+
+## 2026-08-26 业务审核结果
+
+- 已按精确版本 `REPORT_RELEASE_ALL_001@20260824T080726492666Z-562eabd40e5a` 完成 41 个事实、65 个条件、20 个案例和 8 个候选映射的只读业务审核。
+- Schema `1.0.0` 中的公式和互斥分支丢失在本 V2 版本中未复现；结构化 AST 技术修复仍成立。
+- 审核同时发现事实粒度/参数、4 个费用候选映射、`report.merge_flag` 值域和案例覆盖问题，已记录为 [BUG-20260826-01](BUG-20260826-01-schema2-business-review-blockers.md)。
+- 因新阻断存在，本缺陷的“由业务人员审核新草稿”步骤已经执行，但未获得业务批准。本缺陷保持未关闭，直到新的不可变 V2 草稿完成修订并再次通过业务审核。
+- 本次审核未修改历史 V1、本次 V2 或 33 条 `fact_binding_handoffs`，也未把任何草稿标记为已发布或可执行。
+
+## 2026-08-27 业务阻断修订结果
+
+- [BUG-20260826-01](BUG-20260826-01-schema2-business-review-blockers.md) 的技术修订已形成新的未持久化 V2 草稿 `REPORT_RELEASE_ALL_001@20260827T013225952760Z-562eabd40e5a`。
+- 新草稿保留完整 AST，并把事实粒度/参数、原始数据复合条件、值域、案例门禁、双向覆盖和候选映射按业务审核结论修正。
+- 新草稿仍为 `draft`、不可执行且所有 34 条事实请求均 blocking；旧 V1、已持久化 V2 和现有 33 条交接均未修改。
+- 本缺陷继续等待新草稿的独立业务复审；本次技术修订不构成批准或持久化授权。

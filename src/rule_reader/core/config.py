@@ -7,7 +7,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import AnyHttpUrl, Field, SecretStr, field_validator
+from pydantic import AnyHttpUrl, Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from rule_reader.core.version import SUPPORTED_PYTHON
@@ -54,6 +54,9 @@ class Settings(BaseSettings):
     deepseek_timeout_seconds: float = Field(default=90.0, ge=1.0, le=600.0)
     deepseek_max_retries: int = Field(default=2, ge=0, le=5)
     deepseek_max_output_tokens: int = Field(default=16_384, ge=1_024, le=65_536)
+    deepseek_retry_base_delay_seconds: float = Field(default=1.0, ge=0.0, le=60.0)
+    deepseek_retry_max_delay_seconds: float = Field(default=8.0, ge=0.0, le=300.0)
+    deepseek_idempotency_cache_max_entries: int = Field(default=64, ge=1, le=1_024)
 
     @field_validator("mongodb_uri")
     @classmethod
@@ -86,6 +89,14 @@ class Settings(BaseSettings):
             return None
         return value
 
+    @model_validator(mode="after")
+    def validate_deepseek_retry_delays(self) -> Settings:
+        if self.deepseek_retry_max_delay_seconds < self.deepseek_retry_base_delay_seconds:
+            raise ValueError(
+                "DeepSeek maximum retry delay must be greater than or equal to base delay"
+            )
+        return self
+
     def public_summary(self) -> dict[str, Any]:
         """Return configuration safe for logs, CLI output, and public diagnostics."""
 
@@ -113,6 +124,9 @@ class Settings(BaseSettings):
                 "timeout_seconds": self.deepseek_timeout_seconds,
                 "max_retries": self.deepseek_max_retries,
                 "max_output_tokens": self.deepseek_max_output_tokens,
+                "retry_base_delay_seconds": self.deepseek_retry_base_delay_seconds,
+                "retry_max_delay_seconds": self.deepseek_retry_max_delay_seconds,
+                "idempotency_cache_max_entries": (self.deepseek_idempotency_cache_max_entries),
             },
             "rule_parser": {
                 "max_characters": self.rule_max_characters,

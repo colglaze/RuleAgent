@@ -39,7 +39,7 @@ class FakeDatabase:
 
     async def initialize(self) -> int:
         self.initialize_calls += 1
-        return 2
+        return 3
 
     async def ping(self) -> None:
         self.ping_calls += 1
@@ -82,10 +82,11 @@ async def request(
     method: str,
     path: str,
     payload: dict[str, object] | None = None,
+    headers: dict[str, str] | None = None,
 ) -> httpx.Response:
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-        return await client.request(method, path, json=payload)
+        return await client.request(method, path, json=payload, headers=headers)
 
 
 @pytest.mark.asyncio
@@ -98,7 +99,7 @@ async def test_service_lifecycle_and_health_endpoints() -> None:
         ready = await request(app, "GET", "/health/ready")
         assert live.json()["status"] == "ok"
         assert ready.status_code == 200
-        assert ready.json()["schema_version"] == 2
+        assert ready.json()["schema_version"] == 3
         assert database.start_calls == 1
         assert database.initialize_calls == 1
 
@@ -117,8 +118,8 @@ async def test_readiness_returns_503_without_leaking_error() -> None:
     assert response.json() == {
         "status": "unavailable",
         "service": "RuleReader",
-        "version": "0.4.0",
-        "schema_version": 2,
+        "version": "0.10.0",
+        "schema_version": 3,
     }
 
 
@@ -169,6 +170,11 @@ async def test_parse_rule_endpoint_returns_valid_json_document() -> None:
     assert response.json()["rule"]["ruleId"] == "TEST_RELEASE_002"
     assert response.json()["status"] == "draft"
     assert response.json()["executable"] is False
+    assert response.json()["parser"]["audit"]["attemptCount"] == 1
+    assert (
+        response.headers["X-RuleReader-Request-ID"]
+        == (response.json()["parser"]["audit"]["requestId"])
+    )
     assert repository.save_calls == 0
 
 
@@ -207,6 +213,21 @@ async def test_parse_rule_endpoint_can_persist_and_read_exact_version() -> None:
             "GET",
             f"/api/v1/rules/versions/{rule_version}/fact-binding-requests",
         )
+        explicit_v2_bindings = await request(
+            app,
+            "GET",
+            (f"/api/v1/rules/versions/{rule_version}/fact-binding-requests?contractVersion=2.0.0"),
+        )
+        unsupported_binding = await request(
+            app,
+            "GET",
+            (f"/api/v1/rules/versions/{rule_version}/fact-binding-requests?contractVersion=3.0.0"),
+        )
+        legacy_binding = await request(
+            app,
+            "GET",
+            (f"/api/v1/rules/versions/{rule_version}/fact-binding-requests?contractVersion=1.0.0"),
+        )
 
     assert parsed.status_code == 200
     assert repository.save_calls == 1
@@ -217,15 +238,28 @@ async def test_parse_rule_endpoint_can_persist_and_read_exact_version() -> None:
     assert bindings.status_code == 200
     binding_payload = bindings.json()
     assert binding_payload["ruleVersion"] == rule_version
-    assert {
-        item["fact"]["factCode"] for item in binding_payload["requests"]
-    } == {
+    assert {item["fact"]["factCode"] for item in binding_payload["requests"]} == {
         "task.status",
         "task.received_amount",
         "task.base_fee",
         "task.extra_fee",
         "task.settlement_fee",
     }
+    assert {item["contractVersion"] for item in binding_payload["requests"]} == {"2.0.0"}
+    assert explicit_v2_bindings.status_code == 200
+    binding_payload_v2 = explicit_v2_bindings.json()
+    assert {item["contractVersion"] for item in binding_payload_v2["requests"]} == {"2.0.0"}
+    assert set(binding_payload_v2["requests"][0]["queryRequirements"]) == {
+        "entity",
+        "fields",
+        "filters",
+        "aggregation",
+        "timeRange",
+        "result",
+    }
+    assert binding_payload_v2["requests"][0]["uncertainties"]
+    assert unsupported_binding.status_code == 422
+    assert legacy_binding.status_code == 422
 
 
 @pytest.mark.asyncio
@@ -270,6 +304,7 @@ async def test_schema_v1_rule_can_be_read_but_not_exported_to_agent2() -> None:
 
     assert stored.status_code == 200
     assert stored.json()["document"]["schemaVersion"] == "1.0.0"
+    assert "audit" not in stored.json()["document"]["parser"]
     assert binding.status_code == 409
     assert binding.json()["error"]["code"] == "RULE_SCHEMA_UNSUPPORTED_FOR_BINDING"
 
@@ -335,4 +370,74 @@ async def test_parse_rule_endpoint_reports_missing_provider_configuration() -> N
 
     assert response.status_code == 503
     assert response.json()["error"]["code"] == "PROVIDER_NOT_CONFIGURED"
+    assert response.json()["error"]["audit"]["attemptCount"] == 1
+    assert (
+        response.headers["X-RuleReader-Request-ID"]
+        == (response.json()["error"]["audit"]["requestId"])
+    )
     assert "api_key" not in response.text.lower()
+
+
+@pytest.mark.asyncio
+async def test_parse_rule_endpoint_maps_idempotency_conflict_to_409() -> None:
+    database = FakeDatabase()
+    model = QueueModel([json.dumps(valid_candidate_v2(), ensure_ascii=False)])
+    parser = RuleParsingService(model, max_characters=10_000, max_retries=0)
+    app = create_app(
+        settings=Settings(_env_file=None),
+        database=database,
+        rule_parser=parser,
+    )
+    headers = {"Idempotency-Key": "http-parse-request-0001"}
+
+    async with app.router.lifespan_context(app):
+        first = await request(
+            app,
+            "POST",
+            "/api/v1/rules/parse",
+            {"text": "第一条规则", "sourceName": "inline.md"},
+            headers=headers,
+        )
+        conflict = await request(
+            app,
+            "POST",
+            "/api/v1/rules/parse",
+            {"text": "第二条规则", "sourceName": "inline.md"},
+            headers=headers,
+        )
+
+    assert first.status_code == 200
+    assert conflict.status_code == 409
+    assert conflict.json()["error"]["code"] == "IDEMPOTENCY_KEY_CONFLICT"
+    assert conflict.json()["error"]["audit"]["attemptCount"] == 0
+    assert (
+        conflict.headers["X-RuleReader-Request-ID"]
+        == (conflict.json()["error"]["audit"]["requestId"])
+    )
+    assert model.calls == 1
+
+
+@pytest.mark.asyncio
+async def test_parse_rule_endpoint_rejects_invalid_idempotency_key() -> None:
+    database = FakeDatabase()
+    model = QueueModel([json.dumps(valid_candidate_v2(), ensure_ascii=False)])
+    parser = RuleParsingService(model, max_characters=10_000, max_retries=0)
+    app = create_app(
+        settings=Settings(_env_file=None),
+        database=database,
+        rule_parser=parser,
+    )
+
+    async with app.router.lifespan_context(app):
+        response = await request(
+            app,
+            "POST",
+            "/api/v1/rules/parse",
+            {"text": "有效规则", "sourceName": "inline.md"},
+            headers={"Idempotency-Key": "bad key"},
+        )
+
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "IDEMPOTENCY_KEY_INVALID"
+    assert "bad key" not in response.text
+    assert model.calls == 0

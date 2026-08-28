@@ -65,9 +65,7 @@ class MongoRuleVersionRepository:
 
     async def get(self, rule_version: str) -> StoredRuleVersion | None:
         try:
-            stored = await self._database[RULE_VERSIONS_COLLECTION].find_one(
-                {"_id": rule_version}
-            )
+            stored = await self._database[RULE_VERSIONS_COLLECTION].find_one({"_id": rule_version})
         except PyMongoError as error:
             raise RuleVersionPersistenceError("Rule version could not be read") from error
         if stored is None:

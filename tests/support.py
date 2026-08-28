@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from rule_reader.application.rule_parsing.ports import CandidateGeneration
 from rule_reader.domain.rules.errors import ParseIssue, RuleParsingError
 
 
@@ -235,6 +236,7 @@ def valid_candidate_v2(*, rule_id: str = "TEST_RELEASE_002") -> dict[str, Any]:
         "testCases": [
             {
                 "id": "pass-case",
+                "category": "normal",
                 "description": "状态完成且金额覆盖",
                 "given": {
                     "task.status": 19,
@@ -248,6 +250,7 @@ def valid_candidate_v2(*, rule_id: str = "TEST_RELEASE_002") -> dict[str, Any]:
             },
             {
                 "id": "fail-case",
+                "category": "failure",
                 "description": "金额未覆盖",
                 "given": {
                     "task.status": 19,
@@ -279,12 +282,16 @@ def valid_candidate_v2(*, rule_id: str = "TEST_RELEASE_002") -> dict[str, Any]:
 
 
 class QueueModel:
-    def __init__(self, responses: list[str | ParseIssue]) -> None:
+    def __init__(
+        self,
+        responses: list[str | CandidateGeneration | ParseIssue],
+    ) -> None:
         self._responses = responses
         self.calls = 0
         self.started = 0
         self.closed = 0
         self.feedback: list[tuple[str, ...]] = []
+        self.previous_candidates: list[str | None] = []
 
     @property
     def model_name(self) -> str:
@@ -303,11 +310,18 @@ class QueueModel:
         candidate_schema: dict[str, Any],
         field_catalog: dict[str, Any],
         feedback: tuple[str, ...],
-    ) -> str:
+        previous_candidate: str | None,
+    ) -> CandidateGeneration:
         del text, candidate_schema, field_catalog
         self.feedback.append(feedback)
+        self.previous_candidates.append(previous_candidate)
         item = self._responses[min(self.calls, len(self._responses) - 1)]
         self.calls += 1
         if isinstance(item, ParseIssue):
             raise RuleParsingError(item)
-        return item
+        if isinstance(item, CandidateGeneration):
+            return item
+        return CandidateGeneration(
+            content=item,
+            provider_request_id=f"fake-request-{self.calls}",
+        )

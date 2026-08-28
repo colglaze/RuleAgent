@@ -12,6 +12,14 @@ from pathlib import Path
 import uvicorn
 from pydantic import ValidationError
 
+from rule_reader.application.fact_binding_handoffs.ports import (
+    FactBindingHandoffError,
+    FactBindingHandoffPersistenceError,
+)
+from rule_reader.application.fact_binding_handoffs.service import (
+    FactBindingHandoffService,
+    load_checked_in_fact_binding_schema,
+)
 from rule_reader.application.rule_parsing.workflow import RuleParsingService
 from rule_reader.application.rule_versions.ports import RuleVersionPersistenceError
 from rule_reader.core.config import Settings
@@ -20,6 +28,10 @@ from rule_reader.core.version import ensure_supported_python
 from rule_reader.domain.rules.errors import RuleParsingError
 from rule_reader.infrastructure.deepseek import DeepSeekChatModel
 from rule_reader.infrastructure.documents import LocalDocumentReader
+from rule_reader.infrastructure.fact_binding_handoffs import (
+    MongoFactBindingHandoffRepository,
+)
+from rule_reader.infrastructure.migrations import FACT_BINDING_HANDOFFS_COLLECTION
 from rule_reader.infrastructure.mongodb import MongoManager, MongoStartupError
 from rule_reader.infrastructure.rule_versions import MongoRuleVersionRepository
 
@@ -42,6 +54,19 @@ def _parser() -> argparse.ArgumentParser:
         action="store_true",
         help="persist the validated draft as an immutable MongoDB version",
     )
+    parse_parser.add_argument(
+        "--idempotency-key",
+        help="process-local idempotency key for this parsing operation",
+    )
+    handoff_parser = subparsers.add_parser(
+        "persist-handoffs",
+        help="persist immutable FactBindingRequest 2.0 handoffs for one stored rule",
+    )
+    handoff_parser.add_argument(
+        "--rule-version",
+        required=True,
+        help="exact immutable Schema 2.0.0 rule version",
+    )
     parser.set_defaults(command="serve")
     return parser
 
@@ -55,7 +80,13 @@ async def _initialize_database(settings: Settings) -> int:
         await manager.close()
 
 
-async def _parse_document(settings: Settings, path: Path, *, persist: bool) -> str:
+async def _parse_document(
+    settings: Settings,
+    path: Path,
+    *,
+    persist: bool,
+    idempotency_key: str | None,
+) -> str:
     reader = LocalDocumentReader(
         settings.document_root,
         max_characters=settings.rule_max_characters,
@@ -65,6 +96,9 @@ async def _parse_document(settings: Settings, path: Path, *, persist: bool) -> s
         DeepSeekChatModel(settings),
         max_characters=settings.rule_max_characters,
         max_retries=settings.deepseek_max_retries,
+        retry_base_delay_seconds=settings.deepseek_retry_base_delay_seconds,
+        retry_max_delay_seconds=settings.deepseek_retry_max_delay_seconds,
+        idempotency_cache_max_entries=(settings.deepseek_idempotency_cache_max_entries),
     )
     manager = MongoManager(settings) if persist else None
     try:
@@ -81,6 +115,7 @@ async def _parse_document(settings: Settings, path: Path, *, persist: bool) -> s
             document.text,
             source_name=document.source_name,
             relative_path=document.relative_path,
+            idempotency_key=idempotency_key,
         )
         if manager is not None:
             repository = MongoRuleVersionRepository(lambda: manager.database)
@@ -90,6 +125,43 @@ async def _parse_document(settings: Settings, path: Path, *, persist: bool) -> s
         await parser.close()
         if manager is not None:
             await manager.close()
+
+
+async def _persist_fact_binding_handoffs(
+    settings: Settings,
+    rule_version: str,
+) -> dict[str, object]:
+    manager = MongoManager(settings)
+    try:
+        try:
+            await manager.start()
+            schema_version = await manager.initialize()
+        except MongoStartupError as error:
+            raise FactBindingHandoffPersistenceError(
+                "Fact binding handoff persistence is unavailable"
+            ) from error
+        rule_versions = MongoRuleVersionRepository(lambda: manager.database)
+        handoffs = MongoFactBindingHandoffRepository(lambda: manager.database)
+        service = FactBindingHandoffService(
+            rule_versions,
+            handoffs,
+            load_checked_in_fact_binding_schema(),
+        )
+        result = await service.persist(rule_version)
+        return {
+            "status": "persisted_and_verified",
+            "databaseSchemaVersion": schema_version,
+            "collection": FACT_BINDING_HANDOFFS_COLLECTION,
+            "ruleVersion": result.rule_version,
+            "contractVersion": "2.0.0",
+            "records": len(result.records),
+            "inserted": result.inserted_count,
+            "existing": result.existing_count,
+            "blockingRequests": result.blocking_request_count,
+            "sourceRuleUnchanged": result.source_rule_unchanged,
+        }
+    finally:
+        await manager.close()
 
 
 def run(argv: Sequence[str] | None = None) -> int:
@@ -129,7 +201,12 @@ def run(argv: Sequence[str] | None = None) -> int:
     if args.command == "parse":
         try:
             parsed_json = asyncio.run(
-                _parse_document(settings, args.file, persist=args.persist)
+                _parse_document(
+                    settings,
+                    args.file,
+                    persist=args.persist,
+                    idempotency_key=args.idempotency_key,
+                )
             )
         except RuleParsingError as error:
             print(
@@ -159,6 +236,29 @@ def run(argv: Sequence[str] | None = None) -> int:
             )
             return 1
         print(parsed_json)
+        return 0
+
+    if args.command == "persist-handoffs":
+        try:
+            result = asyncio.run(_persist_fact_binding_handoffs(settings, args.rule_version))
+        except FactBindingHandoffError as error:
+            print(
+                json.dumps(
+                    {
+                        "error": {
+                            "code": error.code,
+                            "message": str(error),
+                            "retryable": error.retryable,
+                            "details": [],
+                        }
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                file=sys.stderr,
+            )
+            return 1
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
 
     uvicorn.run(

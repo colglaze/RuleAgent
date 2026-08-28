@@ -4,13 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rule-reader"
-version = "0.4.0"
+version = "0.10.0"
 description = "RuleReader backend and rule parsing agent"
 readme = "README.md"
 requires-python = "==3.11.9"
 dependencies = [
     "fastapi==0.141.1",
     "httpx==0.28.1",
+    "jsonschema==4.26.0",
     "langgraph==1.2.11",
     "pydantic-settings==2.15.0",
     "pymongo==4.17.0",
@@ -50,6 +51,8 @@ src = ["src", "tests"]
 select = ["ASYNC", "B", "E", "F", "I", "RUF", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
+"scripts/reviewed_report_release_all_001.py" = ["RUF001"]
+"scripts/reviewed_report_release_all_001_remediation.py" = ["RUF001"]
 "src/rule_reader/domain/rules/catalog.py" = ["RUF001"]
 "src/rule_reader/infrastructure/deepseek.py" = ["RUF001"]
 "tests/**/*.py" = ["RUF001"]

@@ -1,0 +1,64 @@
+{
+  "contractVersion": "1.0.0",
+  "examples": [
+    {
+      "expectedRuleResult": "pass",
+      "testCaseId": "pass-case",
+      "value": 100
+    },
+    {
+      "expectedRuleResult": "fail",
+      "testCaseId": "fail-case",
+      "value": 100
+    }
+  ],
+  "fact": {
+    "allowedValues": [],
+    "dataType": "money",
+    "defaultValue": null,
+    "derivation": null,
+    "description": "正式实验任务最终采用费用",
+    "factCode": "task.settlement_fee",
+    "factKind": "source",
+    "grain": "formal_test_task",
+    "name": "任务结算费用",
+    "nullPolicy": "error",
+    "nullable": false,
+    "parameters": [
+      {
+        "dataType": "integer",
+        "description": "正式实验任务 ID",
+        "name": "taskId",
+        "required": true
+      }
+    ],
+    "unit": "CNY"
+  },
+  "mappingCandidate": {
+    "factCode": "task.settlement_fee",
+    "mappingStatus": "mapped",
+    "note": "使用正式实验任务最终采用费用。",
+    "reviewStatus": "candidate",
+    "viewActive": true,
+    "viewField": "zssyjsfy",
+    "viewName": "v_OrderFormaltestsettlement"
+  },
+  "requiresMetadataSnapshot": true,
+  "ruleRef": {
+    "ruleId": "TEST_RELEASE_002",
+    "ruleVersion": "TEST_RELEASE_002@20260824T000000000000Z-000000000000",
+    "schemaVersion": "2.0.0",
+    "sourceSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "status": "candidate",
+  "targetDialect": "sqlserver",
+  "tempTableAllowed": false,
+  "usages": [
+    {
+      "conditionId": "settlement-non-negative",
+      "conditionPath": "root/settlement-non-negative",
+      "expressionSide": "left",
+      "operator": "gte"
+    }
+  ]
+}

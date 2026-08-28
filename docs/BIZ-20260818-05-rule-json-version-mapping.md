@@ -4,7 +4,7 @@
 - 日期：2026-08-18
 - 来源 REQ：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)
 - 影响范围：规则解析输出、版本标识、视图字段目录和失败策略
-- 契约演进：Schema/Prompt v1 决策已由 [BIZ-20260819-01](BIZ-20260819-01-agent2-handoff-baseline.md) 替代；版本和候选映射策略继续有效。
+- 契约演进：Schema/Prompt v1 决策已由 [BIZ-20260819-01](BIZ-20260819-01-agent2-handoff-baseline.md) 替代；版本和候选映射策略继续有效，但 Schema `2.0.0` 按 2026-08-24 用户安全要求不再携带目录 `sourceExpression`。
 
 ## 1. 决策
 
@@ -14,7 +14,7 @@
 4. `ruleVersion` 格式为 `<ruleId>@<UTC basic timestamp>-<source sha256 first 12>`，例如 `REPORT_RELEASE_ALL_001@20260818T163012123456Z-a1b2c3d4e5f6`。
 5. JSON Schema 版本使用语义版本；本阶段固定为 `1.0.0`。Parser 版本来自应用版本，Prompt 版本固定为 `rule-parser-v1`。
 6. 输出永远是 `draft` 且 `executable=false`；字段映射同样是待审核候选。
-7. 字段映射只允许引用四视图字段目录。模型给出的视图和字段必须精确命中目录，代码再补入权威 `sourceExpression` 和视图启用状态。
+7. 字段映射只允许引用四视图字段目录。模型给出的视图和字段必须精确命中目录；历史 Schema `1.0.0` 仍按冻结形状补入 `sourceExpression` 和视图启用状态，Schema `2.0.0` 只补入视图启用状态并禁止携带目录表达式。
 8. 无法确认映射时必须输出 `unresolved`，不得把相似字段或自然语言推断冒充为已确认映射。
 9. 当前不持久化规则版本；版本元数据随 JSON 输出交付。正式版本库另行建立 REQ/BIZ/DEV。
 10. DeepSeek 使用兼容 OpenAI Chat Completions 的 HTTP API 和 JSON Output 模式，由 HTTPX 直接调用；规则抽取固定关闭 V4 默认 thinking，避免推理内容耗尽结构化输出预算；不在领域层引入供应商 SDK 类型。

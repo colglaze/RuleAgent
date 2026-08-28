@@ -159,3 +159,8 @@ def build_fact_binding_requests(result: RuleParseResultV2) -> list[FactBindingRe
             )
         )
     return requests
+
+
+# Contract 1.0.0 is frozen for transition compatibility with the existing SqlBot intake.
+FactBindingRequestV1 = FactBindingRequest
+build_fact_binding_requests_v1 = build_fact_binding_requests

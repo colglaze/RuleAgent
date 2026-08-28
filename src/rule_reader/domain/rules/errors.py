@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from enum import StrEnum
 from typing import Any
 
+from rule_reader.domain.rules.audit import ParseAudit
+
 
 class ParseErrorCode(StrEnum):
     INPUT_EMPTY = "INPUT_EMPTY"
@@ -25,6 +27,8 @@ class ParseErrorCode(StrEnum):
     CANDIDATE_JSON_INVALID = "CANDIDATE_JSON_INVALID"
     CANDIDATE_SCHEMA_INVALID = "CANDIDATE_SCHEMA_INVALID"
     CANDIDATE_SEMANTIC_INVALID = "CANDIDATE_SEMANTIC_INVALID"
+    IDEMPOTENCY_KEY_INVALID = "IDEMPOTENCY_KEY_INVALID"
+    IDEMPOTENCY_KEY_CONFLICT = "IDEMPOTENCY_KEY_CONFLICT"
 
 
 @dataclass(frozen=True, slots=True)
@@ -33,14 +37,18 @@ class ParseIssue:
     message: str
     retryable: bool = False
     details: tuple[str, ...] = ()
+    audit: ParseAudit | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload: dict[str, Any] = {
             "code": self.code.value,
             "message": self.message,
             "retryable": self.retryable,
             "details": list(self.details),
         }
+        if self.audit is not None:
+            payload["audit"] = self.audit.model_dump(mode="json", by_alias=True)
+        return payload
 
 
 class RuleParsingError(RuntimeError):

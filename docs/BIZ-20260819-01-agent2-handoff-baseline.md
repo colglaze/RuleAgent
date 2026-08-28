@@ -2,8 +2,10 @@
 
 - 状态：`ACCEPTED`
 - 日期：2026-08-19
+- 更新日期：2026-08-24
 - 来源 REQ：[REQ-20260819-01](REQ-20260819-01-rule-contract-v2-agent2-handoff.md)
 - 替代范围：长期方案中未冻结的 Agent 2 交接细节
+- 后续 MongoDB 交接决策：[BIZ-20260824-01](BIZ-20260824-01-mongodb-fact-binding-handoff.md)
 
 ## 1. 已确认决策
 
@@ -16,12 +18,17 @@
 7. 首个目标 SQL 方言为 SQL Server。会话级临时表默认禁用，直到权限、版本和事务行为另行确认。
 8. 两个服务可以连接同一 MongoDB 实例，但各自拥有集合和 migration；禁止跨服务直接修改对方集合。
 9. RuleReader 只导出事实绑定请求，不读取目标数据库元数据；SqlBot 负责在后续阶段组合元数据快照并生成候选模板。
+10. `FactBindingRequest 2.0.0` 是补齐查询语义后的新主版本；增加必填查询结构属于破坏性变化，不得原地扩展 `1.0.0`。
+11. 2026-08-24 用户明确结束旧版过渡：`1.0.0` 只作为历史兼容夹具冻结保留，RuleReader 运行时无参数和显式请求均只输出 `2.0.0`；SqlBot intake 未升级是其独立阻塞，不构成 RuleReader 降级授权。本项替代同日较早记录的“默认返回 `1.0.0`”决定。
+12. Agent 1 只能声明从规则草稿确定得到的逻辑实体、字段角色、筛选、聚合和时间范围。缺少事实级语义时必须通过 `unresolved + blocking uncertainty` 交接，不能把描述文本、候选视图字段或目录表达式提升为已确认 SQL 设计。
+13. 2026-08-24，在两批各最多 3 次的真实 DeepSeek 重解析均被可信校验拒绝后，用户明确授权对同一来源执行一次受控 `reviewed_import`。该路径是离线治理动作，不接入新的运行时模型 Provider，不再次调用 DeepSeek，也不得冒充 DeepSeek 输出；必须记录独立 Provider、作者模型标识、导入契约版本和同一来源 SHA-256。
+14. `reviewed_import` 仅能导入显式评审的 Schema `2.0.0` 候选，并继续经过 Pydantic、确定性语义解释器、规则专项审计、事实请求 Pydantic/JSON Schema 双重验证。任一门禁失败均禁止写入；成功后仍只是 `draft`、`executable=false`，不等同于业务批准。
 
 ## 2. 交接边界
 
 ```text
 RuleReader Schema 2.0 draft
-→ deterministic FactBindingRequest[]
+→ deterministic FactBindingRequest 2.0.0[]
 → SqlBot intake validation
 → metadata snapshot + SQL Server context
 → SqlTemplateCandidate
@@ -31,9 +38,13 @@ RuleReader Schema 2.0 draft
 
 任一步缺少必需上下文时必须返回 `blocked`，不能要求模型猜测表、字段、JOIN、权限或参数来源。
 
+受控 `reviewed_import` 不改变上述交接边界。它只替换失败的候选生成步骤，不能跳过验证、扩展 RuleReader 的 SQL/元数据职责，或把 `blocking` 不确定性解释为可生成 SQL。
+
+`FactBindingRequest 2.0.0` 的 `declared` 表示来源于已校验规则草稿，`candidate` 表示未审核来源提示，`unresolved` 表示缺少决定性信息。草稿可携带阻断项持久化；只有 `blocking` 不确定性被显式解决、元数据快照就绪且 SqlBot 自身门禁通过后，才可进入候选生成。
+
 ## 3. MongoDB 所有权
 
-- RuleReader 当前只拥有 `schema_migrations`、`app_metadata` 和 `rule_versions`。
+- RuleReader 当前拥有 `schema_migrations`、`app_metadata`、`rule_versions` 和 [BIZ-20260824-01](BIZ-20260824-01-mongodb-fact-binding-handoff.md) 定义的 `fact_binding_handoffs`；后者仍由 RuleReader 唯一写入，SqlBot 只读。
 - SqlBot 后续拥有自己的元数据快照、生成运行和 SQL 模板集合；集合名和索引由 SqlBot 的 REQ/DEV/migration 冻结。
 - 跨服务引用只保存不可变 ID、版本和内容哈希，不嵌入或覆盖另一服务的业务载荷。
 

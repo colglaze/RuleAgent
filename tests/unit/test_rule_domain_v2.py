@@ -89,9 +89,7 @@ def test_v2_rejects_mutually_exclusive_branch_through_expected_case() -> None:
         ],
     }
     payload["requiredFacts"] = [
-        fact
-        for fact in payload["requiredFacts"]
-        if fact["factCode"] == "task.settlement_fee"
+        fact for fact in payload["requiredFacts"] if fact["factCode"] == "task.settlement_fee"
     ]
     payload["fieldMappings"] = [
         mapping
@@ -101,6 +99,7 @@ def test_v2_rejects_mutually_exclusive_branch_through_expected_case() -> None:
     payload["testCases"] = [
         {
             "id": "boundary-pass",
+            "category": "mutuallyExclusiveBranch",
             "description": "来源规则要求十万元边界通过",
             "given": {"task.settlement_fee": 100000},
             "expected": "pass",
@@ -108,6 +107,7 @@ def test_v2_rejects_mutually_exclusive_branch_through_expected_case() -> None:
         },
         {
             "id": "fail-case",
+            "category": "failure",
             "description": "保留反例",
             "given": {"task.settlement_fee": 100001},
             "expected": "fail",
@@ -161,6 +161,7 @@ def test_v2_models_exists_fact_and_executes_flow_cases() -> None:
     payload["testCases"] = [
         {
             "id": "no-flow-pass",
+            "category": "normal",
             "description": "没有未结束流程",
             "given": {"task.has_unfinished_flow": False},
             "expected": "pass",
@@ -168,6 +169,7 @@ def test_v2_models_exists_fact_and_executes_flow_cases() -> None:
         },
         {
             "id": "flow-fail",
+            "category": "failure",
             "description": "存在未结束流程",
             "given": {"task.has_unfinished_flow": True},
             "expected": "fail",
@@ -252,6 +254,7 @@ def test_v2_executes_date_add_boundary_with_iso_datetimes() -> None:
     payload["testCases"] = [
         {
             "id": "exact-boundary-pass",
+            "category": "timeBoundary",
             "description": "恰好达到两天边界",
             "given": {
                 "task.current_time": "2026-08-21T10:00:00Z",
@@ -262,6 +265,7 @@ def test_v2_executes_date_add_boundary_with_iso_datetimes() -> None:
         },
         {
             "id": "before-boundary-fail",
+            "category": "timeBoundary",
             "description": "比两天边界早一秒",
             "given": {
                 "task.current_time": "2026-08-21T09:59:59Z",
@@ -275,6 +279,79 @@ def test_v2_executes_date_add_boundary_with_iso_datetimes() -> None:
     candidate = RuleCandidateV2.model_validate(payload)
 
     validate_candidate_v2(candidate)
+
+
+def test_v2_executes_explicit_null_failure_case() -> None:
+    payload = valid_candidate_v2()
+    payload["rootCondition"] = {
+        "id": "received-amount-present",
+        "kind": "compare",
+        "description": "到款金额必须存在且达到最低金额",
+        "left": {"kind": "fact", "factCode": "task.received_amount"},
+        "operator": "gte",
+        "right": {"kind": "literal", "value": 0},
+        "nullPolicy": "fail",
+    }
+    payload["requiredFacts"] = [
+        fact for fact in payload["requiredFacts"] if fact["factCode"] == "task.received_amount"
+    ]
+    payload["requiredFacts"][0]["nullable"] = True
+    payload["fieldMappings"] = [
+        mapping
+        for mapping in payload["fieldMappings"]
+        if mapping["factCode"] == "task.received_amount"
+    ]
+    payload["testCases"] = [
+        {
+            "id": "amount-present-pass",
+            "category": "boundary",
+            "description": "金额存在且等于边界值",
+            "given": {"task.received_amount": 0},
+            "expected": "pass",
+            "rationale": "边界值零满足大于等于零。",
+        },
+        {
+            "id": "amount-null-fail",
+            "category": "null",
+            "description": "金额为空时按条件空值策略失败",
+            "given": {"task.received_amount": None},
+            "expected": "fail",
+            "rationale": "nullPolicy=fail 将空值确定性解释为失败。",
+        },
+    ]
+
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    validate_candidate_v2(candidate)
+
+
+def test_v2_rejects_test_value_outside_fact_allowed_values() -> None:
+    payload = valid_candidate_v2()
+    status = next(fact for fact in payload["requiredFacts"] if fact["factCode"] == "task.status")
+    status["allowedValues"] = [19]
+    payload["testCases"][1]["given"]["task.status"] = 18
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(SemanticValidationErrorV2, match="allowedValues"):
+        validate_candidate_v2(candidate)
+
+
+def test_v2_rejects_test_value_with_wrong_declared_type() -> None:
+    payload = valid_candidate_v2()
+    payload["testCases"][0]["given"]["task.status"] = "19"
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(SemanticValidationErrorV2, match="dataType integer"):
+        validate_candidate_v2(candidate)
+
+
+def test_v2_rejects_null_for_non_nullable_test_fact() -> None:
+    payload = valid_candidate_v2()
+    payload["testCases"][0]["given"]["task.status"] = None
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(SemanticValidationErrorV2, match="fact is not nullable"):
+        validate_candidate_v2(candidate)
 
 
 def test_fact_binding_requests_are_atomic_and_exclude_derived_fact() -> None:
@@ -315,3 +392,22 @@ def test_fact_binding_requests_are_atomic_and_exclude_derived_fact() -> None:
     )
     assert settlement.mapping_candidate.view_field == "zssyjsfy"
     assert "sourceExpression" not in settlement.mapping_candidate.model_dump(by_alias=True)
+
+
+@pytest.mark.parametrize(
+    "unsafe_text",
+    [
+        "SELECT secret FROM governed_table",
+        "mongodb://user:password@example.invalid/rules",
+        "password=not-allowed",
+    ],
+)
+def test_v2_rejects_executable_sql_and_credentials_in_free_text(
+    unsafe_text: str,
+) -> None:
+    payload = valid_candidate_v2()
+    payload["warnings"] = [unsafe_text]
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(SemanticValidationErrorV2, match="contains"):
+        validate_candidate_v2(candidate)

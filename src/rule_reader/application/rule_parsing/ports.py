@@ -2,9 +2,20 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Protocol
 
+from rule_reader.domain.rules.audit import ProviderTokenUsage
 from rule_reader.domain.rules.v2 import RuleParseResultV2
+
+
+@dataclass(frozen=True, slots=True)
+class CandidateGeneration:
+    """Provider-neutral data accepted from one model response."""
+
+    content: str
+    provider_request_id: str
+    token_usage: ProviderTokenUsage | None = None
 
 
 class RuleCandidateModel(Protocol):
@@ -22,7 +33,8 @@ class RuleCandidateModel(Protocol):
         candidate_schema: dict[str, Any],
         field_catalog: dict[str, Any],
         feedback: tuple[str, ...],
-    ) -> str: ...
+        previous_candidate: str | None,
+    ) -> CandidateGeneration: ...
 
 
 class RuleParserLifecycle(Protocol):
@@ -36,6 +48,7 @@ class RuleParserLifecycle(Protocol):
         *,
         source_name: str,
         relative_path: str | None = None,
+        idempotency_key: str | None = None,
     ) -> RuleParseResultV2: ...
 
     async def parse_to_json(
@@ -44,5 +57,6 @@ class RuleParserLifecycle(Protocol):
         *,
         source_name: str,
         relative_path: str | None = None,
+        idempotency_key: str | None = None,
         indent: int | None = 2,
     ) -> str: ...

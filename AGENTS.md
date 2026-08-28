@@ -46,7 +46,7 @@
 - 先交付 **Phase 1.0 后端骨架**，再交付 **Rule Parsing Agent** 的最小可验证闭环。
 - 后端骨架仅包含 FastAPI、集中配置、MongoDB 连接/健康检查和基础设施 Schema migration。
 - 规则来源只使用仓库内或显式配置目录中的本地 Markdown 文档。
-- 解析结果只能是待审核的结构化规则草稿、`requiredFacts`、测试案例、可追溯的来源信息，以及 [REQ-20260819-01](docs/REQ-20260819-01-rule-contract-v2-agent2-handoff.md) 定义的事实绑定请求；不能直接成为正式业务决策。
+- 解析结果只能是待审核的结构化规则草稿、`requiredFacts`、测试案例、可追溯的来源信息，以及 [REQ-20260819-01](docs/REQ-20260819-01-rule-contract-v2-agent2-handoff.md) 定义的事实绑定请求；[REQ-20260824-01](docs/REQ-20260824-01-mongodb-fact-binding-handoff.md) 只允许把已持久化 V2 规则的请求写入 RuleReader 所有、SqlBot 只读的不可变交接集合。二者都不能直接成为正式业务决策。
 
 除非用户明确改变范围并先更新相关 `REQ`/`BIZ`/`DEV`，当前阶段禁止实现：
 
@@ -96,7 +96,7 @@
 - 未经当前 `REQ` 要求，不新增数据库、消息队列、缓存、容器编排或独立服务。
 - FastAPI lifespan 统一持有和释放 MongoDB 等进程级资源；禁止在模块导入、请求处理器或领域代码中临时创建数据库 Client。
 - 配置只能通过集中 Settings 对象读取；API、日志和 CLI 不得输出完整 MongoDB URI 或 DeepSeek Key。
-- MongoDB migration 必须版本化、幂等且 fail-fast；当前只允许创建 `schema_migrations` 和 `app_metadata` 基础设施集合。
+- MongoDB migration 必须版本化、幂等且 fail-fast；当前只允许创建 `schema_migrations`、`app_metadata`、[REQ-20260818-04](docs/REQ-20260818-04-rule-version-persistence.md) 的 `rule_versions` 和 [REQ-20260824-01](docs/REQ-20260824-01-mongodb-fact-binding-handoff.md) 的 `fact_binding_handoffs`，不得借此扩展正式规则库、事实注册中心或 SqlBot 自有集合。
 
 ## 7. 规则解析 Agent 的工程边界
 

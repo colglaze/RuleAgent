@@ -9,6 +9,8 @@ from typing import Literal, TypeAlias
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
 
+from rule_reader.domain.rules.audit import ParseAudit
+
 
 class ContractModel(BaseModel):
     model_config = ConfigDict(
@@ -61,6 +63,11 @@ class RuleOperator(StrEnum):
 class MappingStatus(StrEnum):
     MAPPED = "mapped"
     UNRESOLVED = "unresolved"
+
+
+class ParserProvider(StrEnum):
+    DEEPSEEK = "deepseek"
+    REVIEWED_IMPORT = "reviewed_import"
 
 
 class TestExpectation(StrEnum):
@@ -190,8 +197,9 @@ class ParsedRule(RuleBody):
 class ParserMetadata(ContractModel):
     parser_version: str
     prompt_version: str
-    provider: Literal["deepseek"] = "deepseek"
+    provider: ParserProvider = ParserProvider.DEEPSEEK
     model: str
+    audit: ParseAudit | None = Field(default=None, exclude_if=lambda value: value is None)
 
 
 class SourceMetadata(ContractModel):

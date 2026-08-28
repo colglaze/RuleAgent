@@ -10,7 +10,11 @@ from tests.support import QueueModel, valid_candidate_v2
 
 from rule_reader.application.rule_parsing.workflow import RuleParsingService
 from rule_reader.core.config import Settings
-from rule_reader.infrastructure.migrations import RULE_VERSIONS_COLLECTION, apply_migrations
+from rule_reader.infrastructure.migrations import (
+    FACT_BINDING_HANDOFFS_COLLECTION,
+    RULE_VERSIONS_COLLECTION,
+    apply_migrations,
+)
 from rule_reader.infrastructure.rule_versions import MongoRuleVersionRepository
 
 
@@ -30,27 +34,35 @@ async def test_mongodb_initialization_is_idempotent() -> None:
         await client.admin.command({"ping": 1})
         database = client.get_database(database_name)
 
-        assert await apply_migrations(database) == 2
+        assert await apply_migrations(database) == 3
         database_created = True
-        assert await apply_migrations(database) == 2
+        assert await apply_migrations(database) == 3
 
         collections = set(await database.list_collection_names())
-        assert {"schema_migrations", "app_metadata", RULE_VERSIONS_COLLECTION}.issubset(
-            collections
-        )
+        assert {
+            "schema_migrations",
+            "app_metadata",
+            RULE_VERSIONS_COLLECTION,
+            FACT_BINDING_HANDOFFS_COLLECTION,
+        }.issubset(collections)
         migration_indexes = await database["schema_migrations"].index_information()
         metadata_indexes = await database["app_metadata"].index_information()
         version_indexes = await database[RULE_VERSIONS_COLLECTION].index_information()
+        handoff_indexes = await database[FACT_BINDING_HANDOFFS_COLLECTION].index_information()
         assert migration_indexes["uq_schema_migrations_version"]["unique"] is True
         assert metadata_indexes["uq_app_metadata_key"]["unique"] is True
         assert version_indexes["uq_rule_versions_rule_version"]["unique"] is True
         assert "ix_rule_versions_rule_id_generated_at" in version_indexes
         assert "ix_rule_versions_source_sha256" in version_indexes
+        assert handoff_indexes["_id_"]["key"] == [("_id", 1)]
+        assert handoff_indexes["uq_fact_binding_handoffs_request_id"]["unique"] is True
+        assert handoff_indexes["uq_fact_binding_handoffs_rule_version_fact_code"]["unique"] is True
         assert await database["schema_migrations"].count_documents({"version": 1}) == 1
         assert await database["schema_migrations"].count_documents({"version": 2}) == 1
+        assert await database["schema_migrations"].count_documents({"version": 3}) == 1
         metadata = await database["app_metadata"].find_one({"key": "database_schema"})
         assert metadata is not None
-        assert metadata["schema_version"] == 2
+        assert metadata["schema_version"] == 3
 
         parser = RuleParsingService(
             QueueModel([json.dumps(valid_candidate_v2(), ensure_ascii=False)]),
