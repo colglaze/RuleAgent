@@ -205,6 +205,19 @@ Schema 和样例由权威 Pydantic 模型确定性导出：
 
 RuleReader 只负责 Agent 1 规则理解和事实请求导出。SQL Server 元数据组合、DeepSeek SQL 候选生成、SQL AST、安全校验和审核属于独立的 SqlBot（Agent 2）阶段。
 
+## 私有参考资料
+
+项目外的字段映射、视图定义、规则原文和设计文档已收拢到私有
+[colglaze/RuleDataReferences](https://github.com/colglaze/RuleDataReferences) 的固定 bundle：
+
+- Bundle：`PROJECT_RELEASE_REFERENCE_20260901_001`；
+- Commit：`2240e5bd18e36d17650896a10cc61e1c18e3daa0`；
+- Content digest：`6d403f1a110ea1699a72aec76f38be944583670f96767f5e3f44b2ac2e565160`。
+
+这些资料固定 `authority=none`、`executable=false`，不进入 RuleReader 运行时，不覆盖已持久化规则，
+也不授权 SqlBot 创建元数据 grant、清除 blocking uncertainty 或生成/执行 SQL。公开仓库不复制内部
+字段清单或完整视图 SQL。
+
 ## 验证
 
 ```powershell

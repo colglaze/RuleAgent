@@ -19,7 +19,8 @@
 
 ## 复现与证据
 
-- 来源文件：`C:\Users\tao.chen\MarkDown\项目交付条件规则\规则agent规划\报告和数据的释放规则\项目报告释放规则.md`。
+- 来源文件：私有 `RuleDataReferences` bundle 中的
+  `sources/project-release-rules/规则agent规划/报告和数据的释放规则/项目报告释放规则.md`。
 - 规范化来源 SHA-256：`562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d`，与归档版本一致。
 - 归档草稿包含 39 个 `requiredFacts`、39 个 `fieldMappings` 和 13 个测试案例；10 个映射为 `mapped`，29 个为 `unresolved`。
 - 条件树共有 43 个节点：8 个 `all`、6 个 `any`、29 个 `predicate`，没有 `formula` 或 `exists` 节点。

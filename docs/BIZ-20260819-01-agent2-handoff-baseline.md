@@ -9,7 +9,7 @@
 
 ## 1. 已确认决策
 
-1. RuleReader 与 `C:\Users\tao.chen\PycharmProjects\SqlBot` 保持两个独立 Python 服务；前者是 Agent 1，后者是 Agent 2。
+1. RuleReader 与独立 `SqlBot` 仓库保持两个 Python 服务；前者是 Agent 1，后者是 Agent 2。
 2. Agent 2 不把整条规则转换为一条异常集合 SQL，而是为尚未建立正式 Provider 的单个事实生成候选 SQL 模板。
 3. 跨服务 JSON 使用 camelCase 和显式版本；Python 内部可以使用 snake_case。
 4. RuleReader 新规则契约使用 Schema `2.0.0`。Schema `1.0.0` 归档保持不可变、可回读，但不能直接进入 Agent 2。
