@@ -2,8 +2,10 @@
 
 from rule_reader.domain.rules.bindings import FactBindingRequestV1
 from rule_reader.domain.rules.bindings_v2 import FactBindingRequestV2
+from rule_reader.domain.rules.catalog_v3 import BusinessConfirmedFactCatalogV3
 from rule_reader.domain.rules.models import RuleParseResult
 from rule_reader.domain.rules.v2 import RuleParseResultV2
+from rule_reader.domain.rules.v3 import RuleStructureCandidateV3
 from rule_reader.domain.rules.versioned import RuleDocument, validate_rule_document
 
 # Runtime consumers must use the current handoff contract. V1 remains available only
@@ -11,11 +13,13 @@ from rule_reader.domain.rules.versioned import RuleDocument, validate_rule_docum
 FactBindingRequest = FactBindingRequestV2
 
 __all__ = [
+    "BusinessConfirmedFactCatalogV3",
     "FactBindingRequest",
     "FactBindingRequestV1",
     "FactBindingRequestV2",
     "RuleDocument",
     "RuleParseResult",
     "RuleParseResultV2",
+    "RuleStructureCandidateV3",
     "validate_rule_document",
 ]

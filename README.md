@@ -189,6 +189,41 @@ Schema 和样例由权威 Pydantic 模型确定性导出：
 .\.venv\Scripts\python.exe -m scripts.export_contract_schemas
 ```
 
+## Rule Schema 3.0 离线 Slice 1/2
+
+[REQ-20260902-01](docs/REQ-20260902-01-rule-contract-v3-agent2-ready-handoff.md) 的前两个切片新增：
+
+- [RuleStructureCandidateV3 JSON Schema](contracts/rule-structure-candidate-3.0.0.schema.json)；
+- [BusinessConfirmedFactCatalogV3 JSON Schema](contracts/business-confirmed-fact-catalog-3.0.0.schema.json)；
+- 对应的脱敏合法/非法样例位于 [contracts/examples](contracts/examples)。
+
+V3 当前只用于离线规则结构和确认事实目录，不替换生产 `rule-parser-v6` 或 Schema `2.0.0` 默认
+路径。可以对固定私有 bundle 执行只读、内存型复核：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.validate_report_release_v3_reference `
+    --reference-root 'C:\path\to\RuleDataReferences'
+```
+
+该命令只读提取 XLSX 确认原值、核对文档与 7 个视图哈希并构建内存对象，不写候选、不调用
+Provider/数据库，也不执行 SQL。加 `--candidate` 只向 stdout 输出规则结构 JSON。
+
+当前 `REPORT_RELEASE` 候选包含 14 项来源冲突/事实缺口；实际类型/枚举不被改写，
+不存在的 binding profile 不会被哈希伪造为确认引用。静态 Schema 与工程测试不等于真实候选通过
+RuleReader 校验或业务批准，最终证据见 [PROG-20260903](docs/PROG-20260903.md)。
+
+用户另行授权真实调用后，可使用最小 V3 单次入口：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.run_report_release_agent1_v3_once `
+    --reference-root 'C:\path\to\RuleDataReferences' --allow-provider
+```
+
+每次显式运行至多发送一个 DeepSeek 请求，不重试、不调用手工候选构建器、不生成测试案例、不写文件或
+数据库。System Prompt 精确来自 DEV-20260902-02 第 2 节，输入使用第 3.1 节动态模板。
+2026-09-03 唯一已授权调用被 5 处条件 ID 格式门禁拒绝，见
+[BUG-20260903-02](docs/BUG-20260903-02-agent1-v3-single-call-schema-rejection.md)；不得自动追加请求。
+
 ## 业务审核修订草稿的离线导出
 
 [REQ-20260827-01](docs/REQ-20260827-01-schema2-business-review-remediation.md) 的项目报告释放修订 profile 只能用模块方式执行本地校验和导出：

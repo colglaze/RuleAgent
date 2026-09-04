@@ -131,6 +131,36 @@ class DeepSeekChatModel(RuleCandidateModel):
         feedback: tuple[str, ...],
         previous_candidate: str | None,
     ) -> CandidateGeneration:
+        user_payload = {
+            "task": "将 ruleText 解析为严格符合 candidateSchema 的规则候选 JSON",
+            "candidateSchema": candidate_schema,
+            "fieldCatalog": field_catalog,
+            "retryFeedback": list(feedback),
+            "ruleText": text,
+        }
+        if previous_candidate is not None:
+            user_payload["previousCandidate"] = previous_candidate
+        return await self._generate_json_candidate(
+            system_prompt=SYSTEM_PROMPT, user_payload=user_payload
+        )
+
+    async def generate_rule_structure_v3(
+        self,
+        *,
+        system_prompt: str,
+        user_payload: dict[str, Any],
+    ) -> CandidateGeneration:
+        """Use the explicit V3 system/template without changing the V2 default."""
+        return await self._generate_json_candidate(
+            system_prompt=system_prompt, user_payload=user_payload
+        )
+
+    async def _generate_json_candidate(
+        self,
+        *,
+        system_prompt: str,
+        user_payload: dict[str, Any],
+    ) -> CandidateGeneration:
         if not self._is_configured():
             raise RuleParsingError(
                 ParseIssue(
@@ -149,19 +179,10 @@ class DeepSeekChatModel(RuleCandidateModel):
             )
 
         endpoint = f"{str(self._settings.deepseek_base_url).rstrip('/')}/chat/completions"
-        user_payload = {
-            "task": "将 ruleText 解析为严格符合 candidateSchema 的规则候选 JSON",
-            "candidateSchema": candidate_schema,
-            "fieldCatalog": field_catalog,
-            "retryFeedback": list(feedback),
-            "ruleText": text,
-        }
-        if previous_candidate is not None:
-            user_payload["previousCandidate"] = previous_candidate
         request_body = {
             "model": self._settings.deepseek_model,
             "messages": [
-                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "system", "content": system_prompt},
                 {
                     "role": "user",
                     "content": json.dumps(user_payload, ensure_ascii=False, separators=(",", ":")),

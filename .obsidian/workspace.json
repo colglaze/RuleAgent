@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/PRD.md",
+                "file": "project_release_double_agent_solution.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PRD"
+              "title": "project_release_double_agent_solution"
             }
           }
         ]
@@ -188,8 +188,10 @@
       "bases:新建数据库": false
     }
   },
-  "active": "be552bfa0c13a09a",
+  "active": "ef028b03760f8fda",
   "lastOpenFiles": [
+    "AGENTS.md",
+    "docs/PRD.md",
     "src/rule_reader/application/rule_versions/__pycache__/__init__.cpython-311.pyc",
     "src/rule_reader/application/rule_versions/__pycache__/ports.cpython-311.pyc",
     "src/rule_reader/application/rule_versions/__pycache__",
@@ -204,7 +206,6 @@
     "README.md",
     "tests/__pycache__/support.cpython-311.pyc",
     "tests/__pycache__/__init__.cpython-311.pyc",
-    "tests/__pycache__",
     "docs/DEV-20260818-02-rule-parser.md",
     "docs/BIZ-20260818-05-rule-json-version-mapping.md",
     "docs/REQ-20260818-03-rule-parser.md",
@@ -216,11 +217,9 @@
     "project_release_double_agent_solution.md",
     "docs/BIZ-20260818-03-python311-deepseek.md",
     "docs/BIZ-20260818-02-python-langgraph.md",
-    "AGENTS.md",
     "docs/BIZ-20260818-01-phase1-local-documents.md",
     "docs/REQ-20260818-01-vibe-coding-bootstrap.md",
     "docs/技术设计文档.md",
-    "docs/实施文档.md",
-    "docs/PRD.md"
+    "docs/实施文档.md"
   ]
 }

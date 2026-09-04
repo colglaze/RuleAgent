@@ -1,7 +1,7 @@
 # RuleReader 产品需求文档
 
-- 状态：`POST_PHASE_1_10_REMEDIATION_DRAFT_VALIDATED`
-- 更新日期：2026-08-27
+- 状态：`RULE_SCHEMA_V3_SLICE_1_2_IMPLEMENTED`
+- 更新日期：2026-09-03
 - 当前需求：[REQ-20260818-01](REQ-20260818-01-vibe-coding-bootstrap.md)
 - 后端骨架需求：[REQ-20260818-02](REQ-20260818-02-backend-skeleton.md)
 - 规则解析需求：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)
@@ -9,6 +9,7 @@
 - 规则契约 2.0 与事实交接需求：[REQ-20260819-01](REQ-20260819-01-rule-contract-v2-agent2-handoff.md)
 - MongoDB 不可变事实交接需求：[REQ-20260824-01](REQ-20260824-01-mongodb-fact-binding-handoff.md)
 - Schema 2.0 业务审核修订需求：[REQ-20260827-01](REQ-20260827-01-schema2-business-review-remediation.md)
+- Rule Schema 3.0 需求：[REQ-20260902-01](REQ-20260902-01-rule-contract-v3-agent2-ready-handoff.md)
 - 当前范围决策：[BIZ-20260818-01](BIZ-20260818-01-phase1-local-documents.md)
 - 技术栈决策：[BIZ-20260818-02](BIZ-20260818-02-python-langgraph.md)
 - 运行时与模型决策：[BIZ-20260818-03](BIZ-20260818-03-python311-deepseek.md)
@@ -122,6 +123,22 @@ RuleReader 的长期目标是把业务释放规则转换为可版本化、可审
 - HTTP 和 CLI 可接受显式幂等键。同一服务进程内，同键同解析身份合并在途调用并精确重放成功结果；同键异身份必须在调用 Provider 前冲突失败。
 - 原始幂等键、来源正文、Prompt、API Key 和连接串不得进入日志或审计；只允许保存幂等键 SHA-256。
 - 进程内幂等不承诺跨进程、跨 worker 或跨重启一致性，也不新增 MongoDB 审计或幂等集合。
+
+### FR-13 Rule Schema 3.0 离线结构与确认事实目录
+
+- 项目报告与原始数据规则使用独立规则集；V3 规则结构原生表达状态守卫、前置条件、有序 eligibility、
+  后置门禁、排除条件、受控 outcome 和默认结果。
+- `RuleStructureCandidateV3` 只包含规则结构、确认事实编码引用、原因、建议及显式阻断；不包含测试
+  案例、规则版本、Parser 元数据、物理映射、发布或执行状态。
+- `BusinessConfirmedFactCatalogV3` 以不可变 ID、版本、canonical digest、参数角色、值域、空值契约、
+  binding profile 引用和证据约束模型自由度。
+- binding profile 尚未提供时，逻辑事实保留确认来源而 bindingProfileRef 为空并附 bindingIssues，
+  不合成批准引用。目录元数据不由规则结构候选输出。
+- 第 1.3 节以外的附件内容不进入规则块；7 个视图仅作实现证据，SQL 不执行也不进入候选。
+- 缺少确认事实时使用 blocked 节点、`blockingIssues` 和 `proposedFacts`，不得伪造 confirmed 条件。
+- Slice 1/2 只提供离线领域能力与静态 Schema；运行时默认、V1/V2 历史对象、MongoDB 和现有交接均不变。
+- 后续单独授权的 REPORT_RELEASE / ruleStructure 显式命令允许 1 至 3 次共享预算的内存纠错；
+  默认仍为 1 次，业务确认缺口优先停止，失败候选不落盘，且不切换 V2 默认入口。
 
 ## 5. 非功能要求
 
