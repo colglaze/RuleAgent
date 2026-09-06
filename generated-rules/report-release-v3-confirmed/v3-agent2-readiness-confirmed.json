@@ -1,0 +1,109 @@
+{
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "ready": true,
+  "selectedPath": "B",
+  "blockingCount": 0,
+  "countsByCode": {},
+  "gaps": [],
+  "gates": [
+    {
+      "gate": 1,
+      "name": "immutableRuleVersion",
+      "result": "pass",
+      "evidence": "Immutable rule version closes to source and catalog identity."
+    },
+    {
+      "gate": 2,
+      "name": "noBusinessBlocking",
+      "result": "pass",
+      "evidence": "No blocking issues remain."
+    },
+    {
+      "gate": 3,
+      "name": "requiredFactsComplete",
+      "result": "pass",
+      "evidence": "All required facts have confirmed contracts."
+    },
+    {
+      "gate": 4,
+      "name": "oneRequestPerAtomicFact",
+      "result": "pass",
+      "evidence": "One request per non-derived fact with closed identity."
+    },
+    {
+      "gate": 5,
+      "name": "derivedFactsExcluded",
+      "result": "pass",
+      "evidence": "Fact kinds are assigned and no derived fact is declared."
+    },
+    {
+      "gate": 6,
+      "name": "entityGrainKeys",
+      "result": "pass",
+      "evidence": "Every referenced fact declares grain and entity key."
+    },
+    {
+      "gate": 7,
+      "name": "stableFields",
+      "result": "pass",
+      "evidence": "Every fact declaration carries stable field requirements."
+    },
+    {
+      "gate": 8,
+      "name": "filtersComplete",
+      "result": "pass",
+      "evidence": "Filter sets are complete on every fact declaration."
+    },
+    {
+      "gate": 9,
+      "name": "filterSemantics",
+      "result": "pass",
+      "evidence": "Filter values and null policies are resolved on every fact."
+    },
+    {
+      "gate": 10,
+      "name": "aggregationComplete",
+      "result": "pass",
+      "evidence": "Aggregation semantics are explicit on every fact declaration."
+    },
+    {
+      "gate": 11,
+      "name": "timeRangeComplete",
+      "result": "pass",
+      "evidence": "Time range semantics are explicit on every fact declaration."
+    },
+    {
+      "gate": 12,
+      "name": "scalarResult",
+      "result": "pass",
+      "evidence": "Scalar fact_value results are declared on every fact."
+    },
+    {
+      "gate": 13,
+      "name": "stableConditionUsage",
+      "result": "pass",
+      "evidence": "Every rule carries an active condition."
+    },
+    {
+      "gate": 14,
+      "name": "evidenceClosure",
+      "result": "pass",
+      "evidence": "Every referenced fact closes to catalog evidence."
+    },
+    {
+      "gate": 15,
+      "name": "provenanceComplete",
+      "result": "pass",
+      "evidence": "Source/catalog hashes close."
+    },
+    {
+      "gate": 16,
+      "name": "candidateNonExecutable",
+      "result": "pass",
+      "evidence": "Executable is false."
+    }
+  ],
+  "plannedRuleVersions": 0,
+  "plannedHandoffs": 0,
+  "requiresSqlbotContractUpgrade": true
+}

@@ -8,7 +8,10 @@ from pymongo import AsyncMongoClient
 from pymongo.asynchronous.database import AsyncDatabase
 
 from rule_reader.core.config import Settings
-from rule_reader.infrastructure.migrations import apply_migrations
+from rule_reader.infrastructure.migrations import (
+    RUNTIME_SCHEMA_VERSION,
+    apply_migrations,
+)
 
 Document = dict[str, Any]
 
@@ -62,9 +65,9 @@ class MongoManager:
                 "MongoDB is unavailable; check RULEREADER_MONGODB_URI and the container"
             ) from error
 
-    async def initialize(self) -> int:
+    async def initialize(self, target_version: int = RUNTIME_SCHEMA_VERSION) -> int:
         try:
-            return await apply_migrations(self.database)
+            return await apply_migrations(self.database, target_version=target_version)
         except Exception as error:
             raise MongoStartupError("MongoDB schema initialization failed") from error
 

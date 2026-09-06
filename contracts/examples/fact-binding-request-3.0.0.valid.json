@@ -1,0 +1,196 @@
+{
+  "contractVersion": "3.0.0",
+  "evidence": [
+    {
+      "evidenceId": "fact.declaration",
+      "kind": "factDeclaration",
+      "sourceDocument": "catalog",
+      "sourcePath": "/facts/0"
+    },
+    {
+      "evidenceId": "query.contract",
+      "kind": "queryRequirement",
+      "sourceDocument": "ruleResult",
+      "sourcePath": "/factDeclarations/0/query"
+    },
+    {
+      "evidenceId": "condition.usage",
+      "kind": "conditionUsage",
+      "sourceDocument": "candidate",
+      "sourcePath": "/stages/1/rules/0/when"
+    },
+    {
+      "evidenceId": "example.ready",
+      "kind": "example",
+      "sourceDocument": "ruleResult",
+      "sourcePath": "/testCases/0"
+    }
+  ],
+  "examples": [
+    {
+      "evidenceIds": [
+        "example.ready"
+      ],
+      "exampleId": "status-ready",
+      "expectedOutcome": "READY",
+      "value": "READY"
+    }
+  ],
+  "executable": false,
+  "fact": {
+    "allowedValues": [
+      "READY",
+      "CLOSED"
+    ],
+    "dataType": "string",
+    "description": "按任务返回一个状态代码。",
+    "factCode": "task.status_code",
+    "factKind": "source",
+    "grain": "task",
+    "name": "合成任务状态",
+    "nullPolicy": "error",
+    "nullable": false,
+    "parameters": [
+      {
+        "dataType": "string",
+        "description": "任务标识。",
+        "name": "taskId",
+        "required": true,
+        "role": "entityKey"
+      }
+    ],
+    "unit": null
+  },
+  "mappingCandidate": {
+    "factCode": "task.status_code",
+    "mappingStatus": "unresolved",
+    "note": "物理来源由 metadataReview 解析。",
+    "reviewStatus": "candidate",
+    "viewActive": null,
+    "viewField": null,
+    "viewName": null
+  },
+  "provenance": {
+    "model": "synthetic-author",
+    "parserVersion": "0.11.0",
+    "promptVersion": "rule-structure-v3.1",
+    "provider": "reviewed_import",
+    "relativePath": "examples/synthetic-ordered-rule.md",
+    "sourceCharacterCount": 100,
+    "sourceName": "synthetic-ordered-rule.md",
+    "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "queryRequirements": {
+    "aggregation": {
+      "distinct": null,
+      "evidenceIds": [
+        "query.contract"
+      ],
+      "function": null,
+      "groupByFieldIds": [],
+      "inputFieldIds": [],
+      "mode": "none"
+    },
+    "entity": {
+      "entityType": "task",
+      "evidenceIds": [
+        "fact.declaration",
+        "query.contract"
+      ],
+      "grain": "task",
+      "keyParameters": [
+        "taskId"
+      ]
+    },
+    "fields": [
+      {
+        "dataType": "string",
+        "evidenceIds": [
+          "fact.declaration",
+          "query.contract"
+        ],
+        "fieldId": "factValue",
+        "logicalName": "task.status_code",
+        "required": true,
+        "role": "value"
+      },
+      {
+        "dataType": "string",
+        "evidenceIds": [
+          "query.contract"
+        ],
+        "fieldId": "parameter.taskId",
+        "logicalName": "taskId",
+        "required": true,
+        "role": "entityKey"
+      }
+    ],
+    "filters": {
+      "completeness": "complete",
+      "evidenceIds": [
+        "query.contract"
+      ],
+      "items": [
+        {
+          "evidenceIds": [
+            "query.contract"
+          ],
+          "fieldId": "parameter.taskId",
+          "filterId": "task.key",
+          "nullPolicy": "error",
+          "operator": "eq",
+          "required": true,
+          "value": {
+            "kind": "parameter",
+            "parameterName": "taskId"
+          }
+        }
+      ]
+    },
+    "result": {
+      "cardinality": "scalar",
+      "columnName": "fact_value",
+      "dataType": "string",
+      "nullPolicy": "error",
+      "nullable": false,
+      "unit": null
+    },
+    "timeRange": {
+      "end": null,
+      "evidenceIds": [
+        "query.contract"
+      ],
+      "mode": "none",
+      "start": null,
+      "timeFieldId": null,
+      "timezone": null
+    }
+  },
+  "requestId": "SYNTHETIC_REPORT_RELEASE@20260905T000000000000Z-111111111111-222222222222#task.status_code",
+  "requiresMetadataSnapshot": true,
+  "ruleRef": {
+    "candidatePayloadSha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "catalogDigest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "ruleSetId": "SYNTHETIC_REPORT_RELEASE",
+    "ruleVersion": "SYNTHETIC_REPORT_RELEASE@20260905T000000000000Z-111111111111-222222222222",
+    "schemaVersion": "3.0.0",
+    "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "status": "candidate",
+  "targetDialect": "sqlserver",
+  "tempTableAllowed": false,
+  "uncertainties": [],
+  "usages": [
+    {
+      "conditionId": "state-check",
+      "conditionPath": "/stages/1/rules/0/when",
+      "evidenceIds": [
+        "condition.usage"
+      ],
+      "outcome": "WAITING_CONDITIONS",
+      "priority": 10,
+      "ruleCode": "STATE_CHECK",
+      "stage": "prerequisites"
+    }
+  ]
+}

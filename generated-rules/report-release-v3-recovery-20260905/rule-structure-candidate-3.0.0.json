@@ -1,0 +1,681 @@
+{
+  "contractVersion": "3.0.0",
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "title": "有序项目报告释放规则",
+  "scope": "OA 正式实验任务单项目报告释放；按前提和 R0/R1/R9/R4/R2/R3/R8/R5/R6/R7 顺序。",
+  "catalogId": "REPORT_RELEASE_CONFIRMED_FACTS",
+  "catalogVersion": "2026-09-05.1",
+  "catalogDigest": "f2bf1c99d27c379559fff1e0311ffa8a202759ce466be6262a5611dc28c8518d",
+  "sourceViews": [
+    "v_sendreport_trigger",
+    "v_ReportReleaseSealCondition",
+    "v_OrderFormaltestsettlement",
+    "v_ReportDataReleaseRules"
+  ],
+  "requiredFactCodes": [
+    "task.experiment_status_code",
+    "task.project_report_flag",
+    "task.qc_report_flag"
+  ],
+  "stages": [
+    {
+      "stage": "stateGuards",
+      "rules": [
+        {
+          "ruleCode": "REPORT_STATUS_TERMINAL",
+          "priority": 10,
+          "title": "释放状态表终态检查",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "释放状态表终态检查缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "release.status"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "prerequisites",
+      "rules": [
+        {
+          "ruleCode": "TASK_NOT_COMPLETED",
+          "priority": 10,
+          "title": "任务尚未完工",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "任务尚未完工缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "task.status.code"
+          ]
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+          "priority": 20,
+          "title": "失败导致线下确认收入",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-offline",
+            "kind": "compare",
+            "description": "experiment status offline",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "2",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_OFFLINE_MATCHED",
+          "failureReason": "失败导致线下确认收入。",
+          "recommendations": [
+            "按有序来源核对对应任务状态。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+          "priority": 30,
+          "title": "问题项目无需释放",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-problem",
+            "kind": "compare",
+            "description": "experiment status problem",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "7",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_PROBLEM_MATCHED",
+          "failureReason": "问题项目无需释放。",
+          "recommendations": [
+            "按有序来源核对对应任务状态。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "OFFLINE_REPORT_RELEASED",
+          "priority": 40,
+          "title": "项目报告已线下释放",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "项目报告已线下释放缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "task.offline.code"
+          ]
+        },
+        {
+          "ruleCode": "NO_PROJECT_REPORT",
+          "priority": 50,
+          "title": "任务无需项目报告",
+          "status": "active",
+          "when": {
+            "id": "no-project-report",
+            "kind": "all",
+            "description": "no project report",
+            "enabled": true,
+            "children": [
+              {
+                "id": "project-report-absent",
+                "kind": "compare",
+                "description": "project report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.project_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": "1",
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "qc-report-absent",
+                "kind": "compare",
+                "description": "qc report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.qc_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": "1",
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "NO_PROJECT_REPORT_MATCHED",
+          "failureReason": "任务无需项目报告。",
+          "recommendations": [
+            "按有序来源核对对应任务状态。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+          "priority": 60,
+          "title": "有无项目报告待定",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "有无项目报告待定缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "report.availability.other"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "eligibility",
+      "rules": [
+        {
+          "ruleCode": "R0_ZERO_ORDER",
+          "priority": 10,
+          "title": "R0 0元订单",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R0 0元订单缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r0"
+          ]
+        },
+        {
+          "ruleCode": "R1_SPECIAL_APPROVAL",
+          "priority": 20,
+          "title": "R1 特殊申请已审批",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R1 特殊申请已审批缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r1"
+          ]
+        },
+        {
+          "ruleCode": "R9_BATCH_RELEASE",
+          "priority": 30,
+          "title": "R9 标记批量释放",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R9 标记批量释放缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r9"
+          ]
+        },
+        {
+          "ruleCode": "R4_RAW_DATA_RELEASED",
+          "priority": 40,
+          "title": "R4 原始数据已释放",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R4 原始数据已释放缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r4"
+          ]
+        },
+        {
+          "ruleCode": "R2_OVERSEAS_ORDER",
+          "priority": 50,
+          "title": "R2 海外业务订单",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R2 海外业务订单缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r2"
+          ]
+        },
+        {
+          "ruleCode": "R3_SPECIAL_PRODUCT",
+          "priority": 60,
+          "title": "R3 特殊产品",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R3 特殊产品缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r3"
+          ]
+        },
+        {
+          "ruleCode": "R8_TIME_TRIGGER",
+          "priority": 70,
+          "title": "R8 完工时间触发",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R8 完工时间触发缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r8"
+          ]
+        },
+        {
+          "ruleCode": "R5_ENTERPRISE",
+          "priority": 80,
+          "title": "R5 非框架企业单位",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R5 非框架企业单位缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r5"
+          ]
+        },
+        {
+          "ruleCode": "R6_NON_ENTERPRISE",
+          "priority": 90,
+          "title": "R6 非框架非企业单位",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R6 非框架非企业单位缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r6"
+          ]
+        },
+        {
+          "ruleCode": "R7_FRAMEWORK",
+          "priority": 100,
+          "title": "R7 框架协议",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "R7 框架协议缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "rule.r7"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "postGates",
+      "rules": [
+        {
+          "ruleCode": "MERGED_REPORT_GATE",
+          "priority": 10,
+          "title": "合并报告组全部满足",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "合并报告组全部满足缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "report.merge"
+          ]
+        }
+      ]
+    },
+    {
+      "stage": "exclusions",
+      "rules": [
+        {
+          "ruleCode": "OA_PROCESS_SCOPE",
+          "priority": 10,
+          "title": "任务必须位于OA流程",
+          "status": "blocked",
+          "when": null,
+          "outcome": null,
+          "reasonCode": null,
+          "failureReason": "任务必须位于OA流程缺少无冲突的确认事实契约。",
+          "recommendations": [
+            "保留来源差异并完成业务事实确认。"
+          ],
+          "blockingIssueIds": [
+            "task.oa.scope"
+          ]
+        }
+      ]
+    }
+  ],
+  "defaultOutcome": "WAITING_CONDITIONS",
+  "defaultReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+  "blockingIssues": [
+    {
+      "issueId": "release.status",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 release.status 尚不能构造 active 条件。",
+      "factCodes": [
+        "report.release_status"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "task.status.code",
+      "code": "SOURCE_VALUE_CONFLICT",
+      "message": "有序规则节点 task.status.code 尚不能构造 active 条件。",
+      "factCodes": [
+        "task.status_code"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "task.offline.code",
+      "code": "SOURCE_VALUE_CONFLICT",
+      "message": "有序规则节点 task.offline.code 尚不能构造 active 条件。",
+      "factCodes": [
+        "task.offline_report_release_flag"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "report.availability.other",
+      "code": "SOURCE_BRANCH_UNREACHABLE_WITH_CONFIRMED_ENUM",
+      "message": "有序规则节点 report.availability.other 尚不能构造 active 条件。",
+      "factCodes": [
+        "task.project_report_flag",
+        "task.qc_report_flag"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r0",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r0 尚不能构造 active 条件。",
+      "factCodes": [
+        "order.amount"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r1",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r1 尚不能构造 active 条件。",
+      "factCodes": [
+        "release.special_application_count"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r9",
+      "code": "SOURCE_VALUE_CONFLICT",
+      "message": "有序规则节点 rule.r9 尚不能构造 active 条件。",
+      "factCodes": [
+        "task.batch_report_release_flag"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r4",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r4 尚不能构造 active 条件。",
+      "factCodes": [
+        "release.raw_data_released_after_cutoff"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r2",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r2 尚不能构造 active 条件。",
+      "factCodes": [
+        "order.source_code"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r3",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r3 尚不能构造 active 条件。",
+      "factCodes": [
+        "product.special_product_flag"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r8",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r8 尚不能构造 active 条件。",
+      "factCodes": [
+        "release.timed_release_eligible"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r5",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r5 尚不能构造 active 条件。",
+      "factCodes": [
+        "order.enterprise_non_framework_full_payment_eligible"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r6",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r6 尚不能构造 active 条件。",
+      "factCodes": [
+        "order.non_enterprise_release_eligible"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "rule.r7",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 rule.r7 尚不能构造 active 条件。",
+      "factCodes": [
+        "order.framework_release_eligible"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "report.merge",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 report.merge 尚不能构造 active 条件。",
+      "factCodes": [
+        "report.merge_group_eligible"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    },
+    {
+      "issueId": "task.oa.scope",
+      "code": "BUSINESS_FACT_MISSING",
+      "message": "有序规则节点 task.oa.scope 尚不能构造 active 条件。",
+      "factCodes": [
+        "task.in_oa_process"
+      ],
+      "resolutionHint": "确认逻辑事实的类型、值域、粒度、参数和来源差异。"
+    }
+  ],
+  "proposedFacts": [
+    {
+      "factCode": "report.release_status",
+      "name": "report.release_status",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "order.amount",
+      "name": "order.amount",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "release.special_application_count",
+      "name": "release.special_application_count",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "release.raw_data_released_after_cutoff",
+      "name": "release.raw_data_released_after_cutoff",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "order.source_code",
+      "name": "order.source_code",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "product.special_product_flag",
+      "name": "product.special_product_flag",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "release.timed_release_eligible",
+      "name": "release.timed_release_eligible",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "order.enterprise_non_framework_full_payment_eligible",
+      "name": "order.enterprise_non_framework_full_payment_eligible",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "order.non_enterprise_release_eligible",
+      "name": "order.non_enterprise_release_eligible",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "order.framework_release_eligible",
+      "name": "order.framework_release_eligible",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "report.merge_group_eligible",
+      "name": "report.merge_group_eligible",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    },
+    {
+      "factCode": "task.in_oa_process",
+      "name": "task.in_oa_process",
+      "dataTypeHint": null,
+      "reason": "有序规则引用该概念，但确认目录中尚无完整契约。",
+      "sourceLocator": "ordered-report-release-v2.0"
+    }
+  ]
+}

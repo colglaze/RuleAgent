@@ -2,6 +2,7 @@
 
 from rule_reader.domain.rules.bindings import FactBindingRequestV1
 from rule_reader.domain.rules.bindings_v2 import FactBindingRequestV2
+from rule_reader.domain.rules.bindings_v3 import FactBindingRequestV3
 from rule_reader.domain.rules.catalog_v3 import BusinessConfirmedFactCatalogV3
 from rule_reader.domain.rules.models import RuleParseResult
 from rule_reader.domain.rules.v2 import RuleParseResultV2
@@ -17,6 +18,7 @@ __all__ = [
     "FactBindingRequest",
     "FactBindingRequestV1",
     "FactBindingRequestV2",
+    "FactBindingRequestV3",
     "RuleDocument",
     "RuleParseResult",
     "RuleParseResultV2",

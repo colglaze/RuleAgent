@@ -96,7 +96,7 @@
 - 未经当前 `REQ` 要求，不新增数据库、消息队列、缓存、容器编排或独立服务。
 - FastAPI lifespan 统一持有和释放 MongoDB 等进程级资源；禁止在模块导入、请求处理器或领域代码中临时创建数据库 Client。
 - 配置只能通过集中 Settings 对象读取；API、日志和 CLI 不得输出完整 MongoDB URI 或 DeepSeek Key。
-- MongoDB migration 必须版本化、幂等且 fail-fast；当前只允许创建 `schema_migrations`、`app_metadata`、[REQ-20260818-04](docs/REQ-20260818-04-rule-version-persistence.md) 的 `rule_versions` 和 [REQ-20260824-01](docs/REQ-20260824-01-mongodb-fact-binding-handoff.md) 的 `fact_binding_handoffs`，不得借此扩展正式规则库、事实注册中心或 SqlBot 自有集合。
+- MongoDB migration 必须版本化、幂等且 fail-fast；当前只允许创建 `schema_migrations`、`app_metadata`、[REQ-20260818-04](docs/REQ-20260818-04-rule-version-persistence.md) 的 `rule_versions`、[REQ-20260824-01](docs/REQ-20260824-01-mongodb-fact-binding-handoff.md) 的 `fact_binding_handoffs`、[REQ-20260905-01](docs/REQ-20260905-01-v3-mongodb-recovery.md) 的 `rule_structure_candidates_v3`，以及 [REQ-20260906-01](docs/REQ-20260906-01-v3-mongodb-persistence.md) 的 `rule_versions_v3` 和 `fact_binding_handoff_batches_v3`。V3 集合只保存不可执行候选恢复记录和待审核、不可执行的 V3 草稿版本与单文档交接 batch，不得借此扩展正式规则库、事实注册中心或 SqlBot 自有集合。
 
 ## 7. 规则解析 Agent 的工程边界
 

@@ -1,0 +1,14 @@
+{
+  "bundleId": "PROJECT_RELEASE_REFERENCE_20260901_001",
+  "workbookSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+  "ruleBlockSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+  "catalogDigest": "f2bf1c99d27c379559fff1e0311ffa8a202759ce466be6262a5611dc28c8518d",
+  "ruleCount": 19,
+  "activeRuleCount": 3,
+  "blockedRuleCount": 16,
+  "authority": "userConfirmedOrderedV3Source",
+  "status": "validatedBlockedCandidate",
+  "executable": false,
+  "catalogFileSha256": "d43077aa37d0d113f4373e69949d7207e963755d6cc5e25e4c106605758e60d0",
+  "candidateFileSha256": "47f363ce44d02ce4d2bb8026243d7752008b38053073c8057166c3c0d1aaa53f"
+}

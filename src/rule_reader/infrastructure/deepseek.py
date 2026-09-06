@@ -76,6 +76,30 @@ SYSTEM_PROMPT = "\n".join(
             "factKind=exists 的事实，再用 compare 的 left/operator/right 比较，禁止 condition "
             "kind=exists，禁止在条件节点使用 value。"
         ),
+        (
+            "10b. 判空语义必须使用一元 operator（isNull、isNotNull、isBlank、"
+            "isNotBlank），且该 compare 节点禁止携带 right；literal 的 value 只能是"
+            "非 null 的字符串、数字、布尔或其数组，禁止 null、空对象或包含 null 的"
+            "数组；表达值为空一律使用一元判空操作符，禁止把 null 写入 value。"
+        ),
+        (
+            "10c. requiredFacts 中每个 factCode 必须进入引用闭包：要么被 rootCondition "
+            "某个 compare 的 left 或 right 直接引用，要么作为已被引用的 derived 事实 "
+            "derivation 的依赖；只在测试案例或描述里出现、未被条件闭包引用的事实必须"
+            "删除，或接入条件树。"
+        ),
+        (
+            "10d. 日期与时间边界必须比较两个日期类型表达式：声明一个 dataType=date 的"
+            "当前日期事实（factCode 如 runtime.current_date，factKind=source 且带真实"
+            "查询参数），用 compare 的 eq 让它与 dateAdd(日期事实, 整数字面量, day) "
+            "直接比较；日期表达式禁止与数字或字符串字面量比较，整数字面量只能用于"
+            "数值比较。"
+        ),
+        (
+            "10e. 每个测试案例的 given 必须为该案例经过的条件路径引用到的全部事实提供"
+            "与 dataType 一致的确定值，遗漏或写 null 都会使解释器判定 indeterminate；"
+            "expected 必须等于解释器对这些值的确定性求值结果。"
+        ),
         "11. 不生成 SQL、数据库连接串、账号、密码、元数据快照或任何可执行查询文本。",
         "12. 不生成版本、时间、哈希、状态、executable 或 Parser 元数据。",
         (

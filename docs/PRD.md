@@ -1,7 +1,7 @@
 # RuleReader 产品需求文档
 
-- 状态：`RULE_SCHEMA_V3_SLICE_1_2_IMPLEMENTED`
-- 更新日期：2026-09-03
+- 状态：`RULE_SCHEMA_V3_PERSISTENCE_IMPLEMENTED_OFFLINE`
+- 更新日期：2026-09-06
 - 当前需求：[REQ-20260818-01](REQ-20260818-01-vibe-coding-bootstrap.md)
 - 后端骨架需求：[REQ-20260818-02](REQ-20260818-02-backend-skeleton.md)
 - 规则解析需求：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)
@@ -10,6 +10,12 @@
 - MongoDB 不可变事实交接需求：[REQ-20260824-01](REQ-20260824-01-mongodb-fact-binding-handoff.md)
 - Schema 2.0 业务审核修订需求：[REQ-20260827-01](REQ-20260827-01-schema2-business-review-remediation.md)
 - Rule Schema 3.0 需求：[REQ-20260902-01](REQ-20260902-01-rule-contract-v3-agent2-ready-handoff.md)
+- V3 Agent 2 readiness 需求：[REQ-20260905-02](REQ-20260905-02-v3-agent2-handoff-readiness.md)
+- V3 MongoDB Schema v5 持久化需求：[REQ-20260906-01](REQ-20260906-01-v3-mongodb-persistence.md)
+- V3 blocking 业务确认：[BIZ-20260906-01](BIZ-20260906-01-v3-blocker-business-confirmation.md)
+- V3 持久化业务决策：[BIZ-20260906-02](BIZ-20260906-02-v3-mongodb-persistence.md)
+- V3 Slice 3-6 技术方案：[DEV-20260906-01](DEV-20260906-01-rule-parse-result-v3.md)
+- V3 Schema v5 技术方案：[DEV-20260906-02](DEV-20260906-02-v3-mongodb-persistence.md)
 - 当前范围决策：[BIZ-20260818-01](BIZ-20260818-01-phase1-local-documents.md)
 - 技术栈决策：[BIZ-20260818-02](BIZ-20260818-02-python-langgraph.md)
 - 运行时与模型决策：[BIZ-20260818-03](BIZ-20260818-03-python311-deepseek.md)
@@ -140,13 +146,49 @@ RuleReader 的长期目标是把业务释放规则转换为可版本化、可审
 - 后续单独授权的 REPORT_RELEASE / ruleStructure 显式命令允许 1 至 3 次共享预算的内存纠错；
   默认仍为 1 次，业务确认缺口优先停止，失败候选不落盘，且不切换 V2 默认入口。
 
+### FR-14 V3 候选换机恢复
+
+- 用户可把固定私有 bundle 重建并校验通过的 V3 catalog/candidate 作为不可执行候选保存到独立
+  `rule_structure_candidates_v3`。
+- V3 恢复记录不得进入 V1/V2 `rule_versions` 或 V2 `fact_binding_handoffs`；blocking 原样保留。
+- 保存必须 insert-only、同内容幂等、异内容冲突，并支持按确定性 candidate ID 精确回读验证。
+
+### FR-15 V3 离线完整结果与 Agent 2 readiness
+
+- 业务确认后的 confirmed profile 必须确定性生成一个待审核、不可执行的 `RuleParseResultV3`，并
+  保持 source、Parser/Prompt、catalog、candidate、事实声明和测试案例闭包。
+- 每个非派生事实导出一条 `FactBindingRequest 3.0.0`；请求必须保留稳定规则引用、条件用法、
+  query requirements 与证据，物理 mapping 未获 metadata owner 批准时保持 unresolved。
+- readiness 的 16 条门禁必须从实际 result/requests 推导；存在 blocking、引用不闭包或契约不合法时
+  不得报告 ready。当前 confirmed profile 为 19 个 active 规则节点、18 条请求、16/16 pass。
+- 本切片只生成调用方指定私有目录中的离线产物，不写 MongoDB、不调用 DeepSeek/SQL Server、
+  不生成 SQL、不修改 SqlBot，也不把 draft 标记为可执行或已发布。
+
+### FR-16 V3 交付的 MongoDB Schema v5 持久化
+
+- Schema v5 新增且仅新增 `rule_versions_v3` 与 `fact_binding_handoff_batches_v3`；migration 幂等、
+  支持并发初始化，不修改 V1/V2 集合与 `rule_structure_candidates_v3` 的历史记录。普通服务启动与
+  `rule-reader init-db` 默认只迁移到运行时 Schema v4；仅 V3 持久化脚本在产物校验通过后显式请求
+  v5，且不降级、不重写已应用的 migration。
+- `rule_versions_v3` 每个 ruleVersion 一个不可变文档，保存完整 camelCase `RuleParseResultV3`
+  payload、canonical SHA-256 和 `draft/executable=false` 状态；V3 交接 batch 把一个 ruleVersion
+  的全部 `FactBindingRequest 3.0.0` wrapper 保存为单个 MongoDB 文档。
+- 写入前必须一次性完成 blocking、readiness 16/16、source/catalog/candidate hash 闭包、请求身份
+  与数量门禁；写入后精确回读并复核三个历史集合的文档数量不变，回读拒绝乱序 wrapper、重复
+  request ID/factCode 与 naive 时间。
+- 保存只能 insert-only：相同内容幂等并保留首次时间，不同内容哈希冲突不覆盖；PyMongo 错误转换为
+  不泄露 URI、凭据或业务正文的稳定应用错误。
+- 持久化入口只有显式授权的离线脚本 `scripts/persist_report_release_v3_delivery.py`，不新增
+  HTTP endpoint；脚本以冻结的 manifest 自身 SHA-256 为信任锚，只接受唯一获批的 ruleVersion 与
+  18 条请求，不提供绕过参数；执行真实写入仍需用户单独授权。
+
 ## 5. 非功能要求
 
 - 安全失败：模型超时、限流、空响应、非法 JSON 或校验失败时，不产生有效规则草稿。
 - 可测试：默认测试不调用真实网络或模型，模型交互可被测试替身替换。
 - 可互操作：事实绑定样例同时通过 Pydantic 和独立 Draft 2020-12 validator；Schema 生成物与领域模型差异必须由测试发现。
 - 可复核：同一解析结果能够定位到准确的源文件内容和解析版本。
-- 最小依赖：第一阶段只允许 MongoDB 连接、Schema migration、显式草稿版本归档、任务专属 REQ 授权的不可变事实交接，以及 [REQ-20260827-02](REQ-20260827-02-deepseek-retry-audit-idempotency.md) 授权的有界进程内幂等缓存；不引入外部/共享缓存、消息队列、向量库或 Wiki SDK。
+- 最小依赖：第一阶段只允许 MongoDB 连接、Schema migration、显式草稿版本归档、任务专属 REQ 授权的不可变事实交接，以及 [REQ-20260827-02](REQ-20260827-02-deepseek-retry-audit-idempotency.md) 授权的有界进程内幂等缓存；[REQ-20260906-01](REQ-20260906-01-v3-mongodb-persistence.md) 授权的 V3 规则版本与单文档交接 batch 集合属于同一 MongoDB 基础设施。不引入外部/共享缓存、消息队列、向量库或 Wiki SDK。
 - 数据安全：配置、日志和测试夹具不得包含密钥或未脱敏业务数据。
 - 技术约束：应用与测试使用 Python `3.11.9`，Agent 工作流使用 LangGraph，模型供应商使用 DeepSeek；领域规则与确定性校验保持框架和供应商无关。
 

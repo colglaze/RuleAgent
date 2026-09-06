@@ -37,6 +37,22 @@ class RuleCandidateModel(Protocol):
     ) -> CandidateGeneration: ...
 
 
+class RuleStructureModelV3(Protocol):
+    @property
+    def model_name(self) -> str: ...
+
+    async def start(self) -> None: ...
+
+    async def close(self) -> None: ...
+
+    async def generate_rule_structure_v3(
+        self,
+        *,
+        system_prompt: str,
+        user_payload: dict[str, Any],
+    ) -> CandidateGeneration: ...
+
+
 class RuleParserLifecycle(Protocol):
     async def start(self) -> None: ...
 

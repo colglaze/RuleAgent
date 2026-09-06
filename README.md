@@ -1,6 +1,6 @@
 # RuleReader
 
-RuleReader 当前版本为 `0.10.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块；真实 Provider 候选无法通过门禁时，只有用户明确授权的离线 `reviewed_import` 才能导入指定候选，且不得冒充 DeepSeek 输出。
+RuleReader 当前版本为 `0.12.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块；真实 Provider 候选无法通过门禁时，只有用户明确授权的离线 `reviewed_import` 才能导入指定候选，且不得冒充 DeepSeek 输出。
 
 新解析结果使用 Schema `2.0.0`，以结构化表达式保留公式、分支、派生事实和日期计算，并由确定性解释器执行测试案例。结果始终是带版本和来源信息的待审核 JSON 草稿，不会发布或执行规则。用户可以显式把草稿归档为不可变 MongoDB 版本；默认试解析不写数据库，归档也不代表已审批。
 
@@ -69,7 +69,12 @@ RULEREADER_DOCUMENT_ROOT=C:\path\to\rule-documents
 
 默认地址为 `http://127.0.0.1:8000`，Swagger 位于 `/docs`。健康检查为 `/health/live` 和 `/health/ready`。
 
-当前数据库 Schema 为 v3：`rule_versions` 保存不可变草稿，`fact_binding_handoffs` 保存 RuleReader 所有、SqlBot 只读的不可变事实交接；`init-db` 可从空库、v1 或 v2 幂等升级。
+普通服务和 `init-db` 的运行时 Schema 为 v4：`rule_versions` 保存 V1/V2 不可变草稿，
+`fact_binding_handoffs` 保存 RuleReader 所有、SqlBot 只读的 V2 事实交接，`rule_structure_candidates_v3`
+保存不可执行的 V3 恢复候选；`init-db` 可从空库或旧 Schema 幂等升级，但默认只到 v4。代码中已实现
+Schema v5 的 `rule_versions_v3` 与 `fact_binding_handoff_batches_v3`，只有显式授权的 V3 持久化
+脚本会请求 v5；本轮验收修订未访问 MongoDB，最新文档证据为 2026-09-05 的 Schema v4 与一条
+V3 recovery 记录，实时状态未重新确认。
 
 ## 解析规则文本
 
@@ -191,38 +196,115 @@ Schema 和样例由权威 Pydantic 模型确定性导出：
 
 ## Rule Schema 3.0 离线 Slice 1/2
 
-[REQ-20260902-01](docs/REQ-20260902-01-rule-contract-v3-agent2-ready-handoff.md) 的前两个切片新增：
+V3 公开交付包含：
 
 - [RuleStructureCandidateV3 JSON Schema](contracts/rule-structure-candidate-3.0.0.schema.json)；
 - [BusinessConfirmedFactCatalogV3 JSON Schema](contracts/business-confirmed-fact-catalog-3.0.0.schema.json)；
-- 对应的脱敏合法/非法样例位于 [contracts/examples](contracts/examples)。
+- [contracts/examples](contracts/examples) 下的脱敏合法/非法样例；
+- 确认目录 digest、五阶段顺序、引用闭包、类型、优先级、阻断和多 outcome 的确定性门禁；
+- 最多 3 次共享预算、业务缺口早停的显式 LangGraph V3 分支。
 
-V3 当前只用于离线规则结构和确认事实目录，不替换生产 `rule-parser-v6` 或 Schema `2.0.0` 默认
-路径。可以对固定私有 bundle 执行只读、内存型复核：
+V3 不替换生产 Schema `2.0.0` 默认路径。可以完全离线验证公开样例：
 
 ```powershell
-.\.venv\Scripts\python.exe -m scripts.validate_report_release_v3_reference `
-    --reference-root 'C:\path\to\RuleDataReferences'
+.\.venv\Scripts\python.exe -m scripts.validate_rule_structure_v3 `
+    --catalog contracts/examples/business-confirmed-fact-catalog-3.0.0.valid.json `
+    --candidate contracts/examples/rule-structure-candidate-3.0.0.valid.json
 ```
 
-该命令只读提取 XLSX 确认原值、核对文档与 7 个视图哈希并构建内存对象，不写候选、不调用
-Provider/数据库，也不执行 SQL。加 `--candidate` 只向 stdout 输出规则结构 JSON。
-
-当前 `REPORT_RELEASE` 候选包含 14 项来源冲突/事实缺口；实际类型/枚举不被改写，
-不存在的 binding profile 不会被哈希伪造为确认引用。静态 Schema 与工程测试不等于真实候选通过
-RuleReader 校验或业务批准，最终证据见 [PROG-20260903](docs/PROG-20260903.md)。
-
-用户另行授权真实调用后，可使用最小 V3 单次入口：
+需要核对外部规则块身份时，可以追加 `--rule-file <path> --rule-set-id <id>`；输出只包含 SHA-256
+和字符数，不复制规则正文。真实 Agent 1 单次入口要求显式提供外部规则和确认目录，并带
+`--allow-provider`；该命令会把规则文本发送到配置的 DeepSeek：
 
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -m scripts.run_report_release_agent1_v3_once `
-    --reference-root 'C:\path\to\RuleDataReferences' --allow-provider
+    --rule-file <path> --catalog <confirmed-catalog.json> --allow-provider
 ```
 
-每次显式运行至多发送一个 DeepSeek 请求，不重试、不调用手工候选构建器、不生成测试案例、不写文件或
-数据库。System Prompt 精确来自 DEV-20260902-02 第 2 节，输入使用第 3.1 节动态模板。
-2026-09-03 唯一已授权调用被 5 处条件 ID 格式门禁拒绝，见
-[BUG-20260903-02](docs/BUG-20260903-02-agent1-v3-single-call-schema-rejection.md)；不得自动追加请求。
+私有 XLSX 中已填写数据已由用户确认有效；公开仓库只保存读取逻辑、固定哈希和脱敏摘要，视图 SQL、
+字段清单、binding profile 和完整业务规则不进入公开仓库。恢复说明见
+[BUG-20260905-01](docs/BUG-20260905-01-incomplete-v3-commit.md)。
+
+拥有私有 `RuleDataReferences` 权限时，可验证用户确认的有序 V3 来源。该命令只输出固定身份，不回显
+规则、工作簿或 SQL 内容：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.validate_report_release_v3_reference `
+    --reference-root 'D:\path\to\RuleDataReferences'
+```
+
+确认固定资料后，可以把 source-bound catalog、候选和恢复 manifest 写入调用方指定的私有目录：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.report_release_v3_profile `
+    --reference-root 'D:\path\to\RuleDataReferences' `
+    --output-dir 'D:\path\to\RuleDataReferences-recovery\report-release-v3'
+```
+
+该初始恢复命令复现的是 2026-09-05 业务确认前状态：7 个确认事实、5 个阶段、19 个规则节点
+（3 active、16 blocked）。它保持 `executable=false`，不调用 Provider、MongoDB 或 SQL；输出目录
+应位于固定私有仓库之外，避免改变 bundle 的受管文件集合和 digest。
+
+用户明确选择恢复到当前 MongoDB 时，执行：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.persist_report_release_v3_recovery `
+    --reference-root 'D:\path\to\RuleDataReferences'
+```
+
+该命令先重建并验证同一 source-bound payload，再升级到 MongoDB Schema v4，向
+`rule_structure_candidates_v3` insert-only 保存并精确回读。它不会写入 `rule_versions` 或
+`fact_binding_handoffs`，也不会把 blocking 候选变成规则版本、事实交接或可执行对象。
+
+## V3 Agent 2 readiness
+
+有序 V3 与 V2 remediation 不满足语义等价门禁，因此不能恢复旧 V2 作为 SqlBot 输入。以下命令
+离线复现业务确认前的脱敏差异、确认清单和 MongoDB 待落库计划：
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.analyze_v3_agent2_readiness `
+    --reference-root 'D:\path\to\RuleDataReferences' `
+    --output-dir 'D:\path\to\RuleDataReferences-recovery\agent2-readiness'
+```
+
+16 项 blocking 已于 2026-09-06 完成业务确认。使用固定时间戳可以确定性重建当前 confirmed 产物：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.report_release_v3_confirmed_profile `
+    --reference-root 'D:\path\to\RuleDataReferences' `
+    --output-dir 'D:\path\to\RuleDataReferences-recovery\report-release-v3-confirmed' `
+    --generated-at '2026-09-05T17:24:07+00:00'
+```
+
+当前结果包含一个 `RuleParseResultV3`、18 条 `FactBindingRequest 3.0.0`，16 条 readiness 门禁全部
+通过（`ready=true`）。所有产物仍为待审核、`executable=false`、mapping unresolved；尚未写入
+MongoDB。当前 SqlBot 只消费 2.0.0，必须在其仓库另行升级后才能接收 3.0.0。上述命令不访问
+MongoDB、DeepSeek 或 SQL Server。
+
+## V3 交付的 Schema v5 持久化（显式授权执行）
+
+MongoDB Schema v5 已按 [REQ-20260906-01](docs/REQ-20260906-01-v3-mongodb-persistence.md) 实现：
+`rule_versions_v3` 保存一个完整、不可变、待审核、`executable=false` 的 `RuleParseResultV3`，
+`fact_binding_handoff_batches_v3` 把一个 ruleVersion 的全部请求 wrapper（含完整 camelCase
+payload 与 canonical hash）保存为一个单文档 batch。两条链路均为 insert-only：相同内容重复执行
+幂等并保留首次时间，不同内容哈希冲突失败且不覆盖；任何写入前先完成 blocking、readiness 16/16、
+hash 闭包、请求身份与数量门禁，写入后精确回读并复核历史集合数量不变。
+
+在用户明确授权向真实 MongoDB 写入后，可执行：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.persist_report_release_v3_delivery `
+    --artifact-dir 'D:\path\to\RuleDataReferences-recovery\report-release-v3-confirmed'
+```
+
+该命令先校验 manifest 文件自身 SHA-256 是否等于仓库内冻结的获批交付身份（信任锚），再做 Pydantic
+解析、manifest 内记录的五个交付文件 SHA-256、固定 ruleVersion/requestCount/testCaseCount、
+readiness 16/16 与写前闭包门禁校验，全部通过后才初始化 MongoDB（显式请求 Schema v5）并调用
+持久化服务；stdout 只输出状态、schema version、ruleVersion、哈希、计数和 inserted/existing 等
+脱敏摘要，不输出规则正文、SQL、Mongo URI 或凭据。任何 synthetic、自签名或再生 manifest 的产物
+会被拒绝，也没有绕过参数或环境开关。普通服务与 `init-db` 不受该脚本影响，运行时 Schema 默认
+停留在 v4；本轮验收修订未访问 MongoDB（最新文档证据为 2026-09-05 的 Schema v4 与一条 V3
+recovery 记录，实时状态未重新确认），真实写入仍需单独授权。
 
 ## 业务审核修订草稿的离线导出
 
@@ -264,3 +346,19 @@ RuleReader 只负责 Agent 1 规则理解和事实请求导出。SQL Server 元�
 ```
 
 默认测试不访问 MongoDB 或 DeepSeek。MongoDB 和 Provider 测试必须显式选择，并分别读取已配置的本地凭据。
+
+MongoDB integration 测试有独立的安全门禁（`tests/integration/mongodb_test_guard.py`，纯测试
+侧模块）：必须显式设置 `RULEREADER_TEST_MONGODB_URI`（仅 `mongodb://` scheme，所有主机必须为
+localhost/127.0.0.1/::1，必须包含 `directConnection=true`，query option 只允许
+`directConnection`/`authSource`/`authMechanism`，拒绝 `mongodb+srv`、`replicaSet`、
+`loadBalanced`、远程主机与任何其他选项），并显式设置
+`RULEREADER_TEST_MONGODB_ALLOW_WRITE=isolated-local-only` 确认写入；缺失或回退
+`Settings().mongodb_uri` 一律失败。URI 形态示意（占位符，非真实凭据）：
+
+```dotenv
+RULEREADER_TEST_MONGODB_URI=mongodb://<user>:<password>@localhost:<port>/?authSource=<auth-db>&directConnection=true
+RULEREADER_TEST_MONGODB_ALLOW_WRITE=isolated-local-only
+```
+
+满足门禁后测试只对随机 `rule_reader_test_<uuid>` 数据库
+读写，并在 `finally` 中删除该库（含 migration 中途失败的场景）。

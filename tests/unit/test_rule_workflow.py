@@ -9,6 +9,21 @@ from tests.support import QueueModel, valid_candidate_v2
 
 from rule_reader.application.rule_parsing.workflow import RuleParsingService
 from rule_reader.domain.rules.errors import ParseErrorCode, RuleParsingError
+from rule_reader.infrastructure.deepseek import SYSTEM_PROMPT
+
+
+def test_system_prompt_documents_null_operators() -> None:
+    assert "isNull" in SYSTEM_PROMPT
+    assert "isNotBlank" in SYSTEM_PROMPT
+    assert "禁止携带 right" in SYSTEM_PROMPT
+    assert "禁止把 null 写入 value" in SYSTEM_PROMPT
+
+
+def test_system_prompt_documents_closure_dates_and_cases() -> None:
+    assert "引用闭包" in SYSTEM_PROMPT
+    assert "runtime.current_date" in SYSTEM_PROMPT
+    assert "dateAdd" in SYSTEM_PROMPT
+    assert "indeterminate" in SYSTEM_PROMPT
 
 
 @pytest.mark.asyncio
@@ -36,8 +51,8 @@ async def test_workflow_builds_trusted_version_and_json() -> None:
     assert result.rule_version == (f"TEST_RELEASE_002@20260818T010203456789Z-{expected_hash[:12]}")
     assert result.status == "draft"
     assert result.executable is False
-    assert result.parser.parser_version == "0.10.0"
-    assert result.parser.prompt_version == "rule-parser-v6"
+    assert result.parser.parser_version == "0.12.0"
+    assert result.parser.prompt_version == "rule-parser-v8"
     assert result.parser.audit is not None
     assert result.parser.audit.attempt_count == 1
     assert result.parser.audit.attempts[0].outcome_code == "SUCCESS"

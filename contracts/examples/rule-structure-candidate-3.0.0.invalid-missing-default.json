@@ -1,0 +1,206 @@
+{
+  "blockingIssues": [],
+  "catalogDigest": "b750636cf85bec86819a801299c23c69015965b13cc6fde96541abcc34669203",
+  "catalogId": "SYNTHETIC_RELEASE_FACTS",
+  "catalogVersion": "2026-09-05.1",
+  "contractVersion": "3.0.0",
+  "defaultReasonCode": "NO_RELEASE_PATH_MATCHED",
+  "proposedFacts": [],
+  "requiredFactCodes": [
+    "order.received_amount",
+    "task.status_code"
+  ],
+  "ruleSetId": "SYNTHETIC_REPORT_RELEASE",
+  "scope": "只用于离线契约和解释器测试。",
+  "sourceViews": [
+    "synthetic_release_view"
+  ],
+  "stages": [
+    {
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "合成规则未满足。",
+          "outcome": "NO_RELEASE_REQUIRED",
+          "priority": 10,
+          "reasonCode": "STATE_INVALID_RESULT",
+          "recommendations": [
+            "核对合成输入。"
+          ],
+          "ruleCode": "STATE_INVALID",
+          "status": "active",
+          "title": "合成规则 STATE_INVALID",
+          "when": {
+            "children": [],
+            "description": "合成条件 state-invalid",
+            "enabled": true,
+            "id": "state-invalid",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.status_code",
+              "kind": "fact"
+            },
+            "nullPolicy": "indeterminate",
+            "operator": "ne",
+            "right": {
+              "children": [],
+              "kind": "literal",
+              "value": 19
+            }
+          }
+        }
+      ],
+      "stage": "stateGuards"
+    },
+    {
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "合成规则未满足。",
+          "outcome": "WAITING_CONDITIONS",
+          "priority": 10,
+          "reasonCode": "AMOUNT_NEGATIVE_RESULT",
+          "recommendations": [
+            "核对合成输入。"
+          ],
+          "ruleCode": "AMOUNT_NEGATIVE",
+          "status": "active",
+          "title": "合成规则 AMOUNT_NEGATIVE",
+          "when": {
+            "children": [],
+            "description": "合成条件 amount-negative",
+            "enabled": true,
+            "id": "amount-negative",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.received_amount",
+              "kind": "fact"
+            },
+            "nullPolicy": "indeterminate",
+            "operator": "lt",
+            "right": {
+              "children": [],
+              "kind": "literal",
+              "value": 0
+            }
+          }
+        }
+      ],
+      "stage": "prerequisites"
+    },
+    {
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "合成规则未满足。",
+          "outcome": "READY",
+          "priority": 10,
+          "reasonCode": "AMOUNT_THRESHOLD_RESULT",
+          "recommendations": [
+            "核对合成输入。"
+          ],
+          "ruleCode": "AMOUNT_THRESHOLD",
+          "status": "active",
+          "title": "合成规则 AMOUNT_THRESHOLD",
+          "when": {
+            "children": [],
+            "description": "合成条件 amount-threshold",
+            "enabled": true,
+            "id": "amount-threshold",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.received_amount",
+              "kind": "fact"
+            },
+            "nullPolicy": "indeterminate",
+            "operator": "gte",
+            "right": {
+              "children": [],
+              "kind": "literal",
+              "value": 80
+            }
+          }
+        }
+      ],
+      "stage": "eligibility"
+    },
+    {
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "合成规则未满足。",
+          "outcome": "WAITING_CONDITIONS",
+          "priority": 10,
+          "reasonCode": "LOW_AMOUNT_GATE_RESULT",
+          "recommendations": [
+            "核对合成输入。"
+          ],
+          "ruleCode": "LOW_AMOUNT_GATE",
+          "status": "active",
+          "title": "合成规则 LOW_AMOUNT_GATE",
+          "when": {
+            "children": [],
+            "description": "合成条件 low-amount-gate",
+            "enabled": true,
+            "id": "low-amount-gate",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.received_amount",
+              "kind": "fact"
+            },
+            "nullPolicy": "indeterminate",
+            "operator": "lt",
+            "right": {
+              "children": [],
+              "kind": "literal",
+              "value": 10
+            }
+          }
+        }
+      ],
+      "stage": "postGates"
+    },
+    {
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "合成规则未满足。",
+          "outcome": "NO_RELEASE_REQUIRED",
+          "priority": 10,
+          "reasonCode": "CLOSED_TASK_EXCLUSION_RESULT",
+          "recommendations": [
+            "核对合成输入。"
+          ],
+          "ruleCode": "CLOSED_TASK_EXCLUSION",
+          "status": "active",
+          "title": "合成规则 CLOSED_TASK_EXCLUSION",
+          "when": {
+            "children": [],
+            "description": "合成条件 closed-task-exclusion",
+            "enabled": true,
+            "id": "closed-task-exclusion",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.status_code",
+              "kind": "fact"
+            },
+            "nullPolicy": "indeterminate",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "kind": "literal",
+              "value": 20
+            }
+          }
+        }
+      ],
+      "stage": "exclusions"
+    }
+  ],
+  "title": "合成报告释放规则"
+}

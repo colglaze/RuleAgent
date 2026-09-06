@@ -1,0 +1,81 @@
+{
+  "snapshotKind": "rule_reader full database export (all collections, all documents)",
+  "exportedAtUtc": "2026-09-06T14:44:03.500165+00:00",
+  "database": "rule_reader",
+  "server": "localhost:27017 (docker container 'mongodb', mongo:latest, authSource=admin)",
+  "serverVersion": "8.3.8",
+  "connectionCredentials": "intentionally omitted",
+  "businessRuleRecordCount": {
+    "rule_versions": 0,
+    "fact_binding_handoffs": 0,
+    "rule_structure_candidates_v3": 0
+  },
+  "historicalRecordsNotInThisInstance": {
+    "note": "the MongoDB container was recreated on 2026-09-06; earlier persisted records (2 x rule_versions, 33 x fact_binding_handoffs, 1 x rule_structure_candidates_v3) exist only in documentation evidence and offline recovery artifacts",
+    "evidence": [
+      "docs/进度文档.md",
+      "docs/PROG-20260906.md"
+    ]
+  },
+  "collections": {
+    "app_metadata": {
+      "count": 1,
+      "documents": [
+        {
+          "_id": "6a9d53079199e14065053431",
+          "key": "database_schema",
+          "created_at": "2026-09-06T11:48:23.749000",
+          "schema_version": 4,
+          "service": "rule-reader",
+          "service_version": "0.12.0",
+          "updated_at": "2026-09-06T11:48:23.836000"
+        }
+      ]
+    },
+    "fact_binding_handoffs": {
+      "count": 0,
+      "documents": []
+    },
+    "rule_structure_candidates_v3": {
+      "count": 0,
+      "documents": []
+    },
+    "rule_versions": {
+      "count": 0,
+      "documents": []
+    },
+    "schema_migrations": {
+      "count": 4,
+      "documents": [
+        {
+          "_id": "6a9d53072895c550a6f6bf8f",
+          "version": 1,
+          "name": "bootstrap_metadata",
+          "applied_at": "2026-09-06T11:48:23.751000",
+          "service_version": "0.12.0"
+        },
+        {
+          "_id": "6a9d53072895c550a6f6bf90",
+          "version": 2,
+          "name": "create_rule_versions",
+          "applied_at": "2026-09-06T11:48:23.783000",
+          "service_version": "0.12.0"
+        },
+        {
+          "_id": "6a9d53072895c550a6f6bf91",
+          "version": 3,
+          "name": "create_fact_binding_handoffs",
+          "applied_at": "2026-09-06T11:48:23.808000",
+          "service_version": "0.12.0"
+        },
+        {
+          "_id": "6a9d53072895c550a6f6bf92",
+          "version": 4,
+          "name": "create_rule_structure_candidates_v3",
+          "applied_at": "2026-09-06T11:48:23.837000",
+          "service_version": "0.12.0"
+        }
+      ]
+    }
+  }
+}

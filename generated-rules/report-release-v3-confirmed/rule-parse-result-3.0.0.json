@@ -1,0 +1,2865 @@
+{
+  "schemaVersion": "3.0.0",
+  "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "generatedAt": "2026-09-05T17:24:07Z",
+  "status": "draft",
+  "executable": false,
+  "source": {
+    "sourceName": "项目报告和原始数据释放优化方案.md",
+    "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+    "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+    "sourceCharacterCount": 1402,
+    "parserVersion": "0.11.0",
+    "promptVersion": "rule-structure-v3.1",
+    "provider": "reviewed_import",
+    "model": "reviewed-import-v3-adjudication"
+  },
+  "parser": {
+    "parserVersion": "0.11.0",
+    "promptVersion": "rule-structure-v3.1",
+    "provider": "reviewed_import",
+    "model": "reviewed-import-v3-adjudication"
+  },
+  "catalogRef": {
+    "catalogId": "REPORT_RELEASE_CONFIRMED_FACTS",
+    "catalogVersion": "2026-09-06.1",
+    "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da"
+  },
+  "candidateRef": {
+    "payloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6",
+    "ruleBlockSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d"
+  },
+  "factDeclarations": [
+    {
+      "fact": {
+        "factCode": "task.status_code",
+        "name": "任务状态",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "任务状态：主释放任务要求 19；费用统计排除 20 等（值域补录 19（内部完工确认），以有序规则为准；字段描述本身写明主释放任务要求 19。）",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "226",
+          "239",
+          "551",
+          "227",
+          "552",
+          "553",
+          "554",
+          "691",
+          "228",
+          "571",
+          "229",
+          "230",
+          "231",
+          "232",
+          "484",
+          "233",
+          "234",
+          "235",
+          "236",
+          "237",
+          "238",
+          "240",
+          "241",
+          "242",
+          "243",
+          "244",
+          "245",
+          "246",
+          "247",
+          "248",
+          "249",
+          "250",
+          "251",
+          "279",
+          "493",
+          "495",
+          "496",
+          "532",
+          "533",
+          "534",
+          "603",
+          "604",
+          "605",
+          "606",
+          "1040",
+          "1041",
+          "1042",
+          "19"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.status_code",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.status_code",
+              "query.task.status_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.status_code",
+              "query.task.status_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.status_code",
+                "query.task.status_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.project_report_flag",
+        "name": "项目报告",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "0",
+          "1"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.project_report_flag",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.project_report_flag",
+              "query.task.project_report_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.project_report_flag",
+              "query.task.project_report_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.project_report_flag",
+                "query.task.project_report_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.experiment_status_code",
+        "name": "任务单实验状态",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "报告基础条件排除 2、7；历史报告费范围也使用",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.experiment_status_code",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.experiment_status_code",
+              "query.task.experiment_status_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.experiment_status_code",
+              "query.task.experiment_status_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.experiment_status_code",
+                "query.task.experiment_status_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.offline_report_release_flag",
+        "name": "是否线下释放报告",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "报告基础条件：ISNULL(...,1)=1；确认值域含义：4=是、5=否；空值按否处理。（值域含义取自确认工作簿：4=是（已线下释放）、5=否；现行视图比较编码差异留待物理绑定复核。）",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "4",
+          "5"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.offline_report_release_flag",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.offline_report_release_flag",
+              "query.task.offline_report_release_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.offline_report_release_flag",
+              "query.task.offline_report_release_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.offline_report_release_flag",
+                "query.task.offline_report_release_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": [
+        {
+          "uncertaintyId": "coding.offline-release-flag",
+          "code": "SOURCE_CODING_DIVERGENCE",
+          "impact": "warning",
+          "reason": "XLSX 确认值域为 4=是、5=否；现行视图 SQL 使用 0/1 比较，物理绑定阶段需复核编码映射。",
+          "evidenceIds": [
+            "query.task.offline_report_release_flag"
+          ]
+        }
+      ]
+    },
+    {
+      "fact": {
+        "factCode": "task.batch_report_release_flag",
+        "name": "是否批量释放报告",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "报告直接放行：ISNULL(...,1)=0；确认值域含义：4=是、5=否；空值按否处理。（值域含义取自确认工作簿：4=是（已标记批量释放）、5=否；现行视图比较编码差异留待物理绑定复核。）",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "4",
+          "5"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.batch_report_release_flag",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.batch_report_release_flag",
+              "query.task.batch_report_release_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.batch_report_release_flag",
+              "query.task.batch_report_release_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.batch_report_release_flag",
+                "query.task.batch_report_release_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": [
+        {
+          "uncertaintyId": "coding.batch-release-flag",
+          "code": "SOURCE_CODING_DIVERGENCE",
+          "impact": "warning",
+          "reason": "XLSX 确认值域为 4=是、5=否；现行视图 SQL 使用 0/1 比较，物理绑定阶段需复核编码映射。",
+          "evidenceIds": [
+            "query.task.batch_report_release_flag"
+          ]
+        }
+      ]
+    },
+    {
+      "fact": {
+        "factCode": "task.qc_report_flag",
+        "name": "质控QC报告",
+        "factKind": "source",
+        "dataType": "string",
+        "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "0",
+          "1"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.qc_report_flag",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.qc_report_flag",
+              "query.task.qc_report_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.qc_report_flag",
+              "query.task.qc_report_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.qc_report_flag",
+                "query.task.qc_report_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "string",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "report.release_status",
+        "name": "报告释放状态",
+        "factKind": "source",
+        "dataType": "enum",
+        "description": "释放状态表当前状态；处于准备释放/释放中/已释放任一终态时跳过本次评估，空值或其余状态继续评估。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "准备释放",
+          "释放中",
+          "已释放"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "report.release_status",
+            "dataType": "enum",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.release_status",
+              "query.report.release_status"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.release_status",
+              "query.report.release_status"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.report.release_status",
+                "query.report.release_status"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "enum",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.amount",
+        "name": "订单金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "订单金额；为 0 时命中 R0 直接释放，空值继续评估后续规则。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "订单标识。"
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.amount",
+              "query.order.amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.amount",
+              "query.order.amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.amount",
+                "query.order.amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "release.special_application_count",
+        "name": "特殊申请已审批数量",
+        "factKind": "aggregate",
+        "dataType": "integer",
+        "description": "项目报告释放类型且审批流程已完成的特殊申请数量；大于 0 时命中 R1 直接释放，统计范围在查询阶段固定。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "release.special_application_count",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.special_application_count",
+                "query.release.special_application_count"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "aggregation": {
+          "mode": "compute",
+          "function": "count",
+          "inputFieldIds": [
+            "factValue"
+          ],
+          "groupByFieldIds": [],
+          "distinct": false,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "release.raw_data_released_after_cutoff",
+        "name": "原始数据已释放且过截止日",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "原始数据已释放且完工日期不早于 2024-11-21 时为真，命中 R4 直接释放；截止日为固定业务参数。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "release.raw_data_released_after_cutoff",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.raw_data_released_after_cutoff",
+              "query.release.raw_data_released_after_cutoff"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.raw_data_released_after_cutoff",
+              "query.release.raw_data_released_after_cutoff"
+            ]
+          },
+          {
+            "fieldId": "completion.date",
+            "role": "time",
+            "logicalName": "完工日期",
+            "dataType": "date",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.raw_data_released_after_cutoff",
+              "query.release.raw_data_released_after_cutoff"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.raw_data_released_after_cutoff",
+                "query.release.raw_data_released_after_cutoff"
+              ]
+            },
+            {
+              "filterId": "completion.cutoff",
+              "fieldId": "completion.date",
+              "operator": "gte",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": "2024-11-21"
+              },
+              "nullPolicy": "indeterminate",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.raw_data_released_after_cutoff",
+                "query.release.raw_data_released_after_cutoff"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.source_code",
+        "name": "订单来源",
+        "factKind": "source",
+        "dataType": "enum",
+        "description": "订单来源编码；当前确认值域仅含规则引用值 2=海外业务，命中 R2 直接释放，其余值域待业务补充。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "订单标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "2"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.source_code",
+            "dataType": "enum",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.source_code",
+              "query.order.source_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.source_code",
+              "query.order.source_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.source_code",
+                "query.order.source_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "enum",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": [
+        {
+          "uncertaintyId": "domain.order-source-code",
+          "code": "CONFIRMED_VALUE_DOMAIN_MINIMAL",
+          "impact": "warning",
+          "reason": "当前确认值域仅含 2=海外业务；其余编码待业务补充后扩展目录。",
+          "evidenceIds": [
+            "query.order.source_code"
+          ]
+        }
+      ]
+    },
+    {
+      "fact": {
+        "factCode": "product.special_product_flag",
+        "name": "特殊产品标记",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "产品属于多组学创新科学研究（产品编号 759）时为真，命中 R3 后按基准金额分档适用释放比例；该标记同时是 R5/R6 的排除前置。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "product.special_product_flag",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.product.special_product_flag",
+              "query.product.special_product_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.product.special_product_flag",
+              "query.product.special_product_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.product.special_product_flag",
+                "query.product.special_product_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "release.timed_release_eligible",
+        "name": "完工时间触发满足",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "完工时间触发规则已到期时为真：酵母筛库/家族库且无主服务完工即满足；其余产品按任务单金额与开票状态适用完工后 60/75/180 天；2026-04-15 起适用，命中 R8 直接释放。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "release.timed_release_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.timed_release_eligible",
+              "query.release.timed_release_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.timed_release_eligible",
+              "query.release.timed_release_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.timed_release_eligible",
+                "query.release.timed_release_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.enterprise_non_framework_full_payment_eligible",
+        "name": "非框架企业单位全额到款满足",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "非框架协议且企业单位、订单关联到款（含押金）不低于累计完工金额（抽提质检、任务单与项目报告释放金额之和）的 100% 时为真，命中 R5 直接释放。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "订单标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.enterprise_non_framework_full_payment_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.enterprise_non_framework_full_payment_eligible",
+              "query.order.enterprise_non_framework_full_payment_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.enterprise_non_framework_full_payment_eligible",
+              "query.order.enterprise_non_framework_full_payment_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.enterprise_non_framework_full_payment_eligible",
+                "query.order.enterprise_non_framework_full_payment_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.non_enterprise_release_eligible",
+        "name": "非框架非企业单位释放满足",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "非框架协议且非企业单位，订单关联到款（含押金）不低于累计完工金额的 100%，或不低于 80% 且订单关联押金不低于未关联到款金额的 20% 并满足合同盖章条件时为真，命中 R6 直接释放。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "订单标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.non_enterprise_release_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.non_enterprise_release_eligible",
+              "query.order.non_enterprise_release_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.non_enterprise_release_eligible",
+              "query.order.non_enterprise_release_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.non_enterprise_release_eligible",
+                "query.order.non_enterprise_release_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.framework_release_eligible",
+        "name": "框架协议释放满足",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "框架协议（科研/公司）订单，关联到款（含押金）不低于累计完工金额的 80%，或订单关联押金不低于未关联到款金额的 20% 时为真，命中 R7 直接释放。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "订单标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.framework_release_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.framework_release_eligible",
+              "query.order.framework_release_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.framework_release_eligible",
+              "query.order.framework_release_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.framework_release_eligible",
+                "query.order.framework_release_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "report.merge_group_eligible",
+        "name": "合并报告组释放约束满足",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "本任务单实时命中释放规则，且（非合并报告，或同一合并报告下所有相关任务单均处于可释放终态或实时命中释放规则）时为真；为假时合并组约束未满足，释放降级为等待满足条件。该事实不可为空。",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "report.merge_group_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.report.merge_group_eligible",
+                "query.report.merge_group_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": false,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.in_oa_process",
+        "name": "任务在 OA 流程中",
+        "factKind": "exists",
+        "dataType": "boolean",
+        "description": "任务单当前处于项目报告释放 OA 流程中时为真，命中排除条件后跳过触发；该事实不可为空。",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "正式实验任务标识。"
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.in_oa_process",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.in_oa_process",
+                "query.task.in_oa_process"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "aggregation": {
+          "mode": "exists",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": false,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    }
+  ],
+  "testCases": [
+    {
+      "caseId": "state-terminal-skip",
+      "description": "前提-1：释放状态已为终态时跳过评估",
+      "given": {
+        "report.release_status": "准备释放",
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "SKIPPED",
+      "expectedReasonCode": "REPORT_STATUS_TERMINAL_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "REPORT_STATUS_TERMINAL"
+      ]
+    },
+    {
+      "caseId": "prereq-not-completed",
+      "description": "前提0：任务未完工等待完工",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "226",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "WAITING_COMPLETION",
+      "expectedReasonCode": "TASK_NOT_COMPLETED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "TASK_NOT_COMPLETED"
+      ]
+    },
+    {
+      "caseId": "prereq-experiment-offline",
+      "description": "前提1：失败导致线下确认收入",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "2",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "EXPERIMENT_STATUS_OFFLINE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "EXPERIMENT_STATUS_OFFLINE"
+      ]
+    },
+    {
+      "caseId": "prereq-experiment-problem",
+      "description": "前提1：问题项目无需释放",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "7",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "EXPERIMENT_STATUS_PROBLEM_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "EXPERIMENT_STATUS_PROBLEM"
+      ]
+    },
+    {
+      "caseId": "prereq-offline-released",
+      "description": "前提2：项目报告已线下释放",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "4",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "ALREADY_RELEASED",
+      "expectedReasonCode": "OFFLINE_REPORT_RELEASED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "OFFLINE_REPORT_RELEASED"
+      ]
+    },
+    {
+      "caseId": "prereq-no-report",
+      "description": "前提3：无项目报告且无质控报告",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "1",
+        "task.qc_report_flag": "1",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "NO_PROJECT_REPORT_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "NO_PROJECT_REPORT"
+      ]
+    },
+    {
+      "caseId": "prereq-availability-unknown",
+      "description": "前提3：报告有无待定时等待满足条件",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": null,
+        "task.qc_report_flag": null,
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "REPORT_AVAILABILITY_UNKNOWN_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "REPORT_AVAILABILITY_UNKNOWN"
+      ]
+    },
+    {
+      "caseId": "r0-zero-order",
+      "description": "R0：0元订单直接就绪",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 0.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R0_ZERO_ORDER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER"
+      ]
+    },
+    {
+      "caseId": "r1-special-approval",
+      "description": "R1：特殊申请已审批直接就绪",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 3,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R1_SPECIAL_APPROVAL_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R1_SPECIAL_APPROVAL"
+      ]
+    },
+    {
+      "caseId": "r9-batch-release",
+      "description": "R9：标记批量释放直接就绪",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "4",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R9_BATCH_RELEASE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R9_BATCH_RELEASE"
+      ]
+    },
+    {
+      "caseId": "r4-raw-data-released",
+      "description": "R4：原始数据已释放且过截止日",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": true,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R4_RAW_DATA_RELEASED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R4_RAW_DATA_RELEASED"
+      ]
+    },
+    {
+      "caseId": "r2-overseas-order",
+      "description": "R2：海外业务订单直接就绪",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": "2",
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R2_OVERSEAS_ORDER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R2_OVERSEAS_ORDER"
+      ]
+    },
+    {
+      "caseId": "r3-special-product",
+      "description": "R3：特殊产品命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": true,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R3_SPECIAL_PRODUCT_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R3_SPECIAL_PRODUCT"
+      ]
+    },
+    {
+      "caseId": "r8-time-trigger",
+      "description": "R8：完工时间触发到期",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": true,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r5-enterprise",
+      "description": "R5：非框架企业单位全额到款",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": true,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R5_ENTERPRISE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R5_ENTERPRISE"
+      ]
+    },
+    {
+      "caseId": "r6-non-enterprise",
+      "description": "R6：非框架非企业单位满足",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": true,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R6_NON_ENTERPRISE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R6_NON_ENTERPRISE"
+      ]
+    },
+    {
+      "caseId": "r7-framework",
+      "description": "R7：框架协议满足",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": true,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R7_FRAMEWORK_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R7_FRAMEWORK"
+      ]
+    },
+    {
+      "caseId": "postgate-merge-blocked",
+      "description": "合并报告组未满足时 postGate 降级",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 0.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": false,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "MERGED_REPORT_GATE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER",
+        "MERGED_REPORT_GATE"
+      ]
+    },
+    {
+      "caseId": "exclusion-oa-process",
+      "description": "任务在 OA 流程中时排除触发",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 0.0,
+        "release.special_application_count": 0,
+        "release.raw_data_released_after_cutoff": false,
+        "order.source_code": null,
+        "product.special_product_flag": false,
+        "release.timed_release_eligible": false,
+        "order.enterprise_non_framework_full_payment_eligible": false,
+        "order.non_enterprise_release_eligible": false,
+        "order.framework_release_eligible": false,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "OA_PROCESS_SCOPE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER",
+        "OA_PROCESS_SCOPE"
+      ]
+    },
+    {
+      "caseId": "indeterminate-missing-eligibility",
+      "description": "资格事实缺失时结果为 INDETERMINATE，不补造结论",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": "19",
+        "task.experiment_status_code": "1",
+        "task.offline_report_release_flag": "5",
+        "task.batch_report_release_flag": "5",
+        "task.project_report_flag": "0",
+        "task.qc_report_flag": "0",
+        "order.amount": 12000.0,
+        "release.special_application_count": null,
+        "release.raw_data_released_after_cutoff": null,
+        "order.source_code": null,
+        "product.special_product_flag": null,
+        "release.timed_release_eligible": null,
+        "order.enterprise_non_framework_full_payment_eligible": null,
+        "order.non_enterprise_release_eligible": null,
+        "order.framework_release_eligible": null,
+        "report.merge_group_eligible": true,
+        "task.in_oa_process": false
+      },
+      "expectedOutcome": "INDETERMINATE",
+      "expectedReasonCode": "FACT_VALUE_MISSING_OR_INVALID",
+      "expectedMatchedRuleCodes": []
+    }
+  ],
+  "agent2ReadinessReady": true
+}

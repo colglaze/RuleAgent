@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import uuid
 from copy import deepcopy
 from datetime import UTC, datetime
@@ -8,6 +7,7 @@ from datetime import UTC, datetime
 import pytest
 from jsonschema import Draft202012Validator, FormatChecker
 from pymongo import ASCENDING, AsyncMongoClient
+from tests.integration.mongodb_test_guard import resolve_isolated_test_uri
 from tests.report_release_fixtures import historical_persisted_report_release_rule
 from tests.support import valid_candidate
 
@@ -24,7 +24,6 @@ from rule_reader.application.fact_binding_handoffs.service import (
     FactBindingHandoffService,
     load_checked_in_fact_binding_schema,
 )
-from rule_reader.core.config import Settings
 from rule_reader.domain.rules.bindings_v2 import (
     FactBindingRequestV2,
     build_fact_binding_requests_v2,
@@ -46,6 +45,7 @@ from rule_reader.infrastructure.migrations import (
     MIGRATIONS,
     MIGRATIONS_COLLECTION,
     RULE_VERSIONS_COLLECTION,
+    RUNTIME_SCHEMA_VERSION,
     apply_migrations,
 )
 from rule_reader.infrastructure.rule_versions import MongoRuleVersionRepository
@@ -105,20 +105,22 @@ def _legacy_rule() -> RuleParseResult:
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_schema_v3_persists_immutable_33_request_handoff() -> None:
-    uri = os.getenv("RULEREADER_TEST_MONGODB_URI") or Settings().mongodb_uri
+    uri = resolve_isolated_test_uri()
     database_name = f"rule_reader_test_{uuid.uuid4().hex}"
     client: AsyncMongoClient[dict[str, object]] = AsyncMongoClient(
         uri,
         tz_aware=True,
         serverSelectionTimeoutMS=5000,
     )
-    database_created = False
+    cleanup_database = False
 
     try:
         await client.admin.command({"ping": 1})
         database = client.get_database(database_name)
+        # ping 成功后、任何写入之前武装清理: 任何中途失败也会删除该随机测试库。
+        assert database_name.startswith("rule_reader_test_")
+        cleanup_database = True
         await _initialize_schema_v2(database)
-        database_created = True
         metadata_v2 = await database[APP_METADATA_COLLECTION].find_one({"key": "database_schema"})
         assert metadata_v2 is not None
         assert metadata_v2["schema_version"] == 2
@@ -131,12 +133,12 @@ async def test_schema_v3_persists_immutable_33_request_handoff() -> None:
         await rule_repository.save(legacy)
         rules_before_migration = deepcopy(await _all_documents(database[RULE_VERSIONS_COLLECTION]))
 
-        assert await apply_migrations(database) == 3
-        assert await apply_migrations(database) == 3
+        assert await apply_migrations(database, target_version=RUNTIME_SCHEMA_VERSION) == 4
+        assert await apply_migrations(database, target_version=RUNTIME_SCHEMA_VERSION) == 4
         assert await database[MIGRATIONS_COLLECTION].count_documents({"version": 3}) == 1
         metadata_v3 = await database[APP_METADATA_COLLECTION].find_one({"key": "database_schema"})
         assert metadata_v3 is not None
-        assert metadata_v3["schema_version"] == 3
+        assert metadata_v3["schema_version"] == 4
         assert await _all_documents(database[RULE_VERSIONS_COLLECTION]) == (rules_before_migration)
 
         handoff_collection = database[FACT_BINDING_HANDOFFS_COLLECTION]
@@ -217,6 +219,7 @@ async def test_schema_v3_persists_immutable_33_request_handoff() -> None:
         assert await _all_documents(database[RULE_VERSIONS_COLLECTION]) == (rules_before_migration)
         assert await database[RULE_VERSIONS_COLLECTION].count_documents({}) == 2
     finally:
-        if database_created and database_name.startswith("rule_reader_test_"):
+        if cleanup_database:
+            assert database_name.startswith("rule_reader_test_")
             await client.drop_database(database_name)
         await client.close()

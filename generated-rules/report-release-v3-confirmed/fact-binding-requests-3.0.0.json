@@ -1,0 +1,5572 @@
+[
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.status_code",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.status_code",
+      "name": "任务状态",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "任务状态：主释放任务要求 19；费用统计排除 20 等（值域补录 19（内部完工确认），以有序规则为准；字段描述本身写明主释放任务要求 19。）",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "226",
+        "239",
+        "551",
+        "227",
+        "552",
+        "553",
+        "554",
+        "691",
+        "228",
+        "571",
+        "229",
+        "230",
+        "231",
+        "232",
+        "484",
+        "233",
+        "234",
+        "235",
+        "236",
+        "237",
+        "238",
+        "240",
+        "241",
+        "242",
+        "243",
+        "244",
+        "245",
+        "246",
+        "247",
+        "248",
+        "249",
+        "250",
+        "251",
+        "279",
+        "493",
+        "495",
+        "496",
+        "532",
+        "533",
+        "534",
+        "603",
+        "604",
+        "605",
+        "606",
+        "1040",
+        "1041",
+        "1042",
+        "19"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.status_code",
+          "query.task.status_code"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.status_code",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.status_code",
+              "query.task.status_code"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.status_code",
+          "query.task.status_code"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.status_code",
+          "query.task.status_code"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.status_code",
+          "query.task.status_code"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "prerequisites",
+        "ruleCode": "TASK_NOT_COMPLETED",
+        "priority": 10,
+        "conditionId": "task-not-completed",
+        "conditionPath": "/stages/1/rules/0/when",
+        "outcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "condition.task-not-completed"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "19",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "226",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "19",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "19",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": "19",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "19",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "19",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.status_code",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.status_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/0"
+      },
+      {
+        "evidenceId": "query.task.status_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/0/query"
+      },
+      {
+        "evidenceId": "condition.task-not-completed",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/0/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.project_report_flag",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.project_report_flag",
+      "name": "项目报告",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "0",
+        "1"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.project_report_flag",
+          "query.task.project_report_flag"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.project_report_flag",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.project_report_flag",
+              "query.task.project_report_flag"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.project_report_flag",
+          "query.task.project_report_flag"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.project_report_flag",
+          "query.task.project_report_flag"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.project_report_flag",
+          "query.task.project_report_flag"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "prerequisites",
+        "ruleCode": "NO_PROJECT_REPORT",
+        "priority": 50,
+        "conditionId": "project-report-absent",
+        "conditionPath": "/stages/1/rules/4/when/children/0",
+        "outcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "condition.project-report-absent"
+        ]
+      },
+      {
+        "stage": "prerequisites",
+        "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+        "priority": 60,
+        "conditionId": "project-report-unknown",
+        "conditionPath": "/stages/1/rules/5/when/children/0",
+        "outcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "condition.project-report-unknown"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "0",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "0",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "0",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "0",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-no-report",
+        "value": "1",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-no-report"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": null,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "0",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-postgate-merge-blocked",
+        "value": "0",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-postgate-merge-blocked"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "0",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.project_report_flag",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.project_report_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/1"
+      },
+      {
+        "evidenceId": "query.task.project_report_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/1/query"
+      },
+      {
+        "evidenceId": "condition.project-report-absent",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/4/when/children/0"
+      },
+      {
+        "evidenceId": "condition.project-report-unknown",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/5/when/children/0"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-no-report",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-postgate-merge-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.experiment_status_code",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.experiment_status_code",
+      "name": "任务单实验状态",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "报告基础条件排除 2、7；历史报告费范围也使用",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.experiment_status_code",
+          "query.task.experiment_status_code"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.experiment_status_code",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.experiment_status_code",
+              "query.task.experiment_status_code"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.experiment_status_code",
+          "query.task.experiment_status_code"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.experiment_status_code",
+          "query.task.experiment_status_code"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.experiment_status_code",
+          "query.task.experiment_status_code"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "prerequisites",
+        "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+        "priority": 20,
+        "conditionId": "experiment-status-offline",
+        "conditionPath": "/stages/1/rules/1/when",
+        "outcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "condition.experiment-status-offline"
+        ]
+      },
+      {
+        "stage": "prerequisites",
+        "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+        "priority": 30,
+        "conditionId": "experiment-status-problem",
+        "conditionPath": "/stages/1/rules/2/when",
+        "outcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "condition.experiment-status-problem"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "1",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "1",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "2",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-problem",
+        "value": "7",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-problem"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-no-report",
+        "value": "1",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-no-report"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": "1",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "1",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "1",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.experiment_status_code",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.experiment_status_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/2"
+      },
+      {
+        "evidenceId": "query.task.experiment_status_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/2/query"
+      },
+      {
+        "evidenceId": "condition.experiment-status-offline",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/1/when"
+      },
+      {
+        "evidenceId": "condition.experiment-status-problem",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/2/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-problem",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-no-report",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.offline_report_release_flag",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.offline_report_release_flag",
+      "name": "是否线下释放报告",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "报告基础条件：ISNULL(...,1)=1；确认值域含义：4=是、5=否；空值按否处理。（值域含义取自确认工作簿：4=是（已线下释放）、5=否；现行视图比较编码差异留待物理绑定复核。）",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "4",
+        "5"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.offline_report_release_flag",
+          "query.task.offline_report_release_flag"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.offline_report_release_flag",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.offline_report_release_flag",
+              "query.task.offline_report_release_flag"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.offline_report_release_flag",
+          "query.task.offline_report_release_flag"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.offline_report_release_flag",
+          "query.task.offline_report_release_flag"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.offline_report_release_flag",
+          "query.task.offline_report_release_flag"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "prerequisites",
+        "ruleCode": "OFFLINE_REPORT_RELEASED",
+        "priority": 40,
+        "conditionId": "offline-report-released",
+        "conditionPath": "/stages/1/rules/3/when",
+        "outcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "condition.offline-report-released"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "5",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "5",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "5",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "4",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": "5",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "5",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "5",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.offline_report_release_flag",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.offline_report_release_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/3"
+      },
+      {
+        "evidenceId": "query.task.offline_report_release_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/3/query"
+      },
+      {
+        "evidenceId": "condition.offline-report-released",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/3/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [
+      {
+        "uncertaintyId": "coding.offline-release-flag",
+        "code": "SOURCE_CODING_DIVERGENCE",
+        "impact": "warning",
+        "reason": "XLSX 确认值域为 4=是、5=否；现行视图 SQL 使用 0/1 比较，物理绑定阶段需复核编码映射。",
+        "evidenceIds": [
+          "query.task.offline_report_release_flag"
+        ]
+      }
+    ],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.batch_report_release_flag",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.batch_report_release_flag",
+      "name": "是否批量释放报告",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "报告直接放行：ISNULL(...,1)=0；确认值域含义：4=是、5=否；空值按否处理。（值域含义取自确认工作簿：4=是（已标记批量释放）、5=否；现行视图比较编码差异留待物理绑定复核。）",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "4",
+        "5"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.batch_report_release_flag",
+          "query.task.batch_report_release_flag"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.batch_report_release_flag",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.batch_report_release_flag",
+              "query.task.batch_report_release_flag"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.batch_report_release_flag",
+          "query.task.batch_report_release_flag"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.batch_report_release_flag",
+          "query.task.batch_report_release_flag"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.batch_report_release_flag",
+          "query.task.batch_report_release_flag"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R9_BATCH_RELEASE",
+        "priority": 30,
+        "conditionId": "r9-batch-release",
+        "conditionPath": "/stages/2/rules/2/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r9-batch-release"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "5",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "5",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "5",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "5",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": "5",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "5",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r9-batch-release",
+        "value": "4",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r9-batch-release"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "5",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.batch_report_release_flag",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.batch_report_release_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/4"
+      },
+      {
+        "evidenceId": "query.task.batch_report_release_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/4/query"
+      },
+      {
+        "evidenceId": "condition.r9-batch-release",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/2/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r9-batch-release",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/9"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [
+      {
+        "uncertaintyId": "coding.batch-release-flag",
+        "code": "SOURCE_CODING_DIVERGENCE",
+        "impact": "warning",
+        "reason": "XLSX 确认值域为 4=是、5=否；现行视图 SQL 使用 0/1 比较，物理绑定阶段需复核编码映射。",
+        "evidenceIds": [
+          "query.task.batch_report_release_flag"
+        ]
+      }
+    ],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.qc_report_flag",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.qc_report_flag",
+      "name": "质控QC报告",
+      "factKind": "source",
+      "dataType": "string",
+      "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "0",
+        "1"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.qc_report_flag",
+          "query.task.qc_report_flag"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.qc_report_flag",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.qc_report_flag",
+              "query.task.qc_report_flag"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.qc_report_flag",
+          "query.task.qc_report_flag"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.qc_report_flag",
+          "query.task.qc_report_flag"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.qc_report_flag",
+          "query.task.qc_report_flag"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "string",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "prerequisites",
+        "ruleCode": "NO_PROJECT_REPORT",
+        "priority": 50,
+        "conditionId": "qc-report-absent",
+        "conditionPath": "/stages/1/rules/4/when/children/1",
+        "outcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "condition.qc-report-absent"
+        ]
+      },
+      {
+        "stage": "prerequisites",
+        "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+        "priority": 60,
+        "conditionId": "qc-report-unknown",
+        "conditionPath": "/stages/1/rules/5/when/children/1",
+        "outcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "condition.qc-report-unknown"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "0",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": "0",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": "0",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": "0",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-no-report",
+        "value": "1",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-no-report"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": null,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": "0",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-postgate-merge-blocked",
+        "value": "0",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-postgate-merge-blocked"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": "0",
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.qc_report_flag",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.qc_report_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/5"
+      },
+      {
+        "evidenceId": "query.task.qc_report_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/5/query"
+      },
+      {
+        "evidenceId": "condition.qc-report-absent",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/4/when/children/1"
+      },
+      {
+        "evidenceId": "condition.qc-report-unknown",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/5/when/children/1"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-no-report",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-postgate-merge-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#report.release_status",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "report.release_status",
+      "name": "报告释放状态",
+      "factKind": "source",
+      "dataType": "enum",
+      "description": "释放状态表当前状态；处于准备释放/释放中/已释放任一终态时跳过本次评估，空值或其余状态继续评估。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "准备释放",
+        "释放中",
+        "已释放"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.report.release_status",
+          "query.report.release_status"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "report.release_status",
+          "dataType": "enum",
+          "required": true,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.release_status",
+              "query.report.release_status"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.report.release_status",
+          "query.report.release_status"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.report.release_status",
+          "query.report.release_status"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.report.release_status",
+          "query.report.release_status"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "enum",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "stateGuards",
+        "ruleCode": "REPORT_STATUS_TERMINAL",
+        "priority": 10,
+        "conditionId": "release-status-terminal",
+        "conditionPath": "/stages/0/rules/0/when",
+        "outcome": "SKIPPED",
+        "evidenceIds": [
+          "condition.release-status-terminal"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": "准备释放",
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": null,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": null,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": null,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": null,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": null,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "report.release_status",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.report.release_status",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/6"
+      },
+      {
+        "evidenceId": "query.report.release_status",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/6/query"
+      },
+      {
+        "evidenceId": "condition.release-status-terminal",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/0/rules/0/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#order.amount",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "order.amount",
+      "name": "订单金额",
+      "factKind": "source",
+      "dataType": "money",
+      "description": "订单金额；为 0 时命中 R0 直接释放，空值继续评估后续规则。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "订单标识。"
+        }
+      ],
+      "unit": "CNY",
+      "allowedValues": []
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "order",
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ],
+        "evidenceIds": [
+          "fact.order.amount",
+          "query.order.amount"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "order.amount",
+          "dataType": "money",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        {
+          "fieldId": "parameter.orderId",
+          "role": "entityKey",
+          "logicalName": "orderId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "order.key",
+            "fieldId": "parameter.orderId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "orderId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.amount",
+              "query.order.amount"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.order.amount",
+          "query.order.amount"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.order.amount",
+          "query.order.amount"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.order.amount",
+          "query.order.amount"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "money",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": "CNY"
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R0_ZERO_ORDER",
+        "priority": 10,
+        "conditionId": "r0-zero-order",
+        "conditionPath": "/stages/2/rules/0/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r0-zero-order"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": 12000.0,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": 12000.0,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": 12000.0,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": 12000.0,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": 12000.0,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": 0.0,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r1-special-approval",
+        "value": 12000.0,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r1-special-approval"
+        ]
+      },
+      {
+        "exampleId": "case-postgate-merge-blocked",
+        "value": 0.0,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-postgate-merge-blocked"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": 12000.0,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "order.amount",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.order.amount",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/7"
+      },
+      {
+        "evidenceId": "query.order.amount",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/7/query"
+      },
+      {
+        "evidenceId": "condition.r0-zero-order",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/0/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r1-special-approval",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/8"
+      },
+      {
+        "evidenceId": "case-postgate-merge-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#release.special_application_count",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "release.special_application_count",
+      "name": "特殊申请已审批数量",
+      "factKind": "aggregate",
+      "dataType": "integer",
+      "description": "项目报告释放类型且审批流程已完成的特殊申请数量；大于 0 时命中 R1 直接释放，统计范围在查询阶段固定。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": []
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.release.special_application_count",
+          "query.release.special_application_count"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "release.special_application_count",
+          "dataType": "integer",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.release.special_application_count",
+          "query.release.special_application_count"
+        ]
+      },
+      "aggregation": {
+        "mode": "compute",
+        "function": "count",
+        "inputFieldIds": [
+          "factValue"
+        ],
+        "groupByFieldIds": [],
+        "distinct": false,
+        "evidenceIds": [
+          "fact.release.special_application_count",
+          "query.release.special_application_count"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.release.special_application_count",
+          "query.release.special_application_count"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R1_SPECIAL_APPROVAL",
+        "priority": 20,
+        "conditionId": "r1-special-approval",
+        "conditionPath": "/stages/2/rules/1/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r1-special-approval"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": 0,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": 0,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": 0,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": 0,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": 0,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": 0,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r1-special-approval",
+        "value": 3,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r1-special-approval"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "release.special_application_count",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.release.special_application_count",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/8"
+      },
+      {
+        "evidenceId": "query.release.special_application_count",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/8/query"
+      },
+      {
+        "evidenceId": "condition.r1-special-approval",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/1/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r1-special-approval",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/8"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#release.raw_data_released_after_cutoff",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "release.raw_data_released_after_cutoff",
+      "name": "原始数据已释放且过截止日",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "原始数据已释放且完工日期不早于 2024-11-21 时为真，命中 R4 直接释放；截止日为固定业务参数。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.release.raw_data_released_after_cutoff",
+          "query.release.raw_data_released_after_cutoff"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "release.raw_data_released_after_cutoff",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        },
+        {
+          "fieldId": "completion.date",
+          "role": "time",
+          "logicalName": "完工日期",
+          "dataType": "date",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.raw_data_released_after_cutoff",
+            "query.release.raw_data_released_after_cutoff"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.raw_data_released_after_cutoff",
+              "query.release.raw_data_released_after_cutoff"
+            ]
+          },
+          {
+            "filterId": "completion.cutoff",
+            "fieldId": "completion.date",
+            "operator": "gte",
+            "value": {
+              "kind": "literal",
+              "parameterName": null,
+              "literal": "2024-11-21"
+            },
+            "nullPolicy": "indeterminate",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.raw_data_released_after_cutoff",
+              "query.release.raw_data_released_after_cutoff"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.release.raw_data_released_after_cutoff",
+          "query.release.raw_data_released_after_cutoff"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.release.raw_data_released_after_cutoff",
+          "query.release.raw_data_released_after_cutoff"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.release.raw_data_released_after_cutoff",
+          "query.release.raw_data_released_after_cutoff"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R4_RAW_DATA_RELEASED",
+        "priority": 40,
+        "conditionId": "r4-raw-data-released",
+        "conditionPath": "/stages/2/rules/3/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r4-raw-data-released"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r4-raw-data-released",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r4-raw-data-released"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "release.raw_data_released_after_cutoff",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.release.raw_data_released_after_cutoff",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/9"
+      },
+      {
+        "evidenceId": "query.release.raw_data_released_after_cutoff",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/9/query"
+      },
+      {
+        "evidenceId": "condition.r4-raw-data-released",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/3/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r4-raw-data-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/10"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#order.source_code",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "order.source_code",
+      "name": "订单来源",
+      "factKind": "source",
+      "dataType": "enum",
+      "description": "订单来源编码；当前确认值域仅含规则引用值 2=海外业务，命中 R2 直接释放，其余值域待业务补充。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "订单标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        "2"
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "order",
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ],
+        "evidenceIds": [
+          "fact.order.source_code",
+          "query.order.source_code"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "order.source_code",
+          "dataType": "enum",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        {
+          "fieldId": "parameter.orderId",
+          "role": "entityKey",
+          "logicalName": "orderId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "order.key",
+            "fieldId": "parameter.orderId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "orderId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.source_code",
+              "query.order.source_code"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.order.source_code",
+          "query.order.source_code"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.order.source_code",
+          "query.order.source_code"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.order.source_code",
+          "query.order.source_code"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "enum",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R2_OVERSEAS_ORDER",
+        "priority": 50,
+        "conditionId": "r2-overseas-order",
+        "conditionPath": "/stages/2/rules/4/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r2-overseas-order"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": null,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": null,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": null,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": null,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": null,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": null,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r2-overseas-order",
+        "value": "2",
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r2-overseas-order"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "order.source_code",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.order.source_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/10"
+      },
+      {
+        "evidenceId": "query.order.source_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/10/query"
+      },
+      {
+        "evidenceId": "condition.r2-overseas-order",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r2-overseas-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/11"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [
+      {
+        "uncertaintyId": "domain.order-source-code",
+        "code": "CONFIRMED_VALUE_DOMAIN_MINIMAL",
+        "impact": "warning",
+        "reason": "当前确认值域仅含 2=海外业务；其余编码待业务补充后扩展目录。",
+        "evidenceIds": [
+          "query.order.source_code"
+        ]
+      }
+    ],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#product.special_product_flag",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "product.special_product_flag",
+      "name": "特殊产品标记",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "产品属于多组学创新科学研究（产品编号 759）时为真，命中 R3 后按基准金额分档适用释放比例；该标记同时是 R5/R6 的排除前置。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.product.special_product_flag",
+          "query.product.special_product_flag"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "product.special_product_flag",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.product.special_product_flag",
+            "query.product.special_product_flag"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.product.special_product_flag",
+              "query.product.special_product_flag"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.product.special_product_flag",
+          "query.product.special_product_flag"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.product.special_product_flag",
+          "query.product.special_product_flag"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.product.special_product_flag",
+          "query.product.special_product_flag"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R3_SPECIAL_PRODUCT",
+        "priority": 60,
+        "conditionId": "r3-special-product",
+        "conditionPath": "/stages/2/rules/5/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r3-special-product"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r3-special-product",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r3-special-product"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "product.special_product_flag",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.product.special_product_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/11"
+      },
+      {
+        "evidenceId": "query.product.special_product_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/11/query"
+      },
+      {
+        "evidenceId": "condition.r3-special-product",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/5/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r3-special-product",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/12"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#release.timed_release_eligible",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "release.timed_release_eligible",
+      "name": "完工时间触发满足",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "完工时间触发规则已到期时为真：酵母筛库/家族库且无主服务完工即满足；其余产品按任务单金额与开票状态适用完工后 60/75/180 天；2026-04-15 起适用，命中 R8 直接释放。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.release.timed_release_eligible",
+          "query.release.timed_release_eligible"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "release.timed_release_eligible",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.release.timed_release_eligible",
+            "query.release.timed_release_eligible"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.timed_release_eligible",
+              "query.release.timed_release_eligible"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.release.timed_release_eligible",
+          "query.release.timed_release_eligible"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.release.timed_release_eligible",
+          "query.release.timed_release_eligible"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.release.timed_release_eligible",
+          "query.release.timed_release_eligible"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R8_TIME_TRIGGER",
+        "priority": 70,
+        "conditionId": "r8-time-trigger",
+        "conditionPath": "/stages/2/rules/6/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r8-time-trigger"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r8-time-trigger",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r8-time-trigger"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "release.timed_release_eligible",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.release.timed_release_eligible",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/12"
+      },
+      {
+        "evidenceId": "query.release.timed_release_eligible",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/12/query"
+      },
+      {
+        "evidenceId": "condition.r8-time-trigger",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/6/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r8-time-trigger",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/13"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#order.enterprise_non_framework_full_payment_eligible",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "order.enterprise_non_framework_full_payment_eligible",
+      "name": "非框架企业单位全额到款满足",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "非框架协议且企业单位、订单关联到款（含押金）不低于累计完工金额（抽提质检、任务单与项目报告释放金额之和）的 100% 时为真，命中 R5 直接释放。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "订单标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "order",
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ],
+        "evidenceIds": [
+          "fact.order.enterprise_non_framework_full_payment_eligible",
+          "query.order.enterprise_non_framework_full_payment_eligible"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "order.enterprise_non_framework_full_payment_eligible",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        },
+        {
+          "fieldId": "parameter.orderId",
+          "role": "entityKey",
+          "logicalName": "orderId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.enterprise_non_framework_full_payment_eligible",
+            "query.order.enterprise_non_framework_full_payment_eligible"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "order.key",
+            "fieldId": "parameter.orderId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "orderId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.enterprise_non_framework_full_payment_eligible",
+              "query.order.enterprise_non_framework_full_payment_eligible"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.order.enterprise_non_framework_full_payment_eligible",
+          "query.order.enterprise_non_framework_full_payment_eligible"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.order.enterprise_non_framework_full_payment_eligible",
+          "query.order.enterprise_non_framework_full_payment_eligible"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.order.enterprise_non_framework_full_payment_eligible",
+          "query.order.enterprise_non_framework_full_payment_eligible"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R5_ENTERPRISE",
+        "priority": 80,
+        "conditionId": "r5-enterprise",
+        "conditionPath": "/stages/2/rules/7/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r5-enterprise"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r5-enterprise",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r5-enterprise"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "order.enterprise_non_framework_full_payment_eligible",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.order.enterprise_non_framework_full_payment_eligible",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/13"
+      },
+      {
+        "evidenceId": "query.order.enterprise_non_framework_full_payment_eligible",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/13/query"
+      },
+      {
+        "evidenceId": "condition.r5-enterprise",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/7/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r5-enterprise",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/14"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#order.non_enterprise_release_eligible",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "order.non_enterprise_release_eligible",
+      "name": "非框架非企业单位释放满足",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "非框架协议且非企业单位，订单关联到款（含押金）不低于累计完工金额的 100%，或不低于 80% 且订单关联押金不低于未关联到款金额的 20% 并满足合同盖章条件时为真，命中 R6 直接释放。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "订单标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "order",
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ],
+        "evidenceIds": [
+          "fact.order.non_enterprise_release_eligible",
+          "query.order.non_enterprise_release_eligible"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "order.non_enterprise_release_eligible",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        },
+        {
+          "fieldId": "parameter.orderId",
+          "role": "entityKey",
+          "logicalName": "orderId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.non_enterprise_release_eligible",
+            "query.order.non_enterprise_release_eligible"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "order.key",
+            "fieldId": "parameter.orderId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "orderId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.non_enterprise_release_eligible",
+              "query.order.non_enterprise_release_eligible"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.order.non_enterprise_release_eligible",
+          "query.order.non_enterprise_release_eligible"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.order.non_enterprise_release_eligible",
+          "query.order.non_enterprise_release_eligible"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.order.non_enterprise_release_eligible",
+          "query.order.non_enterprise_release_eligible"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R6_NON_ENTERPRISE",
+        "priority": 90,
+        "conditionId": "r6-non-enterprise",
+        "conditionPath": "/stages/2/rules/8/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r6-non-enterprise"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r6-non-enterprise",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r6-non-enterprise"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "order.non_enterprise_release_eligible",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.order.non_enterprise_release_eligible",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/14"
+      },
+      {
+        "evidenceId": "query.order.non_enterprise_release_eligible",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/14/query"
+      },
+      {
+        "evidenceId": "condition.r6-non-enterprise",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/8/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r6-non-enterprise",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/15"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#order.framework_release_eligible",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "order.framework_release_eligible",
+      "name": "框架协议释放满足",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "框架协议（科研/公司）订单，关联到款（含押金）不低于累计完工金额的 80%，或订单关联押金不低于未关联到款金额的 20% 时为真，命中 R7 直接释放。",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "订单标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "order",
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ],
+        "evidenceIds": [
+          "fact.order.framework_release_eligible",
+          "query.order.framework_release_eligible"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "order.framework_release_eligible",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        },
+        {
+          "fieldId": "parameter.orderId",
+          "role": "entityKey",
+          "logicalName": "orderId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.order.framework_release_eligible",
+            "query.order.framework_release_eligible"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "order.key",
+            "fieldId": "parameter.orderId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "orderId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.framework_release_eligible",
+              "query.order.framework_release_eligible"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.order.framework_release_eligible",
+          "query.order.framework_release_eligible"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.order.framework_release_eligible",
+          "query.order.framework_release_eligible"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.order.framework_release_eligible",
+          "query.order.framework_release_eligible"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "eligibility",
+        "ruleCode": "R7_FRAMEWORK",
+        "priority": 100,
+        "conditionId": "r7-framework",
+        "conditionPath": "/stages/2/rules/9/when",
+        "outcome": "READY",
+        "evidenceIds": [
+          "condition.r7-framework"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-r7-framework",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r7-framework"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": null,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "order.framework_release_eligible",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.order.framework_release_eligible",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/15"
+      },
+      {
+        "evidenceId": "query.order.framework_release_eligible",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/15/query"
+      },
+      {
+        "evidenceId": "condition.r7-framework",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/9/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-r7-framework",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/16"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#report.merge_group_eligible",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "report.merge_group_eligible",
+      "name": "合并报告组释放约束满足",
+      "factKind": "source",
+      "dataType": "boolean",
+      "description": "本任务单实时命中释放规则，且（非合并报告，或同一合并报告下所有相关任务单均处于可释放终态或实时命中释放规则）时为真；为假时合并组约束未满足，释放降级为等待满足条件。该事实不可为空。",
+      "nullable": false,
+      "nullPolicy": "fail",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.report.merge_group_eligible",
+          "query.report.merge_group_eligible"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "report.merge_group_eligible",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.report.merge_group_eligible",
+          "query.report.merge_group_eligible"
+        ]
+      },
+      "aggregation": {
+        "mode": "none",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.report.merge_group_eligible",
+          "query.report.merge_group_eligible"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.report.merge_group_eligible",
+          "query.report.merge_group_eligible"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "postGates",
+        "ruleCode": "MERGED_REPORT_GATE",
+        "priority": 10,
+        "conditionId": "merged-report-gate",
+        "conditionPath": "/stages/3/rules/0/when",
+        "outcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "condition.merged-report-gate"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": true,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": true,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": true,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": true,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": true,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": true,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-postgate-merge-blocked",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-postgate-merge-blocked"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": true,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "report.merge_group_eligible",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.report.merge_group_eligible",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/16"
+      },
+      {
+        "evidenceId": "query.report.merge_group_eligible",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/16/query"
+      },
+      {
+        "evidenceId": "condition.merged-report-gate",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/3/rules/0/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-postgate-merge-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  },
+  {
+    "contractVersion": "3.0.0",
+    "status": "candidate",
+    "executable": false,
+    "requestId": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a#task.in_oa_process",
+    "ruleRef": {
+      "ruleSetId": "REPORT_RELEASE_ALL_001",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260905T172407000000Z-f285643e5b2b-82dbd05a800a",
+      "schemaVersion": "3.0.0",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+      "candidatePayloadSha256": "7974ec1174e2add23239829a006f025e7ff4d4d4bac69f5a97dfadb5b002b6a6"
+    },
+    "fact": {
+      "factCode": "task.in_oa_process",
+      "name": "任务在 OA 流程中",
+      "factKind": "exists",
+      "dataType": "boolean",
+      "description": "任务单当前处于项目报告释放 OA 流程中时为真，命中排除条件后跳过触发；该事实不可为空。",
+      "nullable": false,
+      "nullPolicy": "fail",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "unit": null,
+      "allowedValues": [
+        true,
+        false
+      ]
+    },
+    "queryRequirements": {
+      "entity": {
+        "entityType": "task",
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ],
+        "evidenceIds": [
+          "fact.task.in_oa_process",
+          "query.task.in_oa_process"
+        ]
+      },
+      "fields": [
+        {
+          "fieldId": "factValue",
+          "role": "value",
+          "logicalName": "task.in_oa_process",
+          "dataType": "boolean",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        {
+          "fieldId": "parameter.taskId",
+          "role": "entityKey",
+          "logicalName": "taskId",
+          "dataType": "string",
+          "required": true,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        }
+      ],
+      "filters": {
+        "items": [
+          {
+            "filterId": "task.key",
+            "fieldId": "parameter.taskId",
+            "operator": "eq",
+            "value": {
+              "kind": "parameter",
+              "parameterName": "taskId",
+              "literal": null
+            },
+            "nullPolicy": "error",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          }
+        ],
+        "completeness": "complete",
+        "evidenceIds": [
+          "fact.task.in_oa_process",
+          "query.task.in_oa_process"
+        ]
+      },
+      "aggregation": {
+        "mode": "exists",
+        "function": null,
+        "inputFieldIds": [],
+        "groupByFieldIds": [],
+        "distinct": null,
+        "evidenceIds": [
+          "fact.task.in_oa_process",
+          "query.task.in_oa_process"
+        ]
+      },
+      "timeRange": {
+        "mode": "none",
+        "timeFieldId": null,
+        "start": null,
+        "end": null,
+        "timezone": null,
+        "evidenceIds": [
+          "fact.task.in_oa_process",
+          "query.task.in_oa_process"
+        ]
+      },
+      "result": {
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "cardinality": "scalar",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "unit": null
+      }
+    },
+    "usages": [
+      {
+        "stage": "exclusions",
+        "ruleCode": "OA_PROCESS_SCOPE",
+        "priority": 10,
+        "conditionId": "oa-process-scope",
+        "conditionPath": "/stages/4/rules/0/when",
+        "outcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "condition.oa-process-scope"
+        ]
+      }
+    ],
+    "examples": [
+      {
+        "exampleId": "case-state-terminal-skip",
+        "value": false,
+        "expectedOutcome": "SKIPPED",
+        "evidenceIds": [
+          "case-state-terminal-skip"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-not-completed",
+        "value": false,
+        "expectedOutcome": "WAITING_COMPLETION",
+        "evidenceIds": [
+          "case-prereq-not-completed"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-experiment-offline",
+        "value": false,
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "evidenceIds": [
+          "case-prereq-experiment-offline"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-offline-released",
+        "value": false,
+        "expectedOutcome": "ALREADY_RELEASED",
+        "evidenceIds": [
+          "case-prereq-offline-released"
+        ]
+      },
+      {
+        "exampleId": "case-prereq-availability-unknown",
+        "value": false,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-prereq-availability-unknown"
+        ]
+      },
+      {
+        "exampleId": "case-r0-zero-order",
+        "value": false,
+        "expectedOutcome": "READY",
+        "evidenceIds": [
+          "case-r0-zero-order"
+        ]
+      },
+      {
+        "exampleId": "case-exclusion-oa-process",
+        "value": true,
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "evidenceIds": [
+          "case-exclusion-oa-process"
+        ]
+      },
+      {
+        "exampleId": "case-indeterminate-missing-eligibility",
+        "value": false,
+        "expectedOutcome": "INDETERMINATE",
+        "evidenceIds": [
+          "case-indeterminate-missing-eligibility"
+        ]
+      }
+    ],
+    "mappingCandidate": {
+      "factCode": "task.in_oa_process",
+      "mappingStatus": "unresolved",
+      "viewName": null,
+      "viewField": null,
+      "viewActive": null,
+      "reviewStatus": "candidate",
+      "note": "物理来源由 metadataReview 解析。"
+    },
+    "provenance": {
+      "sourceName": "项目报告和原始数据释放优化方案.md",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceSha256": "f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d",
+      "sourceCharacterCount": 1402,
+      "parserVersion": "0.11.0",
+      "promptVersion": "rule-structure-v3.1",
+      "provider": "reviewed_import",
+      "model": "reviewed-import-v3-adjudication"
+    },
+    "evidence": [
+      {
+        "evidenceId": "fact.task.in_oa_process",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/17"
+      },
+      {
+        "evidenceId": "query.task.in_oa_process",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/17/query"
+      },
+      {
+        "evidenceId": "condition.oa-process-scope",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/4/rules/0/when"
+      },
+      {
+        "evidenceId": "case-state-terminal-skip",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-prereq-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-prereq-experiment-offline",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-prereq-offline-released",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-prereq-availability-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-r0-zero-order",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-exclusion-oa-process",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/18"
+      },
+      {
+        "evidenceId": "case-indeterminate-missing-eligibility",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      }
+    ],
+    "uncertainties": [],
+    "targetDialect": "sqlserver",
+    "requiresMetadataSnapshot": true,
+    "tempTableAllowed": false
+  }
+]

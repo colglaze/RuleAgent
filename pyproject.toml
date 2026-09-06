@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rule-reader"
-version = "0.10.0"
+version = "0.12.0"
 description = "RuleReader backend and rule parsing agent"
 readme = "README.md"
 requires-python = "==3.11.9"
@@ -51,9 +51,13 @@ src = ["src", "tests"]
 select = ["ASYNC", "B", "E", "F", "I", "RUF", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
+"scripts/analyze_v3_agent2_readiness.py" = ["RUF001"]
 "scripts/reviewed_report_release_all_001.py" = ["RUF001"]
 "scripts/reviewed_report_release_all_001_remediation.py" = ["RUF001"]
 "scripts/report_release_v3_profile.py" = ["RUF001"]
+"scripts/report_release_v3_confirmed_profile.py" = ["RUF001"]
+"scripts/build_agent2_metadata_review_package.py" = ["RUF001"]
+"scripts/validate_report_release_v3_reference.py" = ["RUF001"]
 "src/rule_reader/application/rule_parsing/source_v3.py" = ["RUF001"]
 "src/rule_reader/domain/rules/catalog.py" = ["RUF001"]
 "src/rule_reader/infrastructure/deepseek.py" = ["RUF001"]

@@ -165,3 +165,32 @@ async def test_deepseek_invalid_usage_is_omitted_without_rejecting_candidate() -
 
     assert generation.content == "{}"
     assert generation.token_usage is None
+
+
+@pytest.mark.asyncio
+async def test_deepseek_v3_uses_explicit_prompt_and_payload() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        body = json.loads(request.content)
+        assert body["messages"][0]["content"] == "v3-system"
+        assert json.loads(body["messages"][1]["content"]) == {"task": "v3"}
+        return httpx.Response(
+            200,
+            json={
+                "id": "deepseek-v3-001",
+                "choices": [{"message": {"content": "{}"}}],
+            },
+        )
+
+    settings = Settings(
+        _env_file=None,
+        deepseek_api_key="test-key",
+        deepseek_base_url="https://example.invalid",
+        deepseek_model="deepseek-test",
+    )
+    model = DeepSeekChatModel(settings, transport=httpx.MockTransport(handler))
+    generation = await model.generate_rule_structure_v3(
+        system_prompt="v3-system", user_payload={"task": "v3"}
+    )
+    await model.close()
+    assert generation.content == "{}"
+    assert generation.provider_request_id == "deepseek-v3-001"

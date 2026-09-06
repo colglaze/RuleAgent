@@ -11,7 +11,9 @@ from typing import Any, cast
 from pydantic import BaseModel
 from tests.support import valid_candidate_v2
 from tests.v3_fixtures import (
+    valid_fact_binding_request_v3,
     valid_fact_catalog_v3,
+    valid_rule_parse_result_v3,
     valid_rule_structure_candidate_v3,
 )
 
@@ -20,14 +22,18 @@ from rule_reader.domain.rules.bindings_v2 import (
     build_fact_binding_requests_v2,
     fact_binding_request_schema_v2,
 )
+from rule_reader.domain.rules.bindings_v3 import fact_binding_request_schema_v3
 from rule_reader.domain.rules.catalog_v3 import fact_catalog_schema_v3
 from rule_reader.domain.rules.models import ParserMetadata, SourceMetadata
+from rule_reader.domain.rules.result_v3 import rule_parse_result_schema_v3
 from rule_reader.domain.rules.v2 import RuleCandidateV2, RuleParseResultV2
 from rule_reader.domain.rules.v3 import rule_structure_candidate_schema_v3
 from rule_reader.domain.rules.validation_v2 import enrich_candidate_v2, validate_candidate_v2
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FACT_BINDING_V2_PATH = PROJECT_ROOT / "contracts" / "fact-binding-request-2.0.0.schema.json"
+FACT_BINDING_V3_PATH = PROJECT_ROOT / "contracts" / "fact-binding-request-3.0.0.schema.json"
+RULE_RESULT_V3_PATH = PROJECT_ROOT / "contracts" / "rule-parse-result-3.0.0.schema.json"
 FACT_CATALOG_V3_PATH = (
     PROJECT_ROOT / "contracts" / "business-confirmed-fact-catalog-3.0.0.schema.json"
 )
@@ -68,6 +74,8 @@ def _request_payload(request: BaseModel) -> dict[str, Any]:
 
 def main() -> None:
     _write_json(FACT_BINDING_V2_PATH, fact_binding_request_schema_v2())
+    _write_json(FACT_BINDING_V3_PATH, fact_binding_request_schema_v3())
+    _write_json(RULE_RESULT_V3_PATH, rule_parse_result_schema_v3())
     _write_json(FACT_CATALOG_V3_PATH, fact_catalog_schema_v3())
     _write_json(RULE_STRUCTURE_V3_PATH, rule_structure_candidate_schema_v3())
 
@@ -93,6 +101,27 @@ def main() -> None:
     _write_json(
         EXAMPLES_ROOT / "rule-structure-candidate-3.0.0.invalid-missing-default.json",
         invalid_structure_v3,
+    )
+
+    valid_binding_v3 = valid_fact_binding_request_v3()
+    _write_json(
+        EXAMPLES_ROOT / "fact-binding-request-3.0.0.valid.json",
+        valid_binding_v3,
+    )
+    invalid_binding_v3 = deepcopy(valid_binding_v3)
+    del invalid_binding_v3["queryRequirements"]
+    _write_json(
+        EXAMPLES_ROOT / "fact-binding-request-3.0.0.invalid-missing-query.json",
+        invalid_binding_v3,
+    )
+
+    valid_result_v3 = valid_rule_parse_result_v3()
+    _write_json(EXAMPLES_ROOT / "rule-parse-result-3.0.0.valid.json", valid_result_v3)
+    invalid_result_v3 = deepcopy(valid_result_v3)
+    del invalid_result_v3["factDeclarations"]
+    _write_json(
+        EXAMPLES_ROOT / "rule-parse-result-3.0.0.invalid-missing-facts.json",
+        invalid_result_v3,
     )
 
     result = _example_result()

@@ -1,0 +1,812 @@
+{
+  "contractVersion": "3.0.0",
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "title": "有序项目报告释放规则",
+  "scope": "OA 正式实验任务单项目报告释放；按前提和 R0/R1/R9/R4/R2/R3/R8/R5/R6/R7 顺序。",
+  "catalogId": "REPORT_RELEASE_CONFIRMED_FACTS",
+  "catalogVersion": "2026-09-06.1",
+  "catalogDigest": "82dbd05a800a5df27291423f348ab451436f1271eb485ae2c495e40abf6328da",
+  "sourceViews": [
+    "v_sendreport_trigger",
+    "v_ReportReleaseSealCondition",
+    "v_OrderFormaltestsettlement",
+    "v_ReportDataReleaseRules"
+  ],
+  "requiredFactCodes": [
+    "order.amount",
+    "order.enterprise_non_framework_full_payment_eligible",
+    "order.framework_release_eligible",
+    "order.non_enterprise_release_eligible",
+    "order.source_code",
+    "product.special_product_flag",
+    "release.raw_data_released_after_cutoff",
+    "release.special_application_count",
+    "release.timed_release_eligible",
+    "report.merge_group_eligible",
+    "report.release_status",
+    "task.batch_report_release_flag",
+    "task.experiment_status_code",
+    "task.in_oa_process",
+    "task.offline_report_release_flag",
+    "task.project_report_flag",
+    "task.qc_report_flag",
+    "task.status_code"
+  ],
+  "stages": [
+    {
+      "stage": "stateGuards",
+      "rules": [
+        {
+          "ruleCode": "REPORT_STATUS_TERMINAL",
+          "priority": 10,
+          "title": "释放状态表终态检查",
+          "status": "active",
+          "when": {
+            "id": "release-status-terminal",
+            "kind": "compare",
+            "description": "release status terminal",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "report.release_status",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "in",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": [
+                "准备释放",
+                "释放中",
+                "已释放"
+              ],
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "SKIPPED",
+          "reasonCode": "REPORT_STATUS_TERMINAL_MATCHED",
+          "failureReason": "释放状态表终态检查。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "prerequisites",
+      "rules": [
+        {
+          "ruleCode": "TASK_NOT_COMPLETED",
+          "priority": 10,
+          "title": "任务尚未完工",
+          "status": "active",
+          "when": {
+            "id": "task-not-completed",
+            "kind": "compare",
+            "description": "task not completed",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "ne",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "19",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_COMPLETION",
+          "reasonCode": "TASK_NOT_COMPLETED_MATCHED",
+          "failureReason": "任务尚未完工。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+          "priority": 20,
+          "title": "失败导致线下确认收入",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-offline",
+            "kind": "compare",
+            "description": "experiment status offline",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "2",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_OFFLINE_MATCHED",
+          "failureReason": "失败导致线下确认收入。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+          "priority": 30,
+          "title": "问题项目无需释放",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-problem",
+            "kind": "compare",
+            "description": "experiment status problem",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "7",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_PROBLEM_MATCHED",
+          "failureReason": "问题项目无需释放。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "OFFLINE_REPORT_RELEASED",
+          "priority": 40,
+          "title": "项目报告已线下释放",
+          "status": "active",
+          "when": {
+            "id": "offline-report-released",
+            "kind": "compare",
+            "description": "offline report released",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.offline_report_release_flag",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "4",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "ALREADY_RELEASED",
+          "reasonCode": "OFFLINE_REPORT_RELEASED_MATCHED",
+          "failureReason": "项目报告已线下释放。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "NO_PROJECT_REPORT",
+          "priority": 50,
+          "title": "任务无需项目报告",
+          "status": "active",
+          "when": {
+            "id": "no-project-report",
+            "kind": "all",
+            "description": "no project report",
+            "enabled": true,
+            "children": [
+              {
+                "id": "project-report-absent",
+                "kind": "compare",
+                "description": "project report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.project_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": "1",
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "qc-report-absent",
+                "kind": "compare",
+                "description": "qc report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.qc_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": "1",
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "NO_PROJECT_REPORT_MATCHED",
+          "failureReason": "任务无需项目报告。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+          "priority": 60,
+          "title": "有无项目报告待定",
+          "status": "active",
+          "when": {
+            "id": "report-availability-unknown",
+            "kind": "any",
+            "description": "report availability unknown",
+            "enabled": true,
+            "children": [
+              {
+                "id": "project-report-unknown",
+                "kind": "compare",
+                "description": "project report unknown",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.project_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "is_null",
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "qc-report-unknown",
+                "kind": "compare",
+                "description": "qc report unknown",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.qc_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "is_null",
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "REPORT_AVAILABILITY_UNKNOWN_MATCHED",
+          "failureReason": "有无项目报告待定。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "eligibility",
+      "rules": [
+        {
+          "ruleCode": "R0_ZERO_ORDER",
+          "priority": 10,
+          "title": "R0 0元订单",
+          "status": "active",
+          "when": {
+            "id": "r0-zero-order",
+            "kind": "compare",
+            "description": "r0 zero order",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.amount",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R0_ZERO_ORDER_MATCHED",
+          "failureReason": "R0 0元订单。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R1_SPECIAL_APPROVAL",
+          "priority": 20,
+          "title": "R1 特殊申请已审批",
+          "status": "active",
+          "when": {
+            "id": "r1-special-approval",
+            "kind": "compare",
+            "description": "r1 special approval",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "release.special_application_count",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "gt",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R1_SPECIAL_APPROVAL_MATCHED",
+          "failureReason": "R1 特殊申请已审批。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R9_BATCH_RELEASE",
+          "priority": 30,
+          "title": "R9 标记批量释放",
+          "status": "active",
+          "when": {
+            "id": "r9-batch-release",
+            "kind": "compare",
+            "description": "r9 batch release",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.batch_report_release_flag",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "4",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R9_BATCH_RELEASE_MATCHED",
+          "failureReason": "R9 标记批量释放。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R4_RAW_DATA_RELEASED",
+          "priority": 40,
+          "title": "R4 原始数据已释放",
+          "status": "active",
+          "when": {
+            "id": "r4-raw-data-released",
+            "kind": "compare",
+            "description": "r4 raw data released",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "release.raw_data_released_after_cutoff",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R4_RAW_DATA_RELEASED_MATCHED",
+          "failureReason": "R4 原始数据已释放。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R2_OVERSEAS_ORDER",
+          "priority": 50,
+          "title": "R2 海外业务订单",
+          "status": "active",
+          "when": {
+            "id": "r2-overseas-order",
+            "kind": "compare",
+            "description": "r2 overseas order",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.source_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": "2",
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R2_OVERSEAS_ORDER_MATCHED",
+          "failureReason": "R2 海外业务订单。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R3_SPECIAL_PRODUCT",
+          "priority": 60,
+          "title": "R3 特殊产品",
+          "status": "active",
+          "when": {
+            "id": "r3-special-product",
+            "kind": "compare",
+            "description": "r3 special product",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "product.special_product_flag",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R3_SPECIAL_PRODUCT_MATCHED",
+          "failureReason": "R3 特殊产品。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R8_TIME_TRIGGER",
+          "priority": 70,
+          "title": "R8 完工时间触发",
+          "status": "active",
+          "when": {
+            "id": "r8-time-trigger",
+            "kind": "compare",
+            "description": "r8 time trigger",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "release.timed_release_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R8_TIME_TRIGGER_MATCHED",
+          "failureReason": "R8 完工时间触发。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R5_ENTERPRISE",
+          "priority": 80,
+          "title": "R5 非框架企业单位",
+          "status": "active",
+          "when": {
+            "id": "r5-enterprise",
+            "kind": "compare",
+            "description": "r5 enterprise",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.enterprise_non_framework_full_payment_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R5_ENTERPRISE_MATCHED",
+          "failureReason": "R5 非框架企业单位。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R6_NON_ENTERPRISE",
+          "priority": 90,
+          "title": "R6 非框架非企业单位",
+          "status": "active",
+          "when": {
+            "id": "r6-non-enterprise",
+            "kind": "compare",
+            "description": "r6 non enterprise",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.non_enterprise_release_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R6_NON_ENTERPRISE_MATCHED",
+          "failureReason": "R6 非框架非企业单位。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R7_FRAMEWORK",
+          "priority": 100,
+          "title": "R7 框架协议",
+          "status": "active",
+          "when": {
+            "id": "r7-framework",
+            "kind": "compare",
+            "description": "r7 framework",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.framework_release_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R7_FRAMEWORK_MATCHED",
+          "failureReason": "R7 框架协议。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "postGates",
+      "rules": [
+        {
+          "ruleCode": "MERGED_REPORT_GATE",
+          "priority": 10,
+          "title": "合并报告组全部满足",
+          "status": "active",
+          "when": {
+            "id": "merged-report-gate",
+            "kind": "compare",
+            "description": "merged report gate",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "report.merge_group_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "ne",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "MERGED_REPORT_GATE_MATCHED",
+          "failureReason": "合并报告组全部满足。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "exclusions",
+      "rules": [
+        {
+          "ruleCode": "OA_PROCESS_SCOPE",
+          "priority": 10,
+          "title": "任务必须位于OA流程",
+          "status": "active",
+          "when": {
+            "id": "oa-process-scope",
+            "kind": "compare",
+            "description": "oa process scope",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.in_oa_process",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "OA_PROCESS_SCOPE_MATCHED",
+          "failureReason": "任务必须位于OA流程。",
+          "recommendations": [
+            "按有序来源与 2026-09-06 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    }
+  ],
+  "defaultOutcome": "WAITING_CONDITIONS",
+  "defaultReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+  "blockingIssues": [],
+  "proposedFacts": []
+}

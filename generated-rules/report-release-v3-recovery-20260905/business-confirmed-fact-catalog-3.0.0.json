@@ -1,0 +1,327 @@
+{
+  "contractVersion": "3.0.0",
+  "catalogId": "REPORT_RELEASE_CONFIRMED_FACTS",
+  "catalogVersion": "2026-09-05.1",
+  "catalogDigest": "f2bf1c99d27c379559fff1e0311ffa8a202759ce466be6262a5611dc28c8518d",
+  "facts": [
+    {
+      "factCode": "task.status_code",
+      "name": "任务状态",
+      "description": "任务状态：主释放任务要求 19；费用统计排除 20 等",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "226",
+        "239",
+        "551",
+        "227",
+        "552",
+        "553",
+        "554",
+        "691",
+        "228",
+        "571",
+        "229",
+        "230",
+        "231",
+        "232",
+        "484",
+        "233",
+        "234",
+        "235",
+        "236",
+        "237",
+        "238",
+        "240",
+        "241",
+        "242",
+        "243",
+        "244",
+        "245",
+        "246",
+        "247",
+        "248",
+        "249",
+        "250",
+        "251",
+        "279",
+        "493",
+        "495",
+        "496",
+        "532",
+        "533",
+        "534",
+        "603",
+        "604",
+        "605",
+        "606",
+        "1040",
+        "1041",
+        "1042"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.8"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.project_report_flag",
+      "name": "项目报告",
+      "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "0",
+        "1"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.17"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.experiment_status_code",
+      "name": "任务单实验状态",
+      "description": "报告基础条件排除 2、7；历史报告费范围也使用",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.20"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.offline_report_release_flag",
+      "name": "是否线下释放报告",
+      "description": "报告基础条件：ISNULL(...,1)=1",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "4",
+        "5"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.22"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.batch_report_release_flag",
+      "name": "是否批量释放报告",
+      "description": "报告直接放行：ISNULL(...,1)=0",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "4",
+        "5"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.23"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.qc_report_flag",
+      "name": "质控QC报告",
+      "description": "报告基础条件：xmbg=0 OR zkqcbg=0",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "0",
+        "1"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.24"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    },
+    {
+      "factCode": "task.has_primary_service_flag",
+      "name": "有无主服务",
+      "description": "产品类型 2/12 的报告直接放行条件：ywzfw=0",
+      "dataType": "string",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "正式实验任务标识。"
+        }
+      ],
+      "allowedValues": [
+        "0",
+        "1"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "workbook.row.27"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "固定 bundle 不包含已批准的 V3 binding profile。"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceId": "workbook.row.8",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G8:L8",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.17",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G17:L17",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.20",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G20:L20",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.22",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G22:L22",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.23",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G23:L23",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.24",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G24:L24",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    },
+    {
+      "evidenceId": "workbook.row.27",
+      "sourceKind": "businessConfirmation",
+      "sourceId": "PROJECT_RELEASE_REFERENCE_20260901_001/field-catalog",
+      "sourceSha256": "872706f07792a618888a13d8944d7c59f454e5554388fa2dece511abebb30242",
+      "locator": "字段清单!G27:L27",
+      "note": "用户确认已填写单元格有效；核对状态列未同步更新。"
+    }
+  ]
+}

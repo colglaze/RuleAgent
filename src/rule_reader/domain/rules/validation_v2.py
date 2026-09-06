@@ -530,8 +530,31 @@ def validate_candidate_v2(candidate: RuleCandidateV2) -> None:
             continue
         actual = evaluate_condition(candidate.root_condition, test.given, facts)
         if actual.value != test.expected.value:
+            pointers: list[str] = []
+            if actual is EvaluationResult.INDETERMINATE:
+                closure = _fact_reference_closure(
+                    condition_fact_refs(candidate.root_condition), facts, []
+                )
+                missing = sorted(
+                    code
+                    for code in closure
+                    if code not in test.given and facts[code].derivation is None
+                )
+                unresolved = sorted(
+                    code
+                    for code, value in test.given.items()
+                    if value is None and facts[code].null_policy is NullPolicy.INDETERMINATE
+                )
+                if missing:
+                    pointers.append(f"missing given values: {missing}")
+                if unresolved:
+                    pointers.append(
+                        f"null given values under indeterminate nullPolicy: {unresolved}"
+                    )
+            detail = ("; " + "; ".join(pointers)) if pointers else ""
             issues.append(
-                f"test case {test.id} expected {test.expected.value} but evaluated {actual.value}"
+                f"test case {test.id} expected {test.expected.value} "
+                f"but evaluated {actual.value}{detail}"
             )
 
     mapping_codes = [mapping.fact_code for mapping in candidate.field_mappings]

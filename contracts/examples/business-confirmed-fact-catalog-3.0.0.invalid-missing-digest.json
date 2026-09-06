@@ -1,0 +1,82 @@
+{
+  "catalogId": "SYNTHETIC_RELEASE_FACTS",
+  "catalogVersion": "2026-09-05.1",
+  "contractVersion": "3.0.0",
+  "evidence": [
+    {
+      "evidenceId": "confirmation.status",
+      "locator": "row:1",
+      "note": "脱敏合成证据。",
+      "sourceId": "synthetic-confirmation",
+      "sourceKind": "businessConfirmation",
+      "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "evidenceId": "confirmation.amount",
+      "locator": "row:2",
+      "note": "脱敏合成证据。",
+      "sourceId": "synthetic-confirmation",
+      "sourceKind": "businessConfirmation",
+      "sourceSha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ],
+  "facts": [
+    {
+      "allowedValues": [
+        19,
+        20
+      ],
+      "bindingIssues": [
+        "测试夹具不提供物理绑定。"
+      ],
+      "bindingProfileRef": null,
+      "dataType": "enum",
+      "description": "用于离线测试的任务状态代码。",
+      "evidenceRefs": [
+        "confirmation.status"
+      ],
+      "factCode": "task.status_code",
+      "grain": "task",
+      "name": "合成任务状态",
+      "nullPolicy": "error",
+      "nullable": false,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "合成任务标识。",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "测试夹具不提供物理绑定。"
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "用于离线测试的金额。",
+      "evidenceRefs": [
+        "confirmation.amount"
+      ],
+      "factCode": "order.received_amount",
+      "grain": "order",
+      "name": "合成已收金额",
+      "nullPolicy": "error",
+      "nullable": false,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "合成订单标识。",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    }
+  ]
+}

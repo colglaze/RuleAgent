@@ -49,6 +49,37 @@ def test_v2_rejects_test_case_that_disagrees_with_tree() -> None:
         validate_candidate_v2(candidate)
 
 
+def test_v2_indeterminate_case_reports_missing_given_facts() -> None:
+    payload = valid_candidate_v2()
+    payload["rootCondition"]["children"][2]["nullPolicy"] = "indeterminate"
+    del payload["testCases"][0]["given"]["task.settlement_fee"]
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(
+        SemanticValidationErrorV2,
+        match=r"missing given values: \['task\.settlement_fee'\]",
+    ):
+        validate_candidate_v2(candidate)
+
+
+def test_v2_indeterminate_case_reports_null_given_facts() -> None:
+    payload = valid_candidate_v2()
+    settlement = next(
+        fact for fact in payload["requiredFacts"] if fact["factCode"] == "task.settlement_fee"
+    )
+    settlement["nullable"] = True
+    settlement["nullPolicy"] = "indeterminate"
+    payload["rootCondition"]["children"][2]["nullPolicy"] = "indeterminate"
+    payload["testCases"][0]["given"]["task.settlement_fee"] = None
+    candidate = RuleCandidateV2.model_validate(payload)
+
+    with pytest.raises(
+        SemanticValidationErrorV2,
+        match=r"null given values under indeterminate nullPolicy: \['task\.settlement_fee'\]",
+    ):
+        validate_candidate_v2(candidate)
+
+
 def test_v2_rejects_derived_fact_cycle() -> None:
     payload = valid_candidate_v2()
     required = next(

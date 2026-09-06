@@ -38,7 +38,7 @@ from rule_reader.domain.rules.validation_v2 import (
     validate_candidate_v2,
 )
 
-PROMPT_VERSION = "rule-parser-v6"
+PROMPT_VERSION = "rule-parser-v8"
 SCHEMA_VERSION: Literal["2.0.0"] = "2.0.0"
 _IDEMPOTENCY_KEY_PATTERN = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 _SUCCESS_OUTCOME = "SUCCESS"

@@ -39,7 +39,7 @@ class FakeDatabase:
 
     async def initialize(self) -> int:
         self.initialize_calls += 1
-        return 3
+        return 4
 
     async def ping(self) -> None:
         self.ping_calls += 1
@@ -99,7 +99,7 @@ async def test_service_lifecycle_and_health_endpoints() -> None:
         ready = await request(app, "GET", "/health/ready")
         assert live.json()["status"] == "ok"
         assert ready.status_code == 200
-        assert ready.json()["schema_version"] == 3
+        assert ready.json()["schema_version"] == 4
         assert database.start_calls == 1
         assert database.initialize_calls == 1
 
@@ -118,8 +118,8 @@ async def test_readiness_returns_503_without_leaking_error() -> None:
     assert response.json() == {
         "status": "unavailable",
         "service": "RuleReader",
-        "version": "0.10.0",
-        "schema_version": 3,
+        "version": "0.12.0",
+        "schema_version": 4,
     }
 
 
