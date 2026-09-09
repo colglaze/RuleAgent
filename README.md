@@ -73,8 +73,10 @@ RULEREADER_DOCUMENT_ROOT=C:\path\to\rule-documents
 `fact_binding_handoffs` 保存 RuleReader 所有、SqlBot 只读的 V2 事实交接，`rule_structure_candidates_v3`
 保存不可执行的 V3 恢复候选；`init-db` 可从空库或旧 Schema 幂等升级，但默认只到 v4。代码中已实现
 Schema v5 的 `rule_versions_v3` 与 `fact_binding_handoff_batches_v3`，只有显式授权的 V3 持久化
-脚本会请求 v5；本轮验收修订未访问 MongoDB，最新文档证据为 2026-09-05 的 Schema v4 与一条
-V3 recovery 记录，实时状态未重新确认。
+脚本会请求 v5。该脚本已于 2026-09-07 按用户单独授权在本机正式库执行（Schema v5，`rule_versions_v3`
+1 条 + 单文档 batch 18 条请求，恢复候选 1 条；证据见 [PROG-20260907](docs/PROG-20260907.md)）。
+2026-09-06 换机重建实例的空库快照存于 `generated-rules/mongodb-snapshot-20260906/`（业务集合
+0 条、基础设施 5 条文档），仅代表该实例当时状态；文档中的历史记录不构成数据库备份。
 
 ## 解析规则文本
 
@@ -303,8 +305,9 @@ readiness 16/16 与写前闭包门禁校验，全部通过后才初始化 MongoD
 持久化服务；stdout 只输出状态、schema version、ruleVersion、哈希、计数和 inserted/existing 等
 脱敏摘要，不输出规则正文、SQL、Mongo URI 或凭据。任何 synthetic、自签名或再生 manifest 的产物
 会被拒绝，也没有绕过参数或环境开关。普通服务与 `init-db` 不受该脚本影响，运行时 Schema 默认
-停留在 v4；本轮验收修订未访问 MongoDB（最新文档证据为 2026-09-05 的 Schema v4 与一条 V3
-recovery 记录，实时状态未重新确认），真实写入仍需单独授权。
+停留在 v4。该脚本已于 2026-09-07 按用户单独授权对真实 MongoDB 执行并完成回读复核
+（`persistedAndVerified`，证据见 [PROG-20260907](docs/PROG-20260907.md)）；重复执行幂等重放，
+不会覆盖已有记录。
 
 ## 业务审核修订草稿的离线导出
 
