@@ -1,0 +1,57 @@
+[
+  {
+    "_id": {
+      "$oid": "6a840f704a36607b3b238926"
+    },
+    "version": 1,
+    "name": "bootstrap_metadata",
+    "applied_at": {
+      "$date": "2026-08-18T07:53:20.560Z"
+    },
+    "service_version": "0.1.0"
+  },
+  {
+    "_id": {
+      "$oid": "6a84249d1188f5aa6a13e003"
+    },
+    "version": 2,
+    "name": "create_rule_versions",
+    "applied_at": {
+      "$date": "2026-08-18T09:23:41.666Z"
+    },
+    "service_version": "0.3.0"
+  },
+  {
+    "_id": {
+      "$oid": "6a8c08b7cebc3ae9ce94e53a"
+    },
+    "version": 3,
+    "name": "create_fact_binding_handoffs",
+    "applied_at": {
+      "$date": "2026-08-24T09:02:47.381Z"
+    },
+    "service_version": "0.8.0"
+  },
+  {
+    "_id": {
+      "$oid": "6a9e2289055af50038c4fbfe"
+    },
+    "version": 4,
+    "name": "create_rule_structure_candidates_v3",
+    "applied_at": {
+      "$date": "2026-09-07T02:33:45.924Z"
+    },
+    "service_version": "0.12.0"
+  },
+  {
+    "_id": {
+      "$oid": "6a9e228a055af50038c4fbff"
+    },
+    "version": 5,
+    "name": "create_rule_versions_v3_and_handoff_batches_v3",
+    "applied_at": {
+      "$date": "2026-09-07T02:33:46.029Z"
+    },
+    "service_version": "0.12.0"
+  }
+]

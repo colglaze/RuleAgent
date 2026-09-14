@@ -1,0 +1,38 @@
+{
+  "exportKind": "RuleReader MongoDB full export (OE)",
+  "exportMark": "OE",
+  "exportedAtUtc": "2026-09-14T09:15:22.173135+00:00",
+  "database": "rule_reader",
+  "server": "localhost:27017 (docker container mongodb)",
+  "connectionCredentials": "intentionally omitted",
+  "collections": {
+    "app_metadata": {
+      "count": 1,
+      "file": "app_metadata.json"
+    },
+    "fact_binding_handoff_batches_v3": {
+      "count": 1,
+      "file": "fact_binding_handoff_batches_v3.json"
+    },
+    "fact_binding_handoffs": {
+      "count": 33,
+      "file": "fact_binding_handoffs.json"
+    },
+    "rule_structure_candidates_v3": {
+      "count": 1,
+      "file": "rule_structure_candidates_v3.json"
+    },
+    "rule_versions": {
+      "count": 2,
+      "file": "rule_versions.json"
+    },
+    "rule_versions_v3": {
+      "count": 1,
+      "file": "rule_versions_v3.json"
+    },
+    "schema_migrations": {
+      "count": 5,
+      "file": "schema_migrations.json"
+    }
+  }
+}

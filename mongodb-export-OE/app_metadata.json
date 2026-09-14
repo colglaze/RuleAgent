@@ -1,0 +1,17 @@
+[
+  {
+    "_id": {
+      "$oid": "6a840f70b53eda16222f4ce5"
+    },
+    "key": "database_schema",
+    "created_at": {
+      "$date": "2026-08-18T07:53:20.559Z"
+    },
+    "schema_version": 5,
+    "service": "rule-reader",
+    "service_version": "0.12.0",
+    "updated_at": {
+      "$date": "2026-09-07T02:33:46.027Z"
+    }
+  }
+]

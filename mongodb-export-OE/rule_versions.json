@@ -1,0 +1,5112 @@
+[
+  {
+    "_id": "REPORT_RELEASE_ALL_001@20260818T092511165521Z-562eabd40e5a",
+    "rule_version": "REPORT_RELEASE_ALL_001@20260818T092511165521Z-562eabd40e5a",
+    "rule_id": "REPORT_RELEASE_ALL_001",
+    "source_sha256": "562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d",
+    "schema_version": "1.0.0",
+    "parser_version": "0.3.0",
+    "status": "draft",
+    "executable": false,
+    "generated_at": {
+      "$date": "2026-08-18T09:25:11.165Z"
+    },
+    "stored_at": {
+      "$date": "2026-08-18T09:25:11.166Z"
+    },
+    "document": {
+      "schemaVersion": "1.0.0",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260818T092511165521Z-562eabd40e5a",
+      "generatedAt": "2026-08-18T09:25:11.165521Z",
+      "status": "draft",
+      "executable": false,
+      "parser": {
+        "parserVersion": "0.3.0",
+        "promptVersion": "rule-parser-v1",
+        "provider": "deepseek",
+        "model": "deepseek-v4-flash"
+      },
+      "source": {
+        "sourceName": "项目报告释放规则.md",
+        "relativePath": "项目报告释放规则.md",
+        "sha256": "562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d",
+        "characterCount": 7501
+      },
+      "rule": {
+        "ruleId": "REPORT_RELEASE_ALL_001",
+        "title": "项目报告自动释放规则",
+        "scope": "本规则适用于 OA 正式实验任务单的项目报告自动释放。唯一判定依据为以下视图中的实际 SQL 表达式：v_sendreport_trigger、v_ReportReleaseSealCondition、v_OrderFormaltestsettlement、v_ReportDataReleaseRules。说明：v_ReportDataReleaseRules 还引用了 v_sto，但现有材料中没有 v_sto 的定义。因此本文能确认 v_ReportDataReleaseRules 如何使用到款、押金字段及其计算公式，不能继续展开 v_sto 内部的数据来源。视图中的产品、任务和订单枚举值均按数据库代码原样表述。例如产品 ID 759、产品类型 2/12、单位属性 14/16 的显示名称，应以 OA 当前枚举字典为准。",
+        "sourceViews": [
+          "v_sendreport_trigger",
+          "v_ReportReleaseSealCondition",
+          "v_OrderFormaltestsettlement",
+          "v_ReportDataReleaseRules"
+        ],
+        "requiredFacts": [
+          {
+            "key": "rwzt",
+            "name": "任务状态",
+            "dataType": "integer",
+            "description": "任务状态，必须等于 19",
+            "nullable": false
+          },
+          {
+            "key": "rwdsyzt",
+            "name": "任务对应实验状态",
+            "dataType": "integer",
+            "description": "任务对应实验状态，ISNULL(rwdsyzt,0) 不属于 2、7",
+            "nullable": true
+          },
+          {
+            "key": "bgsfrq",
+            "name": "报告释放日期",
+            "dataType": "date",
+            "description": "报告释放日期，为空字符串或 NULL",
+            "nullable": true
+          },
+          {
+            "key": "sfxxsf",
+            "name": "是否限行释放",
+            "dataType": "integer",
+            "description": "是否限行释放，ISNULL(sfxxsf,1)=1",
+            "nullable": true
+          },
+          {
+            "key": "xmbg",
+            "name": "项目报告",
+            "dataType": "integer",
+            "description": "项目报告，xmbg=0 或 zkqcbg=0",
+            "nullable": true
+          },
+          {
+            "key": "zkqcbg",
+            "name": "中科启程报告",
+            "dataType": "integer",
+            "description": "中科启程报告，xmbg=0 或 zkqcbg=0",
+            "nullable": true
+          },
+          {
+            "key": "sqlc",
+            "name": "任务号",
+            "dataType": "string",
+            "description": "任务号，用于检查未结束流程",
+            "nullable": false
+          },
+          {
+            "key": "ddgldk_total",
+            "name": "订单累计关联金额",
+            "dataType": "money",
+            "description": "订单累计关联金额，包含押金，来自 v_ReportDataReleaseRules",
+            "nullable": true
+          },
+          {
+            "key": "ddglyj",
+            "name": "订单关联押金",
+            "dataType": "money",
+            "description": "订单关联押金，来自 v_ReportDataReleaseRules",
+            "nullable": true
+          },
+          {
+            "key": "yhhje",
+            "name": "订单金额",
+            "dataType": "money",
+            "description": "订单金额，空值按 0",
+            "nullable": true
+          },
+          {
+            "key": "bgsffy",
+            "name": "已计入报告释放范围的历史正式实验费用",
+            "dataType": "money",
+            "description": "已计入报告释放范围的历史正式实验费用",
+            "nullable": true
+          },
+          {
+            "key": "ctzjjsfy",
+            "name": "承接转交任务结算/完工费用",
+            "dataType": "money",
+            "description": "订单下承接转交任务的结算/完工费用",
+            "nullable": true
+          },
+          {
+            "key": "zssyjsfy",
+            "name": "当前正式实验任务单结算/完工费用",
+            "dataType": "money",
+            "description": "当前正式实验任务单结算/完工费用",
+            "nullable": true
+          },
+          {
+            "key": "hbbgbcxdfy",
+            "name": "合并报告其他任务费用",
+            "dataType": "money",
+            "description": "同一订单合并报告中其他正式实验任务单费用",
+            "nullable": true
+          },
+          {
+            "key": "ctwgfy",
+            "name": "承接转交预估完工费",
+            "dataType": "money",
+            "description": "订单下承接转交预估完工费",
+            "nullable": true
+          },
+          {
+            "key": "zssywgfy",
+            "name": "正式实验预估完工费",
+            "dataType": "money",
+            "description": "订单下正式实验预估完工费",
+            "nullable": true
+          },
+          {
+            "key": "sfdls",
+            "name": "是否框架协议",
+            "dataType": "integer",
+            "description": "是否框架协议，空值默认 1",
+            "nullable": true
+          },
+          {
+            "key": "dwsz",
+            "name": "单位属性",
+            "dataType": "integer",
+            "description": "单位属性，空值默认 -1",
+            "nullable": true
+          },
+          {
+            "key": "sfxyed",
+            "name": "额度类型",
+            "dataType": "integer",
+            "description": "额度类型，空值默认 1",
+            "nullable": true
+          },
+          {
+            "key": "htyszt",
+            "name": "合同原件状态",
+            "dataType": "integer",
+            "description": "合同原件状态，空值默认 3",
+            "nullable": true
+          },
+          {
+            "key": "sfffbht",
+            "name": "是否范本合同",
+            "dataType": "integer",
+            "description": "是否范本合同，空值默认 1",
+            "nullable": true
+          },
+          {
+            "key": "htsxfs",
+            "name": "合同生效方式",
+            "dataType": "integer",
+            "description": "合同生效方式，空值默认 0",
+            "nullable": true
+          },
+          {
+            "key": "qzfs",
+            "name": "签字方式",
+            "dataType": "integer",
+            "description": "签字方式，空值默认 0",
+            "nullable": true
+          },
+          {
+            "key": "hqhsrq",
+            "name": "合同会签日期",
+            "dataType": "date",
+            "description": "合同会签日期，用于判断是否早于 2023-11-01",
+            "nullable": true
+          },
+          {
+            "key": "dd_ismeet",
+            "name": "订单合同条件是否通过",
+            "dataType": "integer",
+            "description": "订单全部合同条件是否通过，来自 v_ReportReleaseSealCondition",
+            "nullable": true
+          },
+          {
+            "key": "noismeet_count",
+            "name": "跨订单未通过合同数量",
+            "dataType": "integer",
+            "description": "跨订单合并报告中其他订单 dd_ismeet=0 的数量",
+            "nullable": true
+          },
+          {
+            "key": "product_id",
+            "name": "产品ID",
+            "dataType": "integer",
+            "description": "产品ID，用于判断是否为 759",
+            "nullable": false
+          },
+          {
+            "key": "product_type",
+            "name": "产品类型",
+            "dataType": "integer",
+            "description": "产品类型，用于判断是否属于 2/12",
+            "nullable": true
+          },
+          {
+            "key": "sfplsf",
+            "name": "是否批量释放",
+            "dataType": "integer",
+            "description": "是否批量释放，ISNULL(sfplsf,1)=0 时直接放行",
+            "nullable": true
+          },
+          {
+            "key": "yssj",
+            "name": "原始数据释放标志",
+            "dataType": "integer",
+            "description": "原始数据释放标志，yssj=0 且存在指定记录时直接放行",
+            "nullable": true
+          },
+          {
+            "key": "ddly",
+            "name": "订单来源",
+            "dataType": "integer",
+            "description": "订单来源，ddly=2 时直接放行",
+            "nullable": true
+          },
+          {
+            "key": "ywzfw",
+            "name": "业务组范围",
+            "dataType": "integer",
+            "description": "业务组范围，产品类型 2/12 且 ywzfw=0 时直接放行",
+            "nullable": true
+          },
+          {
+            "key": "special_application",
+            "name": "特殊申请通过",
+            "dataType": "boolean",
+            "description": "报告释放特殊申请通过：formtable_main_655.sqlx=1 且 currentnodetype=3",
+            "nullable": false
+          },
+          {
+            "key": "has_unfinished_flow",
+            "name": "存在未结束流程",
+            "dataType": "boolean",
+            "description": "任务号 sqlc 是否出现在未结束的报告释放流程中",
+            "nullable": false
+          },
+          {
+            "key": "is_timed_release",
+            "name": "定时释放条件",
+            "dataType": "boolean",
+            "description": "定时释放条件：完工后第 60/75/180 天当天",
+            "nullable": false
+          },
+          {
+            "key": "is_merge_report",
+            "name": "是否合并报告",
+            "dataType": "boolean",
+            "description": "是否合并报告，影响去重和跨订单校验",
+            "nullable": true
+          },
+          {
+            "key": "sfhbbg",
+            "name": "合并报告标志",
+            "dataType": "integer",
+            "description": "合并报告标志，NULL 或 1 保留所有任务，其他只保留最小 ID",
+            "nullable": true
+          },
+          {
+            "key": "task_id",
+            "name": "任务ID",
+            "dataType": "integer",
+            "description": "任务ID，用于合并报告去重",
+            "nullable": false
+          },
+          {
+            "key": "hbbglc",
+            "name": "合并报告流程号",
+            "dataType": "string",
+            "description": "合并报告流程号，用于分组去重",
+            "nullable": true
+          }
+        ],
+        "rootCondition": {
+          "id": "root",
+          "kind": "all",
+          "description": "所有释放路径都必须满足的前置条件，以及任一释放路径",
+          "enabled": true,
+          "children": [
+            {
+              "id": "preconditions",
+              "kind": "all",
+              "description": "共同前置条件",
+              "enabled": true,
+              "children": [
+                {
+                  "id": "rwzt_eq_19",
+                  "kind": "predicate",
+                  "description": "任务状态 rwzt=19",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "rwzt",
+                  "operator": "eq",
+                  "value": 19,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "rwdsyzt_not_in_2_7",
+                  "kind": "predicate",
+                  "description": "ISNULL(rwdsyzt,0) 不属于 2、7",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "rwdsyzt",
+                  "operator": "not_in",
+                  "value": [
+                    2,
+                    7
+                  ],
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "bgsfrq_blank",
+                  "kind": "predicate",
+                  "description": "报告释放日期 bgsfrq 为空字符串或 NULL",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "bgsfrq",
+                  "operator": "is_blank",
+                  "value": null,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "sfxxsf_eq_1",
+                  "kind": "predicate",
+                  "description": "ISNULL(sfxxsf,1)=1",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "sfxxsf",
+                  "operator": "eq",
+                  "value": 1,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "xmbg_or_zkqcbg_zero",
+                  "kind": "any",
+                  "description": "xmbg=0 或 zkqcbg=0",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "xmbg_zero",
+                      "kind": "predicate",
+                      "description": "xmbg=0",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "xmbg",
+                      "operator": "eq",
+                      "value": 0,
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "zkqcbg_zero",
+                      "kind": "predicate",
+                      "description": "zkqcbg=0",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "zkqcbg",
+                      "operator": "eq",
+                      "value": 0,
+                      "expression": null,
+                      "factRefs": []
+                    }
+                  ],
+                  "factKey": null,
+                  "operator": null,
+                  "value": null,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "no_unfinished_flow",
+                  "kind": "predicate",
+                  "description": "任务不得处在未结束的项目报告释放流程中",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "has_unfinished_flow",
+                  "operator": "eq",
+                  "value": false,
+                  "expression": null,
+                  "factRefs": []
+                }
+              ],
+              "factKey": null,
+              "operator": null,
+              "value": null,
+              "expression": null,
+              "factRefs": []
+            },
+            {
+              "id": "release_paths",
+              "kind": "any",
+              "description": "任一释放路径",
+              "enabled": true,
+              "children": [
+                {
+                  "id": "normal_product_path",
+                  "kind": "all",
+                  "description": "普通产品释放路径（产品 ID 不等于 759）",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "not_product_759",
+                      "kind": "predicate",
+                      "description": "产品 ID 不等于 759",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "product_id",
+                      "operator": "ne",
+                      "value": 759,
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "cross_order_check",
+                      "kind": "predicate",
+                      "description": "跨订单合并费用校验通过（无跨订单记录时视为通过）",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "noismeet_count",
+                      "operator": "eq",
+                      "value": 0,
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "normal_product_conditions",
+                      "kind": "any",
+                      "description": "满足任一情况",
+                      "enabled": true,
+                      "children": [
+                        {
+                          "id": "order_amount_zero",
+                          "kind": "predicate",
+                          "description": "订单金额 A=0",
+                          "enabled": true,
+                          "children": [],
+                          "factKey": "yhhje",
+                          "operator": "eq",
+                          "value": 0,
+                          "expression": null,
+                          "factRefs": []
+                        },
+                        {
+                          "id": "full_coverage",
+                          "kind": "predicate",
+                          "description": "R+0.1>=F",
+                          "enabled": true,
+                          "children": [],
+                          "factKey": "ddgldk_total",
+                          "operator": "gte",
+                          "value": 0,
+                          "expression": null,
+                          "factRefs": []
+                        },
+                        {
+                          "id": "contract_and_amount",
+                          "kind": "all",
+                          "description": "合同条件全部通过，并根据订单类型满足相应金额条件",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "contract_all_pass",
+                              "kind": "predicate",
+                              "description": "当前订单及合并报告关联订单的合同条件全部通过",
+                              "enabled": true,
+                              "children": [],
+                              "factKey": "dd_ismeet",
+                              "operator": "eq",
+                              "value": 1,
+                              "expression": null,
+                              "factRefs": []
+                            },
+                            {
+                              "id": "amount_condition",
+                              "kind": "any",
+                              "description": "金额条件",
+                              "enabled": true,
+                              "children": [
+                                {
+                                  "id": "non_framework_unit_14",
+                                  "kind": "all",
+                                  "description": "非框架协议且单位属性为 14：R+0.1>=F",
+                                  "enabled": true,
+                                  "children": [
+                                    {
+                                      "id": "sfdls_not_framework",
+                                      "kind": "predicate",
+                                      "description": "非框架协议",
+                                      "enabled": true,
+                                      "children": [],
+                                      "factKey": "sfdls",
+                                      "operator": "eq",
+                                      "value": 1,
+                                      "expression": null,
+                                      "factRefs": []
+                                    },
+                                    {
+                                      "id": "unit_14",
+                                      "kind": "predicate",
+                                      "description": "单位属性为 14",
+                                      "enabled": true,
+                                      "children": [],
+                                      "factKey": "dwsz",
+                                      "operator": "eq",
+                                      "value": 14,
+                                      "expression": null,
+                                      "factRefs": []
+                                    },
+                                    {
+                                      "id": "full_coverage_again",
+                                      "kind": "predicate",
+                                      "description": "R+0.1>=F",
+                                      "enabled": true,
+                                      "children": [],
+                                      "factKey": "ddgldk_total",
+                                      "operator": "gte",
+                                      "value": 0,
+                                      "expression": null,
+                                      "factRefs": []
+                                    }
+                                  ],
+                                  "factKey": null,
+                                  "operator": null,
+                                  "value": null,
+                                  "expression": null,
+                                  "factRefs": []
+                                },
+                                {
+                                  "id": "other_unit_or_framework",
+                                  "kind": "all",
+                                  "description": "单位属性不为 14，或者订单属于框架协议 sfdls IN (0,2)",
+                                  "enabled": true,
+                                  "children": [
+                                    {
+                                      "id": "unit_not_14_or_framework",
+                                      "kind": "any",
+                                      "description": "单位属性不为 14 或框架协议",
+                                      "enabled": true,
+                                      "children": [
+                                        {
+                                          "id": "unit_not_14",
+                                          "kind": "predicate",
+                                          "description": "单位属性不为 14",
+                                          "enabled": true,
+                                          "children": [],
+                                          "factKey": "dwsz",
+                                          "operator": "ne",
+                                          "value": 14,
+                                          "expression": null,
+                                          "factRefs": []
+                                        },
+                                        {
+                                          "id": "framework_0_2",
+                                          "kind": "predicate",
+                                          "description": "框架协议 sfdls IN (0,2)",
+                                          "enabled": true,
+                                          "children": [],
+                                          "factKey": "sfdls",
+                                          "operator": "in",
+                                          "value": [
+                                            0,
+                                            2
+                                          ],
+                                          "expression": null,
+                                          "factRefs": []
+                                        }
+                                      ],
+                                      "factKey": null,
+                                      "operator": null,
+                                      "value": null,
+                                      "expression": null,
+                                      "factRefs": []
+                                    },
+                                    {
+                                      "id": "eighty_percent_or_deposit",
+                                      "kind": "any",
+                                      "description": "满足以下任一项",
+                                      "enabled": true,
+                                      "children": [
+                                        {
+                                          "id": "eighty_percent",
+                                          "kind": "predicate",
+                                          "description": "R+0.1>=F×80%",
+                                          "enabled": true,
+                                          "children": [],
+                                          "factKey": "ddgldk_total",
+                                          "operator": "gte",
+                                          "value": 0,
+                                          "expression": null,
+                                          "factRefs": []
+                                        },
+                                        {
+                                          "id": "deposit_condition",
+                                          "kind": "predicate",
+                                          "description": "D>=W-R×20%",
+                                          "enabled": true,
+                                          "children": [],
+                                          "factKey": "ddglyj",
+                                          "operator": "gte",
+                                          "value": 0,
+                                          "expression": null,
+                                          "factRefs": []
+                                        }
+                                      ],
+                                      "factKey": null,
+                                      "operator": null,
+                                      "value": null,
+                                      "expression": null,
+                                      "factRefs": []
+                                    }
+                                  ],
+                                  "factKey": null,
+                                  "operator": null,
+                                  "value": null,
+                                  "expression": null,
+                                  "factRefs": []
+                                }
+                              ],
+                              "factKey": null,
+                              "operator": null,
+                              "value": null,
+                              "expression": null,
+                              "factRefs": []
+                            }
+                          ],
+                          "factKey": null,
+                          "operator": null,
+                          "value": null,
+                          "expression": null,
+                          "factRefs": []
+                        }
+                      ],
+                      "factKey": null,
+                      "operator": null,
+                      "value": null,
+                      "expression": null,
+                      "factRefs": []
+                    }
+                  ],
+                  "factKey": null,
+                  "operator": null,
+                  "value": null,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "product_759_path",
+                  "kind": "all",
+                  "description": "产品 ID 759 的独立释放路径",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "is_product_759",
+                      "kind": "predicate",
+                      "description": "产品 ID 为 759",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "product_id",
+                      "operator": "eq",
+                      "value": 759,
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "t_le_100000_pred",
+                      "kind": "predicate",
+                      "description": "T<=100000 且 R+0.1>=F×70%",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "zssyjsfy",
+                      "operator": "lte",
+                      "value": 100000,
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "t_gt_100000_pred",
+                      "kind": "predicate",
+                      "description": "T>100000 且 R+0.1>=F×50%",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "zssyjsfy",
+                      "operator": "gt",
+                      "value": 100000,
+                      "expression": null,
+                      "factRefs": []
+                    }
+                  ],
+                  "factKey": null,
+                  "operator": null,
+                  "value": null,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "special_application",
+                  "kind": "predicate",
+                  "description": "报告释放特殊申请通过",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "special_application",
+                  "operator": "eq",
+                  "value": true,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "sfplsf_zero",
+                  "kind": "predicate",
+                  "description": "ISNULL(sfplsf,1)=0",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "sfplsf",
+                  "operator": "eq",
+                  "value": 0,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "yssj_zero_with_record",
+                  "kind": "predicate",
+                  "description": "yssj=0 且存在指定记录",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "yssj",
+                  "operator": "eq",
+                  "value": 0,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "ddly_2",
+                  "kind": "predicate",
+                  "description": "订单来源 ddly=2",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "ddly",
+                  "operator": "eq",
+                  "value": 2,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "timed_release",
+                  "kind": "predicate",
+                  "description": "定时释放条件",
+                  "enabled": true,
+                  "children": [],
+                  "factKey": "is_timed_release",
+                  "operator": "eq",
+                  "value": true,
+                  "expression": null,
+                  "factRefs": []
+                },
+                {
+                  "id": "product_type_2_12_ywzfw_0",
+                  "kind": "all",
+                  "description": "产品类型属于 2/12 且 ywzfw=0",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "product_type_in_2_12",
+                      "kind": "predicate",
+                      "description": "产品类型属于 2/12",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "product_type",
+                      "operator": "in",
+                      "value": [
+                        2,
+                        12
+                      ],
+                      "expression": null,
+                      "factRefs": []
+                    },
+                    {
+                      "id": "ywzfw_zero",
+                      "kind": "predicate",
+                      "description": "ywzfw=0",
+                      "enabled": true,
+                      "children": [],
+                      "factKey": "ywzfw",
+                      "operator": "eq",
+                      "value": 0,
+                      "expression": null,
+                      "factRefs": []
+                    }
+                  ],
+                  "factKey": null,
+                  "operator": null,
+                  "value": null,
+                  "expression": null,
+                  "factRefs": []
+                }
+              ],
+              "factKey": null,
+              "operator": null,
+              "value": null,
+              "expression": null,
+              "factRefs": []
+            }
+          ],
+          "factKey": null,
+          "operator": null,
+          "value": null,
+          "expression": null,
+          "factRefs": []
+        },
+        "exceptionNotes": [
+          "订单金额为 0 只在“普通产品”分支中绕过当前订单的合同和金额条件；如果存在跨订单合并且其他订单费用校验失败，普通产品仍不能通过。",
+          "R+0.1>=F 是普通产品的独立放行分支，会绕过当前订单及合并关联订单的合同校验，但仍受跨订单费用校验约束。",
+          "特殊申请、sfplsf=0、指定原始数据释放记录、ddly=2、定时释放、产品类型 2/12 且 ywzfw=0，都是大条件中的独立“或”分支，会绕过合同、到款及跨订单费用判断。",
+          "无论通过哪条例外路径，共同前置条件和“不得存在未结束报告释放流程”条件始终有效。",
+          "v_ReportReleaseSealCondition 的注释提到“不同订单合并报告由项目部审核通过”，但实际 SQL 没有单独的“项目部审核通过”字段判断；现行有效逻辑是本文列出的合同、跨订单费用及通用例外分支。",
+          "金额与状态字段大量使用 ISNULL 默认值；跨订单规则中从 v_ReportDataReleaseRules 取出的 ddgldk_total、ddglyj、ddwgldk_total20 没有再次统一补零，缺少对应规则行时金额比较可能不成立。"
+        ],
+        "failureReasons": [
+          "任务未达到状态 19，已写报告释放日期，或其他共同前置字段不符合要求。",
+          "当前任务已存在未结束的项目报告释放流程。",
+          "普通产品当前订单到款/押金不足，且不属于零金额订单或其他直接放行路径。",
+          "当前订单或合并报告关联订单存在未满足签署条件的合同。",
+          "跨订单合并报告中至少一个其他订单的到款/押金不足。",
+          "产品 ID 759 未达到对应 70% 或 50% 到款比例。",
+          "定时释放未处于完工后第 60/75/180 天的当天，或产品条件不匹配。",
+          "合并报告任务不是该 hbbglc 分组中最终保留的首条记录。"
+        ],
+        "recommendations": [
+          "核对任务状态、报告释放日期、rwdsyzt、sfxxsf、xmbg、zkqcbg 等基础字段。",
+          "检查并结束或撤销当前任务已存在的未结束项目报告释放流程。",
+          "核对订单累计关联金额、押金、任务结算费用、减免金额及合并任务范围。",
+          "对普通合同路径，逐份检查执行合同和使用金额大于 0 的关联合同的额度类型、范本属性、签署时间、生效方式、原件状态和签字方式。",
+          "对跨订单合并报告，逐个检查其他订单，任一订单费用条件失败都会阻断普通产品路径。",
+          "确需绕过常规条件时，按 OA 现有“报告释放特殊申请”流程办理；视图只认 sqlx=1 且 currentnodetype=3 的记录。",
+          "涉及产品 ID、产品类型、单位属性等枚举名称时，先与 OA 字典核对，避免仅凭数字代码误判业务类别。"
+        ],
+        "responsibleRoles": [
+          "流程创建人 cjr：订单客户经理对应人员状态小于 4 时取客户经理；否则取该人员的 managerid。",
+          "流程标题：项目报告释放-客户经理姓名-数据库当天日期。",
+          "主视图同时输出产品项目负责人 xmfzr 和项目报告释放人 xmbgsfr，供后续流程使用；视图本身没有定义具体审批节点或最终操作人的分配规则。"
+        ],
+        "testCases": [
+          {
+            "id": "tc_001",
+            "description": "普通产品，所有前置条件满足，无跨订单合并，合同全部通过，非框架且单位属性为 14，R+0.1>=F",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 0,
+              "dd_ismeet": 1,
+              "sfdls": 1,
+              "dwsz": 14,
+              "ddgldk_total": 1000,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "zssyjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "pass",
+            "rationale": "满足普通产品全额覆盖条件"
+          },
+          {
+            "id": "tc_002",
+            "description": "普通产品，R+0.1>=F，但当前订单合同不满足",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 0,
+              "dd_ismeet": 0,
+              "ddgldk_total": 1000,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "zssyjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "pass",
+            "rationale": "独立全额覆盖分支绕过合同条件"
+          },
+          {
+            "id": "tc_003",
+            "description": "普通产品，单位属性不为 14，合同全部通过，R+0.1>=F×80%",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 0,
+              "dd_ismeet": 1,
+              "sfdls": 1,
+              "dwsz": 15,
+              "ddgldk_total": 800,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "zssyjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "pass",
+            "rationale": "满足 80% 条件"
+          },
+          {
+            "id": "tc_004",
+            "description": "普通产品，单位属性不为 14，到款不足 80%，但 D>=W-R×20%",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 0,
+              "dd_ismeet": 1,
+              "sfdls": 1,
+              "dwsz": 15,
+              "ddgldk_total": 500,
+              "ddglyj": 300,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "zssyjsfy": 0,
+              "hbbgbcxdfy": 0,
+              "ctwgfy": 0,
+              "zssywgfy": 1000
+            },
+            "expected": "pass",
+            "rationale": "押金条件满足"
+          },
+          {
+            "id": "tc_005",
+            "description": "普通产品，当前订单金额为 0，但跨订单合并中的其他订单费用校验失败",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 1,
+              "yhhje": 0
+            },
+            "expected": "fail",
+            "rationale": "跨订单校验失败阻断"
+          },
+          {
+            "id": "tc_006",
+            "description": "普通产品，当前订单满足全部条件，但某个跨订单合并订单既不到 80%、押金也不足",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 100,
+              "noismeet_count": 1,
+              "dd_ismeet": 1,
+              "sfdls": 1,
+              "dwsz": 15,
+              "ddgldk_total": 800,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "zssyjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "fail",
+            "rationale": "跨订单失败"
+          },
+          {
+            "id": "tc_007",
+            "description": "产品 ID 759，T=100000 且 R+0.1>=F×70%",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 759,
+              "zssyjsfy": 100000,
+              "ddgldk_total": 700,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "pass",
+            "rationale": "满足 70% 条件"
+          },
+          {
+            "id": "tc_008",
+            "description": "产品 ID 759，T>100000 但 R+0.1<F×50%",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "product_id": 759,
+              "zssyjsfy": 100001,
+              "ddgldk_total": 400,
+              "yhhje": 1000,
+              "bgsffy": 0,
+              "ctzjjsfy": 0,
+              "hbbgbcxdfy": 0
+            },
+            "expected": "fail",
+            "rationale": "不满足 50% 条件"
+          },
+          {
+            "id": "tc_009",
+            "description": "报告释放特殊申请 sqlx=1 已处于节点类型 3，共同前置条件满足且无未结束报告释放流程",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "special_application": true
+            },
+            "expected": "pass",
+            "rationale": "特殊申请直接放行"
+          },
+          {
+            "id": "tc_010",
+            "description": "T<5000 且已开票，数据库当天日期恰好是完工后第 60 天",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "is_timed_release": true,
+              "product_id": 100,
+              "product_type": 1,
+              "zssyjsfy": 4000
+            },
+            "expected": "pass",
+            "rationale": "定时释放第 60 天"
+          },
+          {
+            "id": "tc_011",
+            "description": "产品类型不属于 2/12、产品 ID 不为 759，数据库当天日期恰好为完工后第 180 天",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "is_timed_release": true,
+              "product_id": 100,
+              "product_type": 1,
+              "zssyjsfy": 6000
+            },
+            "expected": "pass",
+            "rationale": "第 180 天无条件"
+          },
+          {
+            "id": "tc_012",
+            "description": "任一直接放行条件已满足，但任务仍处于 formtable_main_227 对应的未结束流程",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": true,
+              "special_application": true
+            },
+            "expected": "fail",
+            "rationale": "未结束流程阻断"
+          },
+          {
+            "id": "tc_013",
+            "description": "多个任务属于同一合并报告且 sfhbbg 不为 1",
+            "given": {
+              "rwzt": 19,
+              "rwdsyzt": 0,
+              "bgsfrq": "",
+              "sfxxsf": 1,
+              "xmbg": 0,
+              "zkqcbg": 0,
+              "has_unfinished_flow": false,
+              "sfhbbg": 0,
+              "task_id": 2,
+              "hbbglc": "HBB001"
+            },
+            "expected": "fail",
+            "rationale": "非首条记录不输出"
+          }
+        ],
+        "warnings": [
+          "v_ReportDataReleaseRules 引用了 v_sto，但现有材料中没有 v_sto 的定义，无法展开其内部数据来源。",
+          "金额与状态字段大量使用 ISNULL 默认值；跨订单规则中从 v_ReportDataReleaseRules 取出的 ddgldk_total、ddglyj、ddwgldk_total20 没有再次统一补零，缺少对应规则行时金额比较可能不成立。"
+        ],
+        "fieldMappings": [
+          {
+            "factKey": "rwzt",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "rwdsyzt",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "bgsfrq",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sfxxsf",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "xmbg",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "zkqcbg",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sqlc",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "ddgldk_total",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ddgldk_total",
+            "sourceExpression": "ddgldk + ddglyj",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "订单累计关联金额"
+          },
+          {
+            "factKey": "ddglyj",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ddglyj",
+            "sourceExpression": "v_sto.ddglyj",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "订单关联押金"
+          },
+          {
+            "factKey": "yhhje",
+            "mappingStatus": "mapped",
+            "viewName": "v_OrderFormaltestsettlement",
+            "viewField": "yhhje",
+            "sourceExpression": "COALESCE(uf_dd.yhhje,0)",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "订单金额"
+          },
+          {
+            "factKey": "bgsffy",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "bgsffy",
+            "sourceExpression": "SUM(v_OrderFormaltestsettlement.zssyjsfy) FROM uf_xmbgsf WHERE zt<>2",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "已计入报告释放范围的历史正式实验费用"
+          },
+          {
+            "factKey": "ctzjjsfy",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ctzjjsfy",
+            "sourceExpression": "SUM(COALESCE(confirmed_settlement, ctwgfy))",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "承接转交任务结算/完工费用"
+          },
+          {
+            "factKey": "zssyjsfy",
+            "mappingStatus": "mapped",
+            "viewName": "v_OrderFormaltestsettlement",
+            "viewField": "zssyjsfy",
+            "sourceExpression": "CASE WHEN bcjsfy IS NULL THEN COALESCE(zssywgfy,0) ELSE bcjsfy END",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "当前正式实验任务单结算/完工费用"
+          },
+          {
+            "factKey": "hbbgbcxdfy",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "ctwgfy",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ctwgfy",
+            "sourceExpression": "ROUND(SUM(COALESCE(wcsl,xdsl) * uf_dd_dt1.yhhdj),2)",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "承接转交预估完工费"
+          },
+          {
+            "factKey": "zssywgfy",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "zssywgfy",
+            "sourceExpression": "ROUND(SUM(COALESCE(wcsl,xdsl) * uf_dd_dt1.yhhdj),2)",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "正式实验预估完工费"
+          },
+          {
+            "factKey": "sfdls",
+            "mappingStatus": "mapped",
+            "viewName": "v_OrderFormaltestsettlement",
+            "viewField": "sfdls",
+            "sourceExpression": "COALESCE(uf_dd.sfdls,1)",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "是否框架协议"
+          },
+          {
+            "factKey": "dwsz",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sfxyed",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "htyszt",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sfffbht",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "htsxfs",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "qzfs",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "hqhsrq",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "dd_ismeet",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportReleaseSealCondition",
+            "viewField": "dd_ismeet",
+            "sourceExpression": "CASE WHEN count_all=0 OR count_nomeet>0 THEN 0 ELSE 1 END",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "订单合同条件是否通过"
+          },
+          {
+            "factKey": "noismeet_count",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "product_id",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "product_type",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sfplsf",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "yssj",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "ddly",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "ywzfw",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "special_application",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "has_unfinished_flow",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "is_timed_release",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "is_merge_report",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "sfhbbg",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "task_id",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          },
+          {
+            "factKey": "hbbglc",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "sourceExpression": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "未在目录视图中找到对应字段"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "_id": "REPORT_RELEASE_ALL_001@20260824T080726492666Z-562eabd40e5a",
+    "rule_version": "REPORT_RELEASE_ALL_001@20260824T080726492666Z-562eabd40e5a",
+    "rule_id": "REPORT_RELEASE_ALL_001",
+    "source_sha256": "562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d",
+    "schema_version": "2.0.0",
+    "parser_version": "0.7.0",
+    "status": "draft",
+    "executable": false,
+    "generated_at": {
+      "$date": "2026-08-24T08:07:26.492Z"
+    },
+    "stored_at": {
+      "$date": "2026-08-24T08:07:33.201Z"
+    },
+    "document": {
+      "schemaVersion": "2.0.0",
+      "ruleVersion": "REPORT_RELEASE_ALL_001@20260824T080726492666Z-562eabd40e5a",
+      "generatedAt": "2026-08-24T08:07:26.492666Z",
+      "status": "draft",
+      "executable": false,
+      "parser": {
+        "parserVersion": "0.7.0",
+        "promptVersion": "reviewed-import-v1",
+        "provider": "reviewed_import",
+        "model": "codex-gpt-5"
+      },
+      "source": {
+        "sourceName": "项目报告释放规则.md",
+        "relativePath": "项目报告释放规则.md",
+        "sha256": "562eabd40e5a5701fb9515499b542a6e2ff46056464621b1abb0a7c37f116e4d",
+        "characterCount": 7501
+      },
+      "rule": {
+        "ruleId": "REPORT_RELEASE_ALL_001",
+        "title": "OA 正式实验任务项目报告自动释放规则",
+        "scope": "适用于 OA 正式实验任务单的项目报告自动释放与合并报告结果去重。",
+        "entityType": "formal_test_task",
+        "sourceViews": [
+          "v_sendreport_trigger",
+          "v_ReportReleaseSealCondition",
+          "v_OrderFormaltestsettlement",
+          "v_ReportDataReleaseRules"
+        ],
+        "requiredFacts": [
+          {
+            "factCode": "task.status",
+            "name": "任务状态",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "正式实验任务状态 rwzt；所有释放路径要求等于 19。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.data_usage_status",
+            "name": "任务数据使用状态",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 rwdsyzt 的原始值；规则判断前空值按 0。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": 0,
+            "derivation": null
+          },
+          {
+            "factCode": "task.effective_data_usage_status",
+            "name": "有效任务数据使用状态",
+            "factKind": "derived",
+            "dataType": "integer",
+            "description": "ISNULL(rwdsyzt,0) 的确定性表达。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "coalesce",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "task.data_usage_status",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 0,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "task.report_release_date",
+            "name": "报告释放日期",
+            "factKind": "source",
+            "dataType": "string",
+            "description": "任务字段 bgsfrq；为空字符串或 NULL 时尚未释放。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.online_release_flag",
+            "name": "是否线上释放",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 sfxxsf 的原始值；规则判断前空值按 1。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": 1,
+            "derivation": null
+          },
+          {
+            "factCode": "task.effective_online_release_flag",
+            "name": "有效线上释放标志",
+            "factKind": "derived",
+            "dataType": "integer",
+            "description": "ISNULL(sfxxsf,1) 的确定性表达。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "coalesce",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "task.online_release_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 1,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "task.project_report_flag",
+            "name": "项目报告标志",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 xmbg；xmbg=0 或 zkqcbg=0 至少满足一项。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.periodic_report_flag",
+            "name": "周期报告标志",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 zkqcbg；xmbg=0 或 zkqcbg=0 至少满足一项。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "workflow.has_unfinished_report_release",
+            "name": "存在未结束报告释放流程",
+            "factKind": "exists",
+            "dataType": "boolean",
+            "description": "按任务号同时检查 formtable_main_227.zssyrwd 和明细 formtable_main_227_dt3.zssyrwdlc，任一 currentnodetype 不等于 0 的项目报告释放流程即为 true。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "report.merge_flag",
+            "name": "合并报告标志",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "主视图字段 sfhbbg；NULL 或 1 时不执行合并组首条去重。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "report.is_first_task_in_merge",
+            "name": "是否合并报告组首条任务",
+            "factKind": "aggregate",
+            "dataType": "boolean",
+            "description": "按 hbbglc 分组并按任务 ID 升序编号后，当前任务是否为第一条。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "merge_report_task",
+            "parameters": [
+              {
+                "name": "mergeReportId",
+                "dataType": "integer",
+                "description": "合并报告流程 ID",
+                "required": true
+              },
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "product.id",
+            "name": "产品 ID",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "当前正式实验任务对应的产品 ID；759 使用独立释放路径。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "product.type",
+            "name": "产品类型",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "当前产品类型代码；2 和 12 使用业务组服务直接路径。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "order.amount",
+            "name": "订单金额",
+            "factKind": "source",
+            "dataType": "money",
+            "description": "订单金额 A，即 yhhje，空值按 0。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": 0,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.receipts_total",
+            "name": "订单累计关联金额",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 R，即订单普通到款与押金之和；所有覆盖比较在 R 上增加 0.1 容差。",
+            "nullable": true,
+            "nullPolicy": "fail",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.deposit_amount",
+            "name": "订单关联押金",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 D，即订单关联记录中 zxmk=1 的押金金额。",
+            "nullable": true,
+            "nullPolicy": "fail",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.prior_report_fee",
+            "name": "历史报告释放费用",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 B：已计入报告释放范围的历史正式实验费用；任务范围包括 sfxxsf=0、rwdsyzt 属于 2/7 或 uf_xmbgsf.zt 不等于 2，按订单汇总且任务号去重。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.transferred_task_fee",
+            "name": "承接转交任务费用",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 E：订单下承接转交任务最终采用的结算或预估完工费用。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.current_task_fee",
+            "name": "当前正式实验任务费用",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 C：当前任务最终采用费用；有已确认结算时使用结算值，否则使用数量乘订单服务单价的预估完工费。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.merged_other_task_fee",
+            "name": "合并报告其他任务费用",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "金额 M：同一订单、同一合并报告中除当前任务外的正式实验任务费用。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "merge_report_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              },
+              {
+                "name": "mergeReportId",
+                "dataType": "integer",
+                "description": "合并报告流程 ID",
+                "required": true
+              },
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.required_fee",
+            "name": "累计应覆盖费用",
+            "factKind": "derived",
+            "dataType": "money",
+            "description": "金额 F=B+E+C+M。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "add",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "amount.prior_report_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.transferred_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.current_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.merged_other_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "amount.task_fee",
+            "name": "任务费用",
+            "factKind": "derived",
+            "dataType": "money",
+            "description": "金额 T=E+C+M，不包含历史报告释放费用 B。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "add",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "amount.transferred_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.current_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.merged_other_task_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "amount.transferred_estimated_fee",
+            "name": "承接转交预估完工费",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "订单下承接转交任务的估算完工费合计。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.formal_estimated_fee",
+            "name": "正式实验预估完工费",
+            "factKind": "aggregate",
+            "dataType": "money",
+            "description": "订单下正式实验任务的估算完工费合计。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "amount.estimated_work_fee",
+            "name": "订单预估完工费合计",
+            "factKind": "derived",
+            "dataType": "money",
+            "description": "金额 W=承接转交预估完工费+正式实验预估完工费。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": "CNY",
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "add",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "amount.transferred_estimated_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "fact",
+                  "factCode": "amount.formal_estimated_fee",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "merged.other_order_fee_failure_count",
+            "name": "跨订单费用失败数",
+            "factKind": "aggregate",
+            "dataType": "integer",
+            "description": "同一合并报告中其他订单未通过费用规则的数量。每个其他订单在金额为 0，或非框架且单位属性 14 时 R2+0.1 覆盖 B2+E2+M2，或其他单位/框架时达到80% 或 D2 覆盖 (W2-R2)*20% 时通过；R2 已含押金。",
+            "nullable": false,
+            "nullPolicy": "fail",
+            "grain": "merge_report_task",
+            "parameters": [
+              {
+                "name": "mergeReportId",
+                "dataType": "integer",
+                "description": "合并报告流程 ID",
+                "required": true
+              },
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "contract.current_order_meet_flag",
+            "name": "当前订单合同条件通过标志",
+            "factKind": "aggregate",
+            "dataType": "integer",
+            "description": "当前订单所有范围内合同的 dd_ismeet。范围包括使用金额大于 0 的关联合同与执行合同，只判断状态 0；每份合同须命中框架协议、小程序确认，或按单位属性、范本、额度、2023-11-01 会签边界、生效方式、原件状态和签字方式组成的七个互斥签署分支之一。无合同或任一合同失败时为 0。",
+            "nullable": false,
+            "nullPolicy": "fail",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "contract.merged_orders_meet_flag",
+            "name": "合并关联订单合同条件通过标志",
+            "factKind": "aggregate",
+            "dataType": "integer",
+            "description": "合并报告关联订单中 dd_ismeet=0 的数量为 0 时取 1，否则取 0。",
+            "nullable": false,
+            "nullPolicy": "fail",
+            "grain": "merge_report_task",
+            "parameters": [
+              {
+                "name": "mergeReportId",
+                "dataType": "integer",
+                "description": "合并报告流程 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "order.framework_type",
+            "name": "是否框架协议原始值",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "订单字段 sfdls 的原始值；0/2 为框架协议，空值按 1。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1,
+              2
+            ],
+            "defaultValue": 1,
+            "derivation": null
+          },
+          {
+            "factCode": "order.effective_framework_type",
+            "name": "有效框架协议类型",
+            "factKind": "derived",
+            "dataType": "integer",
+            "description": "ISNULL(sfdls,1) 的确定性表达。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1,
+              2
+            ],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "coalesce",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "order.framework_type",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 1,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "order.unit_attribute",
+            "name": "单位属性原始值",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "订单单位属性原始值；空值按 -1，14 为普通产品合同金额分支的特殊单位。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": -1,
+            "derivation": null
+          },
+          {
+            "factCode": "order.effective_unit_attribute",
+            "name": "有效单位属性",
+            "factKind": "derived",
+            "dataType": "integer",
+            "description": "单位属性空值按 -1 的确定性表达。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "coalesce",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "order.unit_attribute",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": -1,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "release.special_application_approved",
+            "name": "报告释放特殊申请通过",
+            "factKind": "exists",
+            "dataType": "boolean",
+            "description": "是否存在 formtable_main_655.sqlx=1、currentnodetype=3 且明细关联当前任务号的报告释放特殊申请。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.batch_release_flag",
+            "name": "是否批量释放原始值",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 sfplsf 的原始值；空值按 1，等于 0 时直接放行。",
+            "nullable": true,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": 1,
+            "derivation": null
+          },
+          {
+            "factCode": "task.effective_batch_release_flag",
+            "name": "有效批量释放标志",
+            "factKind": "derived",
+            "dataType": "integer",
+            "description": "ISNULL(sfplsf,1) 的确定性表达。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": {
+              "kind": "coalesce",
+              "factCode": null,
+              "value": null,
+              "children": [
+                {
+                  "kind": "fact",
+                  "factCode": "task.batch_release_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 1,
+                  "children": [],
+                  "unit": null
+                }
+              ],
+              "unit": null
+            }
+          },
+          {
+            "factCode": "release.raw_data_record_approved",
+            "name": "原始数据释放记录通过",
+            "factKind": "exists",
+            "dataType": "boolean",
+            "description": "yssj=0 且存在当前任务 zt=1、fssj 不早于 2024-11-21 的 uf_yssjsf 记录。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "order.source_code",
+            "name": "订单来源",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "订单来源字段 ddly；等于 2 时直接放行。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "orderId",
+                "dataType": "integer",
+                "description": "任务所属 OA 订单 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "invoice.has_unissued_positive_amount",
+            "name": "存在未开票正金额发票",
+            "factKind": "exists",
+            "dataType": "boolean",
+            "description": "执行合同下是否存在 fpzt=0 且开票金额合计大于 0 的发票。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "execution_contract",
+            "parameters": [
+              {
+                "name": "executionContractId",
+                "dataType": "integer",
+                "description": "订单执行合同 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.completion_date",
+            "name": "任务完工日期",
+            "factKind": "source",
+            "dataType": "date",
+            "description": "定时释放使用的正式实验任务完工日期。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "runtime.current_date",
+            "name": "数据库当天日期",
+            "factKind": "source",
+            "dataType": "date",
+            "description": "规则求值对应的数据库当天日期；定时释放只比较日期相等。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [],
+            "defaultValue": null,
+            "derivation": null
+          },
+          {
+            "factCode": "task.business_scope_flag",
+            "name": "业务组服务标志",
+            "factKind": "source",
+            "dataType": "integer",
+            "description": "任务字段 ywzfw；产品类型为 2/12 且该值为 0 时直接放行。",
+            "nullable": false,
+            "nullPolicy": "error",
+            "grain": "formal_test_task",
+            "parameters": [
+              {
+                "name": "taskId",
+                "dataType": "integer",
+                "description": "OA 正式实验任务 ID",
+                "required": true
+              }
+            ],
+            "unit": null,
+            "allowedValues": [
+              0,
+              1
+            ],
+            "defaultValue": null,
+            "derivation": null
+          }
+        ],
+        "rootCondition": {
+          "id": "report-release-root",
+          "kind": "all",
+          "description": "共同前置条件和至少一条释放路径均满足时输出项目报告释放任务。",
+          "enabled": true,
+          "children": [
+            {
+              "id": "common-prerequisites",
+              "kind": "all",
+              "description": "所有释放路径共同满足的任务前置条件、未结束流程门禁和合并报告去重。",
+              "enabled": true,
+              "children": [
+                {
+                  "id": "task-status-19",
+                  "kind": "compare",
+                  "description": "任务状态必须为 19。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "task.status",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": 19,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "fail"
+                },
+                {
+                  "id": "task-data-status-allowed",
+                  "kind": "compare",
+                  "description": "空值按 0 后的数据使用状态不得为 2 或 7。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "task.effective_data_usage_status",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "not_in",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": [
+                      2,
+                      7
+                    ],
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "fail"
+                },
+                {
+                  "id": "report-release-date-empty",
+                  "kind": "compare",
+                  "description": "报告释放日期必须为空字符串或 NULL。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "task.report_release_date",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "is_blank",
+                  "right": null,
+                  "nullPolicy": "error"
+                },
+                {
+                  "id": "online-release-enabled",
+                  "kind": "compare",
+                  "description": "空值按 1 后的线上释放标志必须为 1。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "task.effective_online_release_flag",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": 1,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "fail"
+                },
+                {
+                  "id": "report-type-eligible",
+                  "kind": "any",
+                  "description": "项目报告标志或周期报告标志至少一个为 0。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "project-report-zero",
+                      "kind": "compare",
+                      "description": "项目报告标志为 0。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "task.project_report_flag",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 0,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "periodic-report-zero",
+                      "kind": "compare",
+                      "description": "周期报告标志为 0。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "task.periodic_report_flag",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 0,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                },
+                {
+                  "id": "no-unfinished-report-release",
+                  "kind": "not",
+                  "description": "不得存在未结束的项目报告释放流程。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "unfinished-report-release-exists",
+                      "kind": "compare",
+                      "description": "任务号命中任一未结束的项目报告释放流程。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "workflow.has_unfinished_report_release",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": true,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "error"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                },
+                {
+                  "id": "merge-output-deduplication",
+                  "kind": "any",
+                  "description": "非合并标志任务全部保留；其他合并任务只保留组内 ID 最小的一条。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "merge-flag-null",
+                      "kind": "compare",
+                      "description": "合并报告标志为 NULL。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "report.merge_flag",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "is_null",
+                      "right": null,
+                      "nullPolicy": "error"
+                    },
+                    {
+                      "id": "merge-flag-one",
+                      "kind": "compare",
+                      "description": "合并报告标志为 1。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "report.merge_flag",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 1,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "merge-first-task",
+                      "kind": "compare",
+                      "description": "当前任务为合并报告组内 ID 最小任务。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "report.is_first_task_in_merge",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": true,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                }
+              ],
+              "left": null,
+              "operator": null,
+              "right": null,
+              "nullPolicy": "indeterminate"
+            },
+            {
+              "id": "release-paths",
+              "kind": "any",
+              "description": "满足普通产品、759 产品或任一直接放行路径。",
+              "enabled": true,
+              "children": [
+                {
+                  "id": "ordinary-product-path",
+                  "kind": "all",
+                  "description": "产品 ID 非 759 时先通过跨订单费用门禁，再命中零金额、全额覆盖或合同金额分支。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "ordinary-product-not759",
+                      "kind": "compare",
+                      "description": "普通产品 ID 不等于 759。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "product.id",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "ne",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 759,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "cross-order-fees-met",
+                      "kind": "compare",
+                      "description": "跨订单合并报告的其他订单费用失败数必须为 0。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "merged.other_order_fee_failure_count",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 0,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "ordinary-release-alternatives",
+                      "kind": "any",
+                      "description": "普通产品命中零金额、独立全额覆盖或合同金额路径之一。",
+                      "enabled": true,
+                      "children": [
+                        {
+                          "id": "ordinary-zero-order-amount",
+                          "kind": "compare",
+                          "description": "订单金额为 0。",
+                          "enabled": true,
+                          "children": [],
+                          "left": {
+                            "kind": "fact",
+                            "factCode": "order.amount",
+                            "value": null,
+                            "children": [],
+                            "unit": null
+                          },
+                          "operator": "eq",
+                          "right": {
+                            "kind": "literal",
+                            "factCode": null,
+                            "value": 0,
+                            "children": [],
+                            "unit": null
+                          },
+                          "nullPolicy": "fail"
+                        },
+                        {
+                          "id": "ordinary-full-coverage",
+                          "kind": "compare",
+                          "description": "订单累计关联金额增加 0.1 容差后覆盖累计应覆盖费用。",
+                          "enabled": true,
+                          "children": [],
+                          "left": {
+                            "kind": "add",
+                            "factCode": null,
+                            "value": null,
+                            "children": [
+                              {
+                                "kind": "fact",
+                                "factCode": "amount.receipts_total",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 0.1,
+                                "children": [],
+                                "unit": null
+                              }
+                            ],
+                            "unit": null
+                          },
+                          "operator": "gte",
+                          "right": {
+                            "kind": "fact",
+                            "factCode": "amount.required_fee",
+                            "value": null,
+                            "children": [],
+                            "unit": null
+                          },
+                          "nullPolicy": "fail"
+                        },
+                        {
+                          "id": "ordinary-contract-and-money",
+                          "kind": "all",
+                          "description": "当前订单及合并关联订单合同均通过，并命中对应订单类型的金额分支。",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "current-order-contracts-met",
+                              "kind": "compare",
+                              "description": "当前订单范围内合同条件全部通过。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "contract.current_order_meet_flag",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "eq",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 1,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "merged-orders-contracts-met",
+                              "kind": "compare",
+                              "description": "合并报告关联订单合同条件全部通过。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "contract.merged_orders_meet_flag",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "eq",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 1,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "ordinary-contract-amount-paths",
+                              "kind": "any",
+                              "description": "根据框架协议和单位属性选择互斥金额分支。",
+                              "enabled": true,
+                              "children": [
+                                {
+                                  "id": "ordinary-nonframework-unit14",
+                                  "kind": "all",
+                                  "description": "非框架协议且单位属性为 14 时要求全额覆盖。",
+                                  "enabled": true,
+                                  "children": [
+                                    {
+                                      "id": "ordinary-nonframework",
+                                      "kind": "compare",
+                                      "description": "订单不是框架协议公司或科研类型。",
+                                      "enabled": true,
+                                      "children": [],
+                                      "left": {
+                                        "kind": "fact",
+                                        "factCode": "order.effective_framework_type",
+                                        "value": null,
+                                        "children": [],
+                                        "unit": null
+                                      },
+                                      "operator": "not_in",
+                                      "right": {
+                                        "kind": "literal",
+                                        "factCode": null,
+                                        "value": [
+                                          0,
+                                          2
+                                        ],
+                                        "children": [],
+                                        "unit": null
+                                      },
+                                      "nullPolicy": "fail"
+                                    },
+                                    {
+                                      "id": "ordinary-unit14",
+                                      "kind": "compare",
+                                      "description": "单位属性为 14。",
+                                      "enabled": true,
+                                      "children": [],
+                                      "left": {
+                                        "kind": "fact",
+                                        "factCode": "order.effective_unit_attribute",
+                                        "value": null,
+                                        "children": [],
+                                        "unit": null
+                                      },
+                                      "operator": "eq",
+                                      "right": {
+                                        "kind": "literal",
+                                        "factCode": null,
+                                        "value": 14,
+                                        "children": [],
+                                        "unit": null
+                                      },
+                                      "nullPolicy": "fail"
+                                    },
+                                    {
+                                      "id": "ordinary-contract-unit14-full-coverage",
+                                      "kind": "compare",
+                                      "description": "订单累计关联金额增加 0.1 容差后覆盖累计应覆盖费用。",
+                                      "enabled": true,
+                                      "children": [],
+                                      "left": {
+                                        "kind": "add",
+                                        "factCode": null,
+                                        "value": null,
+                                        "children": [
+                                          {
+                                            "kind": "fact",
+                                            "factCode": "amount.receipts_total",
+                                            "value": null,
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          {
+                                            "kind": "literal",
+                                            "factCode": null,
+                                            "value": 0.1,
+                                            "children": [],
+                                            "unit": null
+                                          }
+                                        ],
+                                        "unit": null
+                                      },
+                                      "operator": "gte",
+                                      "right": {
+                                        "kind": "fact",
+                                        "factCode": "amount.required_fee",
+                                        "value": null,
+                                        "children": [],
+                                        "unit": null
+                                      },
+                                      "nullPolicy": "fail"
+                                    }
+                                  ],
+                                  "left": null,
+                                  "operator": null,
+                                  "right": null,
+                                  "nullPolicy": "indeterminate"
+                                },
+                                {
+                                  "id": "ordinary-other-unit-or-framework",
+                                  "kind": "all",
+                                  "description": "单位属性不为 14 或属于框架协议时采用 80%/押金二选一。",
+                                  "enabled": true,
+                                  "children": [
+                                    {
+                                      "id": "ordinary-other-unit-or-framework-selector",
+                                      "kind": "any",
+                                      "description": "单位属性不为 14，或者订单为框架协议。",
+                                      "enabled": true,
+                                      "children": [
+                                        {
+                                          "id": "ordinary-unit-not14",
+                                          "kind": "compare",
+                                          "description": "单位属性不为 14。",
+                                          "enabled": true,
+                                          "children": [],
+                                          "left": {
+                                            "kind": "fact",
+                                            "factCode": "order.effective_unit_attribute",
+                                            "value": null,
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          "operator": "ne",
+                                          "right": {
+                                            "kind": "literal",
+                                            "factCode": null,
+                                            "value": 14,
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          "nullPolicy": "fail"
+                                        },
+                                        {
+                                          "id": "ordinary-framework",
+                                          "kind": "compare",
+                                          "description": "订单为框架协议公司或科研类型。",
+                                          "enabled": true,
+                                          "children": [],
+                                          "left": {
+                                            "kind": "fact",
+                                            "factCode": "order.effective_framework_type",
+                                            "value": null,
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          "operator": "in",
+                                          "right": {
+                                            "kind": "literal",
+                                            "factCode": null,
+                                            "value": [
+                                              0,
+                                              2
+                                            ],
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          "nullPolicy": "fail"
+                                        }
+                                      ],
+                                      "left": null,
+                                      "operator": null,
+                                      "right": null,
+                                      "nullPolicy": "indeterminate"
+                                    },
+                                    {
+                                      "id": "ordinary-eighty-or-deposit",
+                                      "kind": "any",
+                                      "description": "到款达到 80% 或押金达到当前订单门槛。",
+                                      "enabled": true,
+                                      "children": [
+                                        {
+                                          "id": "ordinary-eighty-percent",
+                                          "kind": "compare",
+                                          "description": "R+0.1 大于等于 F 的 80%。",
+                                          "enabled": true,
+                                          "children": [],
+                                          "left": {
+                                            "kind": "add",
+                                            "factCode": null,
+                                            "value": null,
+                                            "children": [
+                                              {
+                                                "kind": "fact",
+                                                "factCode": "amount.receipts_total",
+                                                "value": null,
+                                                "children": [],
+                                                "unit": null
+                                              },
+                                              {
+                                                "kind": "literal",
+                                                "factCode": null,
+                                                "value": 0.1,
+                                                "children": [],
+                                                "unit": null
+                                              }
+                                            ],
+                                            "unit": null
+                                          },
+                                          "operator": "gte",
+                                          "right": {
+                                            "kind": "multiply",
+                                            "factCode": null,
+                                            "value": null,
+                                            "children": [
+                                              {
+                                                "kind": "fact",
+                                                "factCode": "amount.required_fee",
+                                                "value": null,
+                                                "children": [],
+                                                "unit": null
+                                              },
+                                              {
+                                                "kind": "literal",
+                                                "factCode": null,
+                                                "value": 0.8,
+                                                "children": [],
+                                                "unit": null
+                                              }
+                                            ],
+                                            "unit": null
+                                          },
+                                          "nullPolicy": "fail"
+                                        },
+                                        {
+                                          "id": "ordinary-deposit-threshold",
+                                          "kind": "compare",
+                                          "description": "D 大于等于 W 减 R 的 20%。",
+                                          "enabled": true,
+                                          "children": [],
+                                          "left": {
+                                            "kind": "fact",
+                                            "factCode": "amount.deposit_amount",
+                                            "value": null,
+                                            "children": [],
+                                            "unit": null
+                                          },
+                                          "operator": "gte",
+                                          "right": {
+                                            "kind": "subtract",
+                                            "factCode": null,
+                                            "value": null,
+                                            "children": [
+                                              {
+                                                "kind": "fact",
+                                                "factCode": "amount.estimated_work_fee",
+                                                "value": null,
+                                                "children": [],
+                                                "unit": null
+                                              },
+                                              {
+                                                "kind": "multiply",
+                                                "factCode": null,
+                                                "value": null,
+                                                "children": [
+                                                  {
+                                                    "kind": "fact",
+                                                    "factCode": "amount.receipts_total",
+                                                    "value": null,
+                                                    "children": [],
+                                                    "unit": null
+                                                  },
+                                                  {
+                                                    "kind": "literal",
+                                                    "factCode": null,
+                                                    "value": 0.2,
+                                                    "children": [],
+                                                    "unit": null
+                                                  }
+                                                ],
+                                                "unit": null
+                                              }
+                                            ],
+                                            "unit": null
+                                          },
+                                          "nullPolicy": "fail"
+                                        }
+                                      ],
+                                      "left": null,
+                                      "operator": null,
+                                      "right": null,
+                                      "nullPolicy": "indeterminate"
+                                    }
+                                  ],
+                                  "left": null,
+                                  "operator": null,
+                                  "right": null,
+                                  "nullPolicy": "indeterminate"
+                                }
+                              ],
+                              "left": null,
+                              "operator": null,
+                              "right": null,
+                              "nullPolicy": "indeterminate"
+                            }
+                          ],
+                          "left": null,
+                          "operator": null,
+                          "right": null,
+                          "nullPolicy": "indeterminate"
+                        }
+                      ],
+                      "left": null,
+                      "operator": null,
+                      "right": null,
+                      "nullPolicy": "indeterminate"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                },
+                {
+                  "id": "product-759-path",
+                  "kind": "all",
+                  "description": "产品 ID 759 使用独立的两档互斥金额规则。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "product-is759",
+                      "kind": "compare",
+                      "description": "产品 ID 等于 759。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "product.id",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 759,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "product-759-paths",
+                      "kind": "any",
+                      "description": "任务费用十万元及以下使用 70%，超过十万元使用 50%。",
+                      "enabled": true,
+                      "children": [
+                        {
+                          "id": "product-759-lower-band",
+                          "kind": "all",
+                          "description": "T 不超过 100000 的 70% 分支。",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "product-759-task-fee-lte-100000",
+                              "kind": "compare",
+                              "description": "T 小于等于 100000。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "amount.task_fee",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "lte",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 100000,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "product-759-seventy-percent",
+                              "kind": "compare",
+                              "description": "R+0.1 大于等于 F 的 70%。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "add",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "amount.receipts_total",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 0.1,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": null
+                              },
+                              "operator": "gte",
+                              "right": {
+                                "kind": "multiply",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "amount.required_fee",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 0.7,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            }
+                          ],
+                          "left": null,
+                          "operator": null,
+                          "right": null,
+                          "nullPolicy": "indeterminate"
+                        },
+                        {
+                          "id": "product-759-upper-band",
+                          "kind": "all",
+                          "description": "T 超过 100000 的 50% 分支。",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "product-759-task-fee-gt-100000",
+                              "kind": "compare",
+                              "description": "T 大于 100000。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "amount.task_fee",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "gt",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 100000,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "product-759-fifty-percent",
+                              "kind": "compare",
+                              "description": "R+0.1 大于等于 F 的 50%。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "add",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "amount.receipts_total",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 0.1,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": null
+                              },
+                              "operator": "gte",
+                              "right": {
+                                "kind": "multiply",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "amount.required_fee",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 0.5,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            }
+                          ],
+                          "left": null,
+                          "operator": null,
+                          "right": null,
+                          "nullPolicy": "indeterminate"
+                        }
+                      ],
+                      "left": null,
+                      "operator": null,
+                      "right": null,
+                      "nullPolicy": "indeterminate"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                },
+                {
+                  "id": "special-application-path",
+                  "kind": "compare",
+                  "description": "报告释放特殊申请已经通过。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "release.special_application_approved",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": true,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "error"
+                },
+                {
+                  "id": "batch-release-path",
+                  "kind": "compare",
+                  "description": "空值按 1 后的批量释放标志等于 0。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "task.effective_batch_release_flag",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": 0,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "fail"
+                },
+                {
+                  "id": "raw-data-record-path",
+                  "kind": "compare",
+                  "description": "存在符合日期和状态条件的原始数据释放记录。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "release.raw_data_record_approved",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": true,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "error"
+                },
+                {
+                  "id": "order-source-path",
+                  "kind": "compare",
+                  "description": "订单来源等于 2。",
+                  "enabled": true,
+                  "children": [],
+                  "left": {
+                    "kind": "fact",
+                    "factCode": "order.source_code",
+                    "value": null,
+                    "children": [],
+                    "unit": null
+                  },
+                  "operator": "eq",
+                  "right": {
+                    "kind": "literal",
+                    "factCode": null,
+                    "value": 2,
+                    "children": [],
+                    "unit": null
+                  },
+                  "nullPolicy": "fail"
+                },
+                {
+                  "id": "timed-release-path",
+                  "kind": "all",
+                  "description": "非 2/12 产品且产品 ID 非 759 时，按完工后精确日期进入定时释放。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "timed-product-type",
+                      "kind": "compare",
+                      "description": "产品类型不属于 2 或 12。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "product.type",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "not_in",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": [
+                          2,
+                          12
+                        ],
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "timed-product-not759",
+                      "kind": "compare",
+                      "description": "产品 ID 不等于 759。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "product.id",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "ne",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 759,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "timed-release-days",
+                      "kind": "any",
+                      "description": "精确命中完工后第 60、75 或 180 天之一。",
+                      "enabled": true,
+                      "children": [
+                        {
+                          "id": "timed-release-day60",
+                          "kind": "all",
+                          "description": "T 小于 5000、有未开票正金额发票且恰好为第 60 天。",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "timed-day60-task-fee",
+                              "kind": "compare",
+                              "description": "T 小于 5000。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "amount.task_fee",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "lt",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 5000,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "timed-day60-invoice",
+                              "kind": "compare",
+                              "description": "存在未开票且金额大于 0 的发票。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "invoice.has_unissued_positive_amount",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "eq",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": true,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "error"
+                            },
+                            {
+                              "id": "timed-day60-exact-date",
+                              "kind": "compare",
+                              "description": "当天日期恰好等于完工日期加 60 天。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "runtime.current_date",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "eq",
+                              "right": {
+                                "kind": "dateAdd",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "task.completion_date",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 60,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": "day"
+                              },
+                              "nullPolicy": "error"
+                            }
+                          ],
+                          "left": null,
+                          "operator": null,
+                          "right": null,
+                          "nullPolicy": "indeterminate"
+                        },
+                        {
+                          "id": "timed-release-day75",
+                          "kind": "all",
+                          "description": "T 小于 5000 且恰好为第 75 天，不要求未开票。",
+                          "enabled": true,
+                          "children": [
+                            {
+                              "id": "timed-day75-task-fee",
+                              "kind": "compare",
+                              "description": "T 小于 5000。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "amount.task_fee",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "lt",
+                              "right": {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 5000,
+                                "children": [],
+                                "unit": null
+                              },
+                              "nullPolicy": "fail"
+                            },
+                            {
+                              "id": "timed-day75-exact-date",
+                              "kind": "compare",
+                              "description": "当天日期恰好等于完工日期加 75 天。",
+                              "enabled": true,
+                              "children": [],
+                              "left": {
+                                "kind": "fact",
+                                "factCode": "runtime.current_date",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              "operator": "eq",
+                              "right": {
+                                "kind": "dateAdd",
+                                "factCode": null,
+                                "value": null,
+                                "children": [
+                                  {
+                                    "kind": "fact",
+                                    "factCode": "task.completion_date",
+                                    "value": null,
+                                    "children": [],
+                                    "unit": null
+                                  },
+                                  {
+                                    "kind": "literal",
+                                    "factCode": null,
+                                    "value": 75,
+                                    "children": [],
+                                    "unit": null
+                                  }
+                                ],
+                                "unit": "day"
+                              },
+                              "nullPolicy": "error"
+                            }
+                          ],
+                          "left": null,
+                          "operator": null,
+                          "right": null,
+                          "nullPolicy": "indeterminate"
+                        },
+                        {
+                          "id": "timed-day180-exact-date",
+                          "kind": "compare",
+                          "description": "当天日期恰好等于完工日期加 180 天，不限制 T。",
+                          "enabled": true,
+                          "children": [],
+                          "left": {
+                            "kind": "fact",
+                            "factCode": "runtime.current_date",
+                            "value": null,
+                            "children": [],
+                            "unit": null
+                          },
+                          "operator": "eq",
+                          "right": {
+                            "kind": "dateAdd",
+                            "factCode": null,
+                            "value": null,
+                            "children": [
+                              {
+                                "kind": "fact",
+                                "factCode": "task.completion_date",
+                                "value": null,
+                                "children": [],
+                                "unit": null
+                              },
+                              {
+                                "kind": "literal",
+                                "factCode": null,
+                                "value": 180,
+                                "children": [],
+                                "unit": null
+                              }
+                            ],
+                            "unit": "day"
+                          },
+                          "nullPolicy": "error"
+                        }
+                      ],
+                      "left": null,
+                      "operator": null,
+                      "right": null,
+                      "nullPolicy": "indeterminate"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                },
+                {
+                  "id": "business-scope-path",
+                  "kind": "all",
+                  "description": "产品类型为 2/12 且业务组服务标志为 0。",
+                  "enabled": true,
+                  "children": [
+                    {
+                      "id": "business-scope-product-type",
+                      "kind": "compare",
+                      "description": "产品类型属于 2 或 12。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "product.type",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "in",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": [
+                          2,
+                          12
+                        ],
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    },
+                    {
+                      "id": "business-scope-zero",
+                      "kind": "compare",
+                      "description": "业务组服务标志等于 0。",
+                      "enabled": true,
+                      "children": [],
+                      "left": {
+                        "kind": "fact",
+                        "factCode": "task.business_scope_flag",
+                        "value": null,
+                        "children": [],
+                        "unit": null
+                      },
+                      "operator": "eq",
+                      "right": {
+                        "kind": "literal",
+                        "factCode": null,
+                        "value": 0,
+                        "children": [],
+                        "unit": null
+                      },
+                      "nullPolicy": "fail"
+                    }
+                  ],
+                  "left": null,
+                  "operator": null,
+                  "right": null,
+                  "nullPolicy": "indeterminate"
+                }
+              ],
+              "left": null,
+              "operator": null,
+              "right": null,
+              "nullPolicy": "indeterminate"
+            }
+          ],
+          "left": null,
+          "operator": null,
+          "right": null,
+          "nullPolicy": "indeterminate"
+        },
+        "exceptionNotes": [
+          "订单金额为 0 仅绕过当前订单合同和金额条件，不能绕过跨订单费用门禁。",
+          "普通产品全额覆盖是独立分支，可绕过合同门禁，但不能绕过跨订单费用门禁。",
+          "特殊申请、批量释放、指定原始数据记录、订单来源、定时释放和业务组服务是独立直接路径。",
+          "所有直接路径仍受共同前置、未结束流程和合并报告去重约束。",
+          "第 60、75、180 天使用日期相等，不使用达到或超过。"
+        ],
+        "failureReasons": [
+          "任务共同前置字段不符合要求或报告已释放。",
+          "当前任务存在未结束的项目报告释放流程。",
+          "普通产品当前订单到款或押金不足。",
+          "当前订单或合并关联订单合同条件未全部通过。",
+          "跨订单合并报告存在费用校验失败的其他订单。",
+          "产品 759 未达到对应 70% 或 50% 覆盖比例。",
+          "定时释放未处于完工后第 60、75 或 180 天的当天。",
+          "合并报告任务不是最终保留的组内首条记录。"
+        ],
+        "recommendations": [
+          "核对任务状态、释放日期、数据状态、线上释放和报告类型字段。",
+          "检查并结束或撤销当前任务未结束的项目报告释放流程。",
+          "核对累计关联金额、押金、任务费用、减免金额和合并报告任务范围。",
+          "逐份核对合同额度、范本、签署日期、生效方式、原件状态和签字方式。",
+          "逐个核对合并报告其他订单的费用门禁。",
+          "涉及产品和单位属性代码时先与 OA 当前枚举字典核对。"
+        ],
+        "responsibleRoles": [
+          "流程创建人",
+          "产品项目负责人",
+          "项目报告释放人"
+        ],
+        "testCases": [
+          {
+            "id": "ordinary-full-coverage-contract-fail-pass",
+            "category": "normal",
+            "description": "普通产品全额覆盖独立于合同条件通过。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 2,
+              "merged.other_order_fee_failure_count": 0,
+              "amount.receipts_total": 99.9,
+              "amount.prior_report_fee": 10,
+              "amount.transferred_task_fee": 20,
+              "amount.current_task_fee": 30,
+              "amount.merged_other_task_fee": 40,
+              "order.amount": 1000,
+              "contract.current_order_meet_flag": 0,
+              "contract.merged_orders_meet_flag": 0
+            },
+            "expected": "pass",
+            "rationale": "R+0.1 恰好等于 F，独立全额覆盖分支不要求合同通过。"
+          },
+          {
+            "id": "ordinary-eighty-percent-boundary-pass",
+            "category": "boundary",
+            "description": "普通产品在 80% 精确边界通过。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 2,
+              "merged.other_order_fee_failure_count": 0,
+              "contract.current_order_meet_flag": 1,
+              "contract.merged_orders_meet_flag": 1,
+              "order.framework_type": 1,
+              "order.unit_attribute": 13,
+              "amount.receipts_total": 79.9,
+              "amount.prior_report_fee": 10,
+              "amount.transferred_task_fee": 20,
+              "amount.current_task_fee": 30,
+              "amount.merged_other_task_fee": 40,
+              "order.amount": 1000,
+              "amount.deposit_amount": 0,
+              "amount.transferred_estimated_fee": 100,
+              "amount.formal_estimated_fee": 100
+            },
+            "expected": "pass",
+            "rationale": "R+0.1=80，等于 F*80%。"
+          },
+          {
+            "id": "ordinary-deposit-boundary-pass",
+            "category": "boundary",
+            "description": "普通产品到款不足 80% 但押金精确达到门槛。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 2,
+              "merged.other_order_fee_failure_count": 0,
+              "contract.current_order_meet_flag": 1,
+              "contract.merged_orders_meet_flag": 1,
+              "order.framework_type": 1,
+              "order.unit_attribute": 13,
+              "amount.receipts_total": 50,
+              "amount.prior_report_fee": 10,
+              "amount.transferred_task_fee": 20,
+              "amount.current_task_fee": 30,
+              "amount.merged_other_task_fee": 40,
+              "order.amount": 1000,
+              "amount.deposit_amount": 190,
+              "amount.transferred_estimated_fee": 100,
+              "amount.formal_estimated_fee": 100
+            },
+            "expected": "pass",
+            "rationale": "D=190，恰好等于 W-R*20%=200-10。"
+          },
+          {
+            "id": "ordinary-zero-amount-cross-order-fail",
+            "category": "failure",
+            "description": "订单金额为零但跨订单费用门禁失败。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 2,
+              "merged.other_order_fee_failure_count": 1,
+              "order.amount": 0
+            },
+            "expected": "fail",
+            "rationale": "普通产品必须先满足跨订单费用失败数为零。"
+          },
+          {
+            "id": "ordinary-contract-and-money-fail",
+            "category": "failure",
+            "description": "普通产品未全额覆盖且合同不通过。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 2,
+              "merged.other_order_fee_failure_count": 0,
+              "amount.receipts_total": 0,
+              "amount.prior_report_fee": 10,
+              "amount.transferred_task_fee": 20,
+              "amount.current_task_fee": 30,
+              "amount.merged_other_task_fee": 40,
+              "order.amount": 1000,
+              "contract.current_order_meet_flag": 0,
+              "contract.merged_orders_meet_flag": 1
+            },
+            "expected": "fail",
+            "rationale": "零金额、全额覆盖和合同金额三条路径均未命中。"
+          },
+          {
+            "id": "product-759-lower-boundary-pass",
+            "category": "mutuallyExclusiveBranch",
+            "description": "产品 759 在 T=100000 时只进入 70% 分支。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 759,
+              "product.type": 2,
+              "amount.prior_report_fee": 0,
+              "amount.transferred_task_fee": 0,
+              "amount.merged_other_task_fee": 0,
+              "amount.current_task_fee": 100000,
+              "amount.receipts_total": 69999.9
+            },
+            "expected": "pass",
+            "rationale": "T=100000 命中小于等于分支，R+0.1 等于 F*70%。"
+          },
+          {
+            "id": "product-759-upper-boundary-pass",
+            "category": "mutuallyExclusiveBranch",
+            "description": "产品 759 在 T>100000 时进入 50% 分支。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 759,
+              "product.type": 2,
+              "amount.prior_report_fee": 0,
+              "amount.transferred_task_fee": 0,
+              "amount.merged_other_task_fee": 0,
+              "amount.current_task_fee": 100001,
+              "amount.receipts_total": 50000.4
+            },
+            "expected": "pass",
+            "rationale": "T=100001 只命中大于分支，R+0.1 等于 F*50%。"
+          },
+          {
+            "id": "product-759-upper-insufficient-fail",
+            "category": "failure",
+            "description": "产品 759 超过十万元但未达到 50%。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 759,
+              "product.type": 2,
+              "amount.prior_report_fee": 0,
+              "amount.transferred_task_fee": 0,
+              "amount.merged_other_task_fee": 0,
+              "amount.current_task_fee": 100001,
+              "amount.receipts_total": 49999
+            },
+            "expected": "fail",
+            "rationale": "R+0.1 小于 F*50%，且其他直接路径全部关闭。"
+          },
+          {
+            "id": "special-application-pass",
+            "category": "normal",
+            "description": "特殊申请通过时直接放行。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": true
+            },
+            "expected": "pass",
+            "rationale": "共同前置满足且特殊申请存在。"
+          },
+          {
+            "id": "null-defaults-pass",
+            "category": "null",
+            "description": "共同前置空值默认与空报告日期按来源口径处理。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": null,
+              "task.report_release_date": null,
+              "task.online_release_flag": null,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": true
+            },
+            "expected": "pass",
+            "rationale": "rwdsyzt 空值按 0、sfxxsf 空值按 1、bgsfrq NULL 视为空。"
+          },
+          {
+            "id": "raw-data-record-pass",
+            "category": "normal",
+            "description": "指定原始数据释放记录直接放行。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.raw_data_record_approved": true
+            },
+            "expected": "pass",
+            "rationale": "共同前置满足且存在符合状态和日期条件的记录。"
+          },
+          {
+            "id": "order-source-pass",
+            "category": "normal",
+            "description": "订单来源等于 2 时直接放行。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "order.source_code": 2
+            },
+            "expected": "pass",
+            "rationale": "订单来源直接路径命中。"
+          },
+          {
+            "id": "business-scope-pass",
+            "category": "normal",
+            "description": "产品类型 2 且业务组服务标志为 0 时直接放行。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "product.type": 2,
+              "task.business_scope_flag": 0
+            },
+            "expected": "pass",
+            "rationale": "产品类型与业务组服务条件同时满足。"
+          },
+          {
+            "id": "batch-release-pass",
+            "category": "normal",
+            "description": "批量释放标志为 0 时直接放行。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "task.batch_release_flag": 0
+            },
+            "expected": "pass",
+            "rationale": "sfplsf=0 的独立路径命中。"
+          },
+          {
+            "id": "timed-day60-pass",
+            "category": "timeBoundary",
+            "description": "T 小于 5000 且有未开票正金额发票，在第 60 天通过。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 3,
+              "merged.other_order_fee_failure_count": 1,
+              "amount.transferred_task_fee": 0,
+              "amount.current_task_fee": 4000,
+              "amount.merged_other_task_fee": 0,
+              "task.completion_date": "2026-01-01",
+              "invoice.has_unissued_positive_amount": true,
+              "runtime.current_date": "2026-03-02"
+            },
+            "expected": "pass",
+            "rationale": "2026-01-01 加 60 天为 2026-03-02。"
+          },
+          {
+            "id": "timed-day61-fail",
+            "category": "timeBoundary",
+            "description": "错过第 60 天后不会持续命中。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 3,
+              "merged.other_order_fee_failure_count": 1,
+              "amount.transferred_task_fee": 0,
+              "amount.current_task_fee": 4000,
+              "amount.merged_other_task_fee": 0,
+              "task.completion_date": "2026-01-01",
+              "invoice.has_unissued_positive_amount": true,
+              "runtime.current_date": "2026-03-03"
+            },
+            "expected": "fail",
+            "rationale": "第 61 天不等于 60、75 或 180 天边界。"
+          },
+          {
+            "id": "timed-day75-invoiced-pass",
+            "category": "timeBoundary",
+            "description": "第 75 天路径不要求未开票。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 3,
+              "merged.other_order_fee_failure_count": 1,
+              "amount.transferred_task_fee": 0,
+              "amount.current_task_fee": 4000,
+              "amount.merged_other_task_fee": 0,
+              "task.completion_date": "2026-01-01",
+              "invoice.has_unissued_positive_amount": false,
+              "runtime.current_date": "2026-03-17"
+            },
+            "expected": "pass",
+            "rationale": "2026-01-01 加 75 天为 2026-03-17，发票事实不参与该分支。"
+          },
+          {
+            "id": "timed-day180-high-fee-pass",
+            "category": "timeBoundary",
+            "description": "第 180 天路径不限制 T。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": false,
+              "task.batch_release_flag": 1,
+              "release.raw_data_record_approved": false,
+              "order.source_code": 0,
+              "task.business_scope_flag": 1,
+              "product.id": 100,
+              "product.type": 3,
+              "merged.other_order_fee_failure_count": 1,
+              "amount.transferred_task_fee": 0,
+              "amount.current_task_fee": 6000,
+              "amount.merged_other_task_fee": 0,
+              "task.completion_date": "2026-01-01",
+              "invoice.has_unissued_positive_amount": false,
+              "runtime.current_date": "2026-06-30"
+            },
+            "expected": "pass",
+            "rationale": "2026-01-01 加 180 天为 2026-06-30，T 可大于 5000。"
+          },
+          {
+            "id": "unfinished-flow-blocks-direct-path",
+            "category": "failure",
+            "description": "直接放行条件也不能绕过未结束流程。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": true,
+              "report.merge_flag": null,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": true
+            },
+            "expected": "fail",
+            "rationale": "共同前置中的 NOT 未结束流程门禁失败。"
+          },
+          {
+            "id": "merge-deduplication-fail",
+            "category": "failure",
+            "description": "合并报告非首条任务不进入最终输出。",
+            "given": {
+              "task.status": 19,
+              "task.data_usage_status": 0,
+              "task.report_release_date": "",
+              "task.online_release_flag": 1,
+              "task.project_report_flag": 0,
+              "task.periodic_report_flag": 1,
+              "workflow.has_unfinished_report_release": false,
+              "report.merge_flag": 2,
+              "report.is_first_task_in_merge": false,
+              "release.special_application_approved": true
+            },
+            "expected": "fail",
+            "rationale": "合并标志非 NULL/1 且不是组内首条。"
+          }
+        ],
+        "warnings": [
+          "v_ReportDataReleaseRules 引用的 v_sto 定义缺失，内部来源必须由元数据审核解决。",
+          "合同逐份分支和跨订单逐单费用计算作为聚合事实定义交接，查询筛选与聚合保持阻断未决。",
+          "产品、产品类型和单位属性代码的显示名称必须以 OA 当前枚举字典为准。",
+          "该 reviewed import 只是不可执行待审核草稿，不代表业务批准或可生成查询。"
+        ],
+        "fieldMappings": [
+          {
+            "factCode": "task.status",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.data_usage_status",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.effective_data_usage_status",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.report_release_date",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.online_release_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.effective_online_release_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.project_report_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.periodic_report_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "workflow.has_unfinished_report_release",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "report.merge_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "report.is_first_task_in_merge",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "product.id",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "product.type",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.amount",
+            "mappingStatus": "mapped",
+            "viewName": "v_OrderFormaltestsettlement",
+            "viewField": "yhhje",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.receipts_total",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ddgldk_total",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.deposit_amount",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ddglyj",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.prior_report_fee",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "amount.transferred_task_fee",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ctzjjsfy",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.current_task_fee",
+            "mappingStatus": "mapped",
+            "viewName": "v_OrderFormaltestsettlement",
+            "viewField": "zssyjsfy",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.merged_other_task_fee",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "amount.required_fee",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "amount.task_fee",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "amount.transferred_estimated_fee",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "ctwgfy",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.formal_estimated_fee",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportDataReleaseRules",
+            "viewField": "zssywgfy",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "amount.estimated_work_fee",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "merged.other_order_fee_failure_count",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "contract.current_order_meet_flag",
+            "mappingStatus": "mapped",
+            "viewName": "v_ReportReleaseSealCondition",
+            "viewField": "dd_ismeet",
+            "viewActive": true,
+            "reviewStatus": "candidate",
+            "note": "来源文档明确给出该视图输出字段；仍为待审核候选。"
+          },
+          {
+            "factCode": "contract.merged_orders_meet_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.framework_type",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.effective_framework_type",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.unit_attribute",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.effective_unit_attribute",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "release.special_application_approved",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.batch_release_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.effective_batch_release_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "release.raw_data_record_approved",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "order.source_code",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "invoice.has_unissued_positive_amount",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.completion_date",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "runtime.current_date",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          },
+          {
+            "factCode": "task.business_scope_flag",
+            "mappingStatus": "unresolved",
+            "viewName": null,
+            "viewField": null,
+            "viewActive": null,
+            "reviewStatus": "candidate",
+            "note": "来源未提供可安全确认的目录输出字段，保持未决。"
+          }
+        ]
+      }
+    }
+  }
+]
