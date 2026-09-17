@@ -15,6 +15,7 @@ from rule_reader.infrastructure.migrations import (
     FACT_BINDING_HANDOFF_BATCHES_V3_COLLECTION,
     FACT_BINDING_HANDOFFS_COLLECTION,
     LATEST_SCHEMA_VERSION,
+    OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION,
     RULE_VERSIONS_COLLECTION,
     RULE_VERSIONS_V3_COLLECTION,
     RUNTIME_SCHEMA_VERSION,
@@ -196,7 +197,7 @@ def test_schema_v5_first_run_creates_exactly_two_collections_and_indexes() -> No
         apply_migrations(database, target_version=V3_PERSISTENCE_SCHEMA_VERSION)  # type: ignore[arg-type]
     )
 
-    assert result == LATEST_SCHEMA_VERSION == 5
+    assert result == V3_PERSISTENCE_SCHEMA_VERSION == 5
     assert set(database.stores) == EXPECTED_COLLECTIONS
     rule_indexes = database.stores[RULE_VERSIONS_V3_COLLECTION].indexes
     assert rule_indexes["uq_rule_versions_v3_rule_version"] == ([("rule_version", 1)], True)
@@ -280,7 +281,7 @@ def test_schema_v5_does_not_touch_v1_v4_collections_or_existing_documents() -> N
 
 
 def test_apply_migrations_rejects_unsupported_target_before_any_write() -> None:
-    for bad_target in (0, 1, 3, 6, 99):
+    for bad_target in (0, 1, 3, 7, 99):
         database = FakeDatabase()
         with pytest.raises(ValueError, match="target"):
             asyncio.run(
@@ -354,3 +355,22 @@ def test_fake_collection_store_reports_first_write_time() -> None:
     with pytest.raises(DuplicateKeyError):
         store.insert({"_id": "v2", "rule_version": "v1", "stored_at": now})
     assert store.documents[0]["stored_at"] == now
+
+
+def test_schema_v6_adds_complete_delivery_indexes_without_new_collections() -> None:
+    database = FakeDatabase()
+    database.stores[APP_METADATA_COLLECTION] = FakeCollectionStore()
+    database.stores[APP_METADATA_COLLECTION].insert(_metadata())
+
+    result = asyncio.run(
+        apply_migrations(database, target_version=OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION)  # type: ignore[arg-type]
+    )
+
+    assert result == LATEST_SCHEMA_VERSION == 6
+    assert set(database.stores) == EXPECTED_COLLECTIONS
+    rule_indexes = database.stores[RULE_VERSIONS_V3_COLLECTION].indexes
+    assert "ix_rule_versions_v3_purpose" in rule_indexes
+    assert "ix_rule_versions_v3_source_file_sha256" in rule_indexes
+    assert "ix_rule_versions_v3_parse_input_sha256" in rule_indexes
+    assert database.stores[APP_METADATA_COLLECTION].documents[0]["schema_version"] == 6
+    assert [record["version"] for record in _migration_records(database)] == [1, 2, 3, 4, 5, 6]

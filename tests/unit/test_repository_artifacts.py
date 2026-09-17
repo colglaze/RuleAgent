@@ -36,11 +36,26 @@ def test_contract_export_is_reproducible_from_repository(
         "RULE_STRUCTURE_V3_PATH",
         tmp_path / "rule-structure-candidate-3.0.0.schema.json",
     )
+    monkeypatch.setattr(
+        exporter,
+        "FACT_BINDING_V31_PATH",
+        tmp_path / "fact-binding-request-3.1.0.schema.json",
+    )
+    monkeypatch.setattr(
+        exporter,
+        "RULE_RESULT_V31_PATH",
+        tmp_path / "rule-parse-result-3.1.0.schema.json",
+    )
+    monkeypatch.setattr(
+        exporter,
+        "RULE_STRUCTURE_V31_PATH",
+        tmp_path / "rule-structure-candidate-3.1.0.schema.json",
+    )
     monkeypatch.setattr(exporter, "EXAMPLES_ROOT", tmp_path / "examples")
 
     exporter.main()
     first = {path.relative_to(tmp_path): path.read_bytes() for path in tmp_path.rglob("*.json")}
-    assert len(first) == 16
+    assert len(first) == 25
     for relative_path, payload in first.items():
         expected = (repository_contracts / relative_path).read_text(encoding="utf-8")
         assert json.loads(payload) == json.loads(expected)

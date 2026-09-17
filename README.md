@@ -1,6 +1,6 @@
 # RuleReader
 
-RuleReader 当前版本为 `0.12.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块；真实 Provider 候选无法通过门禁时，只有用户明确授权的离线 `reviewed_import` 才能导入指定候选，且不得冒充 DeepSeek 输出。
+RuleReader 当前版本为 `0.13.0`。项目已提供 Python `3.11.9`、FastAPI、MongoDB 基础设施和基于 LangGraph + DeepSeek 的本地文本规则解析模块；真实 Provider 候选无法通过门禁时，只有用户明确授权的离线 `reviewed_import` 才能导入指定候选，且不得冒充 DeepSeek 输出。
 
 新解析结果使用 Schema `2.0.0`，以结构化表达式保留公式、分支、派生事实和日期计算，并由确定性解释器执行测试案例。结果始终是带版本和来源信息的待审核 JSON 草稿，不会发布或执行规则。用户可以显式把草稿归档为不可变 MongoDB 版本；默认试解析不写数据库，归档也不代表已审批。
 
@@ -72,9 +72,12 @@ RULEREADER_DOCUMENT_ROOT=C:\path\to\rule-documents
 普通服务和 `init-db` 的运行时 Schema 为 v4：`rule_versions` 保存 V1/V2 不可变草稿，
 `fact_binding_handoffs` 保存 RuleReader 所有、SqlBot 只读的 V2 事实交接，`rule_structure_candidates_v3`
 保存不可执行的 V3 恢复候选；`init-db` 可从空库或旧 Schema 幂等升级，但默认只到 v4。代码中已实现
-Schema v5 的 `rule_versions_v3` 与 `fact_binding_handoff_batches_v3`，只有显式授权的 V3 持久化
-脚本会请求 v5。该脚本已于 2026-09-07 按用户单独授权在本机正式库执行（Schema v5，`rule_versions_v3`
-1 条 + 单文档 batch 18 条请求，恢复候选 1 条；证据见 [PROG-20260907](docs/PROG-20260907.md)）。
+Schema v5 的 `rule_versions_v3` 与 `fact_binding_handoff_batches_v3`，以及 Schema v6 在既有 V3 集合上
+增加的完整交付字段（catalog/candidate payload、双重来源哈希、purpose）。只有显式授权的 V3/3.1.0
+持久化脚本会请求 v5/v6。2026-09-07 脚本按用户单独授权在本机正式库执行过 Schema v5
+（`rule_versions_v3` 1 条 + 单文档 batch 18 条请求，恢复候选 1 条；证据见
+[PROG-20260907](docs/PROG-20260907.md)）。优化方案 3.1.0 新版本的真实落库尚未授权，不得用旧
+`persist_report_release_v3_delivery.py` 写入新内容。
 2026-09-06 换机重建实例的空库快照存于 `generated-rules/mongodb-snapshot-20260906/`（业务集合
 0 条、基础设施 5 条文档），仅代表该实例当时状态；文档中的历史记录不构成数据库备份。
 
@@ -308,6 +311,33 @@ readiness 16/16 与写前闭包门禁校验，全部通过后才初始化 MongoD
 停留在 v4。该脚本已于 2026-09-07 按用户单独授权对真实 MongoDB 执行并完成回读复核
 （`persistedAndVerified`，证据见 [PROG-20260907](docs/PROG-20260907.md)）；重复执行幂等重放，
 不会覆盖已有记录。
+
+## 优化方案 3.1.0 新交付（离线；真实写入需另授权）
+
+[REQ-20260917-01](docs/REQ-20260917-01-optimization-plan-rule-handoff.md) 以固定私有优化方案
+为权威，离线生成报告与原始数据两个完整 3.1.0 交付（独立 catalog、规则树、ruleVersion、FBR
+批次和案例）。旧 2026-09-05 十八请求批次保留，但不得作为本次生成输入，也不得用于
+optimization-plan-generation。
+
+构建私有交付包（不连接 MongoDB、不调用模型；输出目录须在公开仓库之外）：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.build_optimization_plan_v31_delivery `
+    --source-root 'D:\path\to\RuleDataReferences' `
+    --output-dir 'D:\path\to\RuleDataReferences-recovery\optimization-plan-v31-20260917'
+```
+
+仅在用户明确授权向真实 MongoDB 写入后，才可对每个 artifact 目录执行：
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m scripts.persist_optimization_plan_v31_delivery `
+    --artifact-dir 'D:\path\to\RuleDataReferences-recovery\optimization-plan-v31-20260917\report'
+```
+
+该脚本绑定优化方案文件 SHA-256，请求 MongoDB Schema v6，写入完整 tree/catalog/result/batch
+闭包；部分成功不得报告为可消费。旧 `persist_report_release_v3_delivery.py` 仍只接受 2026-09-05
+产物。SqlBot 3.1.0 消费尚未实现，见
+[DEV-20260917-02](docs/DEV-20260917-02-sqlbot-complete-delivery-intake.md)。
 
 ## 业务审核修订草稿的离线导出
 

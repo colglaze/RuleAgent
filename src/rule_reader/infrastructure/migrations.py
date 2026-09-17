@@ -18,10 +18,12 @@ Database = AsyncDatabase[Document]
 MigrationFunction = Callable[[Database], Awaitable[None]]
 # Ordinary application use cases (serve, init-db, V1/V2 persistence, V2 handoffs, V3
 # recovery) only migrate up to the runtime schema; Schema v5 is reserved for the
-# explicitly authorized V3 delivery persistence script (BUG-20260906-03).
+# explicitly authorized V3 delivery persistence script (BUG-20260906-03). Schema v6
+# is reserved for the optimization-plan 3.1.0 complete-delivery persist script.
 RUNTIME_SCHEMA_VERSION = 4
 V3_PERSISTENCE_SCHEMA_VERSION = 5
-LATEST_SCHEMA_VERSION = 5
+OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION = 6
+LATEST_SCHEMA_VERSION = 6
 MIGRATIONS_COLLECTION = "schema_migrations"
 APP_METADATA_COLLECTION = "app_metadata"
 RULE_VERSIONS_COLLECTION = "rule_versions"
@@ -207,12 +209,45 @@ async def _apply_v5(database: Database) -> None:
     )
 
 
+async def _apply_v6(database: Database) -> None:
+    rule_versions_v3 = database.get_collection(RULE_VERSIONS_V3_COLLECTION)
+    await rule_versions_v3.create_index(
+        [("purpose", ASCENDING)],
+        unique=False,
+        name="ix_rule_versions_v3_purpose",
+    )
+    await rule_versions_v3.create_index(
+        [("source_file_sha256", ASCENDING)],
+        unique=False,
+        name="ix_rule_versions_v3_source_file_sha256",
+    )
+    await rule_versions_v3.create_index(
+        [("parse_input_sha256", ASCENDING)],
+        unique=False,
+        name="ix_rule_versions_v3_parse_input_sha256",
+    )
+    now = datetime.now(UTC)
+    await database.get_collection(APP_METADATA_COLLECTION).update_one(
+        {"key": "database_schema"},
+        {
+            "$set": {
+                "schema_version": 6,
+                "service": "rule-reader",
+                "service_version": __version__,
+                "updated_at": now,
+            }
+        },
+        upsert=False,
+    )
+
+
 MIGRATIONS = (
     Migration(version=1, name="bootstrap_metadata", apply=_apply_v1),
     Migration(version=2, name="create_rule_versions", apply=_apply_v2),
     Migration(version=3, name="create_fact_binding_handoffs", apply=_apply_v3),
     Migration(version=4, name="create_rule_structure_candidates_v3", apply=_apply_v4),
     Migration(version=5, name="create_rule_versions_v3_and_handoff_batches_v3", apply=_apply_v5),
+    Migration(version=6, name="complete_delivery_fields_on_v3_collections", apply=_apply_v6),
 )
 
 
@@ -223,16 +258,22 @@ async def apply_migrations(
 ) -> int:
     """Apply missing migrations up to ``target_version`` and return the effective version.
 
-    Only :data:`RUNTIME_SCHEMA_VERSION` and :data:`V3_PERSISTENCE_SCHEMA_VERSION` are
-    accepted targets; anything else fails before touching the database. The database is
-    never downgraded: when it is already at a higher recorded version, that version is
-    returned and no migration is rewritten.
+    Only :data:`RUNTIME_SCHEMA_VERSION`, :data:`V3_PERSISTENCE_SCHEMA_VERSION`, and
+    :data:`OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION` are accepted targets; anything
+    else fails before touching the database. The database is never downgraded: when it
+    is already at a higher recorded version, that version is returned and no migration
+    is rewritten.
     """
 
-    if target_version not in (RUNTIME_SCHEMA_VERSION, V3_PERSISTENCE_SCHEMA_VERSION):
+    if target_version not in (
+        RUNTIME_SCHEMA_VERSION,
+        V3_PERSISTENCE_SCHEMA_VERSION,
+        OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION,
+    ):
         raise ValueError(
             f"Unsupported migration target version: {target_version}; "
-            f"expected {RUNTIME_SCHEMA_VERSION} or {V3_PERSISTENCE_SCHEMA_VERSION}"
+            f"expected {RUNTIME_SCHEMA_VERSION}, {V3_PERSISTENCE_SCHEMA_VERSION}, "
+            f"or {OPTIMIZATION_PLAN_PERSISTENCE_SCHEMA_VERSION}"
         )
 
     migrations = database.get_collection(MIGRATIONS_COLLECTION)

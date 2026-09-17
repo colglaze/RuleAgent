@@ -51,7 +51,7 @@ async def test_workflow_builds_trusted_version_and_json() -> None:
     assert result.rule_version == (f"TEST_RELEASE_002@20260818T010203456789Z-{expected_hash[:12]}")
     assert result.status == "draft"
     assert result.executable is False
-    assert result.parser.parser_version == "0.12.0"
+    assert result.parser.parser_version == "0.13.0"
     assert result.parser.prompt_version == "rule-parser-v8"
     assert result.parser.audit is not None
     assert result.parser.audit.attempt_count == 1

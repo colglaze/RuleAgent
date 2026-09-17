@@ -118,7 +118,7 @@ async def test_readiness_returns_503_without_leaking_error() -> None:
     assert response.json() == {
         "status": "unavailable",
         "service": "RuleReader",
-        "version": "0.12.0",
+        "version": "0.13.0",
         "schema_version": 4,
     }
 

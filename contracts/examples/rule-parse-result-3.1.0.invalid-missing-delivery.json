@@ -1,0 +1,145 @@
+{
+  "agent2ReadinessReady": true,
+  "candidateRef": {
+    "parseInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "payloadSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "catalogRef": {
+    "catalogDigest": "b750636cf85bec86819a801299c23c69015965b13cc6fde96541abcc34669203",
+    "catalogId": "SYNTHETIC_RELEASE_FACTS",
+    "catalogVersion": "2026-09-05.1",
+    "payloadSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  },
+  "executable": false,
+  "factDeclarations": [
+    {
+      "fact": {
+        "allowedValues": [],
+        "dataType": "integer",
+        "description": "Returns one status code for a task.",
+        "factCode": "task.status_code",
+        "factKind": "source",
+        "grain": "task",
+        "name": "Synthetic task status",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "parameters": [
+          {
+            "dataType": "string",
+            "description": "Task key.",
+            "name": "taskId",
+            "required": true,
+            "role": "entityKey"
+          }
+        ],
+        "unit": null
+      },
+      "query": {
+        "aggregation": {
+          "distinct": null,
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "function": null,
+          "groupByFieldIds": [],
+          "inputFieldIds": [],
+          "mode": "none"
+        },
+        "entity": {
+          "entityType": "task",
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ]
+        },
+        "fields": [
+          {
+            "dataType": "integer",
+            "evidenceIds": [
+              "query.task.status_code"
+            ],
+            "fieldId": "factValue",
+            "logicalName": "Task status",
+            "required": false,
+            "role": "value"
+          }
+        ],
+        "filters": {
+          "completeness": "complete",
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "items": []
+        },
+        "result": {
+          "cardinality": "scalar",
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "nullPolicy": "indeterminate",
+          "nullable": true,
+          "unit": null
+        },
+        "timeRange": {
+          "end": null,
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "mode": "none",
+          "start": null,
+          "timeFieldId": null,
+          "timezone": null
+        }
+      },
+      "uncertainties": []
+    }
+  ],
+  "generatedAt": "2026-09-17T14:00:00+00:00",
+  "parser": {
+    "model": "optimization-plan-translator-v1",
+    "parserVersion": "0.13.0",
+    "promptVersion": "optimization-plan-v31",
+    "provider": "reviewed_import"
+  },
+  "ruleSetId": "SYNTHETIC_REPORT_RELEASE",
+  "ruleVersion": "SYNTHETIC_REPORT_RELEASE@20260917T140000000000Z-aaaaaaaaaaaa-b750636cf85b",
+  "schemaVersion": "3.1.0",
+  "source": {
+    "extractedSections": [
+      "1.3"
+    ],
+    "extractorVersion": "synthetic-v1",
+    "model": "optimization-plan-translator-v1",
+    "parseInputCharacterCount": 16,
+    "parseInputSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "parserVersion": "0.13.0",
+    "promptVersion": "optimization-plan-v31",
+    "provider": "reviewed_import",
+    "relativePath": "synthetic.md",
+    "sourceFileByteLength": 32,
+    "sourceName": "synthetic-optimization-plan.md",
+    "sourceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "status": "draft",
+  "testCases": [
+    {
+      "caseId": "not-completed",
+      "description": "Uncompleted synthetic task waits.",
+      "expectedMatchedRuleCodes": [
+        "STATE_INVALID"
+      ],
+      "expectedOutcome": "WAITING_COMPLETION",
+      "expectedReasonCode": "STATE_INVALID_RESULT",
+      "given": {
+        "order.received_amount": 1,
+        "task.status_code": 10
+      },
+      "members": [],
+      "runtime": {
+        "evaluationDate": "2026-09-17"
+      }
+    }
+  ]
+}
