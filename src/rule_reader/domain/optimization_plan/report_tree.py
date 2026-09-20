@@ -80,13 +80,13 @@ def _arrival_with_epsilon() -> dict[str, Any]:
 def _report_completed_amount() -> dict[str, Any]:
     return add(
         fact("order.extraction_qc_amount"),
-        fact("task.amount"),
+        fact("task.task_amount"),
         fact("order.report_release_amount"),
     )
 
 
 def _r3_base_amount() -> dict[str, Any]:
-    return add(fact("order.extraction_qc_amount"), fact("task.amount"))
+    return add(fact("order.extraction_qc_amount"), fact("task.task_amount"))
 
 
 def eligibility_r0() -> dict[str, Any]:
@@ -111,15 +111,20 @@ def eligibility_r9() -> dict[str, Any]:
 
 def eligibility_r4() -> dict[str, Any]:
     return all_of(
-        "r4-released-and-date",
-        "Raw data already released and completion date is on or after the cutoff.",
-        eq("r4-flag", "Raw data status is released.", fact("data.release_status"), "已释放"),
+        "r4-present-and-date",
+        "Raw-data presence code is 0 and completion date is on or after the cutoff.",
+        eq(
+            "r4-present",
+            "Raw-data presence code is 0.",
+            fact("task.raw_data_present_flag"),
+            0,
+        ),
         gte(
             "r4-date",
             "Completion date is on or after the inclusive cutoff.",
             fact("task.completion_date"),
             param("rawDataReleasedCutoffDate"),
-            null_policy="indeterminate",
+            null_policy="fail",
         ),
     )
 
@@ -134,7 +139,12 @@ def eligibility_r3() -> dict[str, Any]:
     return all_of(
         "r3-special-and-tier",
         "Special product and tiered arrival threshold.",
-        eq("r3-product", "Product is the special product.", fact("product.id"), SPECIAL_PRODUCT_ID),
+        eq(
+            "r3-product",
+            "Product is the special product.",
+            fact("task.product_id"),
+            SPECIAL_PRODUCT_ID,
+        ),
         any_of(
             "r3-tiers",
             "Low tier uses 70 percent, high tier uses 50 percent.",
@@ -186,13 +196,13 @@ def eligibility_r8() -> dict[str, Any]:
         in_list(
             "r8-yeast-cat",
             "Category is a yeast library family.",
-            fact("product.category_code"),
+            fact("task.product_type_code"),
             YEAST_CATEGORY_CODES,
         ),
         eq(
             "r8-yeast-master",
             "No master service flag is 0.",
-            fact("product.no_master_service_flag"),
+            fact("task.no_main_service_flag"),
             0,
         ),
     )
@@ -202,18 +212,18 @@ def eligibility_r8() -> dict[str, Any]:
         in_list(
             "r8-yeast-cat-neg",
             "Category is a yeast library family.",
-            fact("product.category_code"),
+            fact("task.product_type_code"),
             YEAST_CATEGORY_CODES,
         ),
     )
     not_special = any_of(
         "r8-not-special",
         "Product is null or not the special product.",
-        is_null("r8-product-null", "Product id is null.", fact("product.id")),
+        is_null("r8-product-null", "Product id is null.", fact("task.product_id")),
         ne(
             "r8-product-ne",
             "Product is not the special product.",
-            fact("product.id"),
+            fact("task.product_id"),
             SPECIAL_PRODUCT_ID,
         ),
     )
@@ -231,7 +241,7 @@ def eligibility_r8() -> dict[str, Any]:
                 lt(
                     "r8a-amt",
                     "Task amount is below the time-trigger threshold.",
-                    fact("task.amount"),
+                    fact("task.task_amount"),
                     TIME_TRIGGER_AMOUNT_THRESHOLD,
                     null_policy="indeterminate",
                 ),
@@ -256,7 +266,7 @@ def eligibility_r8() -> dict[str, Any]:
                 lt(
                     "r8b-amt",
                     "Task amount is below the time-trigger threshold.",
-                    fact("task.amount"),
+                    fact("task.task_amount"),
                     TIME_TRIGGER_AMOUNT_THRESHOLD,
                     null_policy="indeterminate",
                 ),
@@ -285,7 +295,7 @@ def eligibility_r8() -> dict[str, Any]:
                 gte(
                     "r8c-amt",
                     "Task amount is at least the time-trigger threshold.",
-                    fact("task.amount"),
+                    fact("task.task_amount"),
                     lit(TIME_TRIGGER_AMOUNT_THRESHOLD),
                     null_policy="indeterminate",
                 ),
@@ -318,11 +328,11 @@ def _not_special_product(prefix: str) -> dict[str, Any]:
     return any_of(
         f"{prefix}-not-special",
         "Product is null or not the special product.",
-        is_null(f"{prefix}-product-null", "Product id is null.", fact("product.id")),
+        is_null(f"{prefix}-product-null", "Product id is null.", fact("task.product_id")),
         ne(
             f"{prefix}-product-ne",
             "Product is not the special product.",
-            fact("product.id"),
+            fact("task.product_id"),
             SPECIAL_PRODUCT_ID,
         ),
     )
@@ -825,7 +835,7 @@ def build_report_stages() -> list[dict[str, Any]]:
                 _node(
                     "R4",
                     40,
-                    "Raw data released on or after cutoff.",
+                    "Raw-data presence code 0 on or after cutoff.",
                     eligibility_r4(),
                     "READY",
                     "R4_MATCHED",

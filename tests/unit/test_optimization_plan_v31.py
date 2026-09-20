@@ -164,21 +164,29 @@ def test_r1_query_is_more_than_a_task_key() -> None:
 def test_coverage_rows_point_at_real_cases() -> None:
     identity = synthetic_source_identity()
     report, data = build_both_deliveries(identity)
-    ids = {item.case_id for item in report.result.test_cases} | {
-        item.case_id for item in data.result.test_cases
-    }
-    for _source, _rules, _facts, cases in COVERAGE_ROWS:
-        for token in cases.split(","):
-            token = token.strip()
-            if token.endswith("*"):
-                prefix = token[:-1]
-                assert any(case_id.startswith(prefix) for case_id in ids), token
-            else:
-                assert token in ids, token
+    cases = {item.case_id: item for item in report.result.test_cases}
+    cases.update({item.case_id: item for item in data.result.test_cases})
+    for row in COVERAGE_ROWS:
+        for case_id in (*row.hit_cases, *row.miss_cases):
+            assert case_id in cases, case_id
+        if row.matched_rule:
+            assert any(
+                row.matched_rule in cases[case_id].expected_matched_rule_codes
+                for case_id in row.hit_cases
+            ), row.source_node
+            assert all(
+                row.matched_rule not in cases[case_id].expected_matched_rule_codes
+                for case_id in row.miss_cases
+            ), row.source_node
     assert report.catalog.catalog_digest != data.catalog.catalog_digest
-    assert {fact.fact_code for fact in report.catalog.facts}.isdisjoint(
-        {"task.raw_data_present_flag", "order.closed_loop_status"}
-    )
+    report_codes = {fact.fact_code for fact in report.catalog.facts}
+    assert "task.raw_data_present_flag" in report_codes
+    assert "data.release_status" not in report_codes
+    assert "order.closed_loop_status" not in report_codes
+    assert "task.task_amount" in report_codes
+    assert "task.product_id" in report_codes
+    assert "task.amount" not in report_codes
+    assert "product.id" not in report_codes
 
 
 def test_workbook_codes_are_not_plan_hit_codes() -> None:

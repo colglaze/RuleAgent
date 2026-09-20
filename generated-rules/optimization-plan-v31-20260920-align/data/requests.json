@@ -1,0 +1,5449 @@
+[
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.data.release_status",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/0"
+      },
+      {
+        "evidenceId": "query.data.release_status",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/0/query"
+      },
+      {
+        "evidenceId": "condition.data-status-terminal",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/0/rules/0/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": "释放中"
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": "等待满足条件"
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": "等待满足条件"
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": "等待满足条件"
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": "等待满足条件"
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": "等待满足条件"
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": "等待满足条件"
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [
+        "准备释放",
+        "释放中",
+        "已释放",
+        "等待完工",
+        "等待满足条件",
+        "无需释放"
+      ],
+      "dataType": "enum",
+      "description": "Current raw-data release status; terminal states skip evaluation.",
+      "factCode": "data.release_status",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Raw-data release status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "data.release_status",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.data.release_status"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.data.release_status"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "enum",
+          "evidenceIds": [
+            "query.data.release_status"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Raw-data release status",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.data.release_status"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        },
+        {
+          "dataType": "date",
+          "evidenceIds": [
+            "query.data.release_status"
+          ],
+          "fieldId": "status.asOfDate",
+          "logicalName": "Status as-of calendar date",
+          "required": true,
+          "role": "time"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.data.release_status"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "enum",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": {
+          "inclusive": true,
+          "kind": "parameter",
+          "parameterName": "evaluationDate",
+          "value": null
+        },
+        "evidenceIds": [
+          "query.data.release_status"
+        ],
+        "mode": "asOf",
+        "start": null,
+        "timeFieldId": "status.asOfDate",
+        "timezone": "Asia/Shanghai"
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#data.release_status",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "data-status-terminal",
+        "conditionPath": "/stages/0/rules/0/when",
+        "evidenceIds": [
+          "condition.data-status-terminal"
+        ],
+        "outcome": "SKIPPED",
+        "priority": 10,
+        "ruleCode": "DATA_STATUS_TERMINAL",
+        "stage": "stateGuards"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.amount",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/1"
+      },
+      {
+        "evidenceId": "query.order.amount",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/1/query"
+      },
+      {
+        "evidenceId": "condition.d0-zero",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/0/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d0-null-continues",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-d1-count",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/8"
+      },
+      {
+        "evidenceId": "case-data-oa-blocks",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-null-continues"
+        ],
+        "exampleId": "case-d0-null-continues",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": null
+      },
+      {
+        "evidenceIds": [
+          "case-d1-count"
+        ],
+        "exampleId": "case-d1-count",
+        "expectedOutcome": "READY",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-oa-blocks"
+        ],
+        "exampleId": "case-data-oa-blocks",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 1000
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "money",
+      "description": "Order amount; 0 hits D0, null continues.",
+      "factCode": "order.amount",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Order amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    "mappingCandidate": {
+      "factCode": "order.amount",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.amount"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.amount"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "money",
+          "evidenceIds": [
+            "query.order.amount"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Order amount",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.amount"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.amount"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "money",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": "CNY"
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.amount"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.amount",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d0-zero",
+        "conditionPath": "/stages/2/rules/0/when",
+        "evidenceIds": [
+          "condition.d0-zero"
+        ],
+        "outcome": "READY",
+        "priority": 10,
+        "ruleCode": "D0",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.arrival_amount_including_deposit",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/2"
+      },
+      {
+        "evidenceId": "query.order.arrival_amount_including_deposit",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/2/query"
+      },
+      {
+        "evidenceId": "condition.d4-pay",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d4-non-single-cell",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/11"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/12"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-sequencing",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/14"
+      },
+      {
+        "evidenceId": "case-d4-insufficient",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/15"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      },
+      {
+        "evidenceId": "case-d4-null-arrival",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/27"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d4-non-single-cell"
+        ],
+        "exampleId": "case-d4-non-single-cell",
+        "expectedOutcome": "READY",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-blocked"
+        ],
+        "exampleId": "case-d4-single-cell-blocked",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-sequencing"
+        ],
+        "exampleId": "case-d4-single-cell-sequencing",
+        "expectedOutcome": "READY",
+        "value": 999.9
+      },
+      {
+        "evidenceIds": [
+          "case-d4-insufficient"
+        ],
+        "exampleId": "case-d4-insufficient",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 999.8
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d4-null-arrival"
+        ],
+        "exampleId": "case-d4-null-arrival",
+        "expectedOutcome": "INDETERMINATE",
+        "value": null
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "money",
+      "description": "Order arrival that already includes deposit.",
+      "factCode": "order.arrival_amount_including_deposit",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Arrival including deposit",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    "mappingCandidate": {
+      "factCode": "order.arrival_amount_including_deposit",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.arrival_amount_including_deposit"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.arrival_amount_including_deposit"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "money",
+          "evidenceIds": [
+            "query.order.arrival_amount_including_deposit"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Arrival including deposit",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.arrival_amount_including_deposit"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.arrival_amount_including_deposit"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "money",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": "CNY"
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.arrival_amount_including_deposit"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.arrival_amount_including_deposit",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-pay",
+        "conditionPath": "/stages/2/rules/4/when/children/0",
+        "evidenceIds": [
+          "condition.d4-pay"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.closed_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/3"
+      },
+      {
+        "evidenceId": "query.order.closed_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/3/query"
+      },
+      {
+        "evidenceId": "condition.d4-closed-flag",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-closed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/13"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-closed"
+        ],
+        "exampleId": "case-d4-single-cell-closed",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 1
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "0 means closed; missing values are treated as 1 by coalesce.",
+      "factCode": "order.closed_flag",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Order closed flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "order.closed_flag",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.closed_flag"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.closed_flag"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.order.closed_flag"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Order closed flag",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.closed_flag"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.closed_flag"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.closed_flag"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.closed_flag",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-closed-flag",
+        "conditionPath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/0",
+        "evidenceIds": [
+          "condition.d4-closed-flag"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.closed_loop_status",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/4"
+      },
+      {
+        "evidenceId": "query.order.closed_loop_status",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/4/query"
+      },
+      {
+        "evidenceId": "condition.d3-closed",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/3/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d3-closed-loop",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/10"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      },
+      {
+        "evidenceId": "case-d3-status-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/25"
+      },
+      {
+        "evidenceId": "case-d3-status-3",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/26"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d3-closed-loop"
+        ],
+        "exampleId": "case-d3-closed-loop",
+        "expectedOutcome": "READY",
+        "value": 2
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d3-status-1"
+        ],
+        "exampleId": "case-d3-status-1",
+        "expectedOutcome": "READY",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d3-status-3"
+        ],
+        "exampleId": "case-d3-status-3",
+        "expectedOutcome": "READY",
+        "value": 3
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "1 closed, 2 terminated closed, 3 intervened closed.",
+      "factCode": "order.closed_loop_status",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Order closed-loop status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "order.closed_loop_status",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.closed_loop_status"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.closed_loop_status"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.order.closed_loop_status"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Order closed-loop status",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.closed_loop_status"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.closed_loop_status"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.closed_loop_status"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.closed_loop_status",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d3-closed",
+        "conditionPath": "/stages/2/rules/3/when",
+        "evidenceIds": [
+          "condition.d3-closed"
+        ],
+        "outcome": "READY",
+        "priority": 40,
+        "ruleCode": "D3",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.data_release_amount",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/5"
+      },
+      {
+        "evidenceId": "query.order.data_release_amount",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/5/query"
+      },
+      {
+        "evidenceId": "condition.d4-pay",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "money",
+      "description": "Completed amount attributed to raw-data release.",
+      "factCode": "order.data_release_amount",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Raw-data release amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    "mappingCandidate": {
+      "factCode": "order.data_release_amount",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.data_release_amount"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.data_release_amount"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "money",
+          "evidenceIds": [
+            "query.order.data_release_amount"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Raw-data release amount",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.data_release_amount"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.data_release_amount"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "money",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": "CNY"
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.data_release_amount"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.data_release_amount",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-pay",
+        "conditionPath": "/stages/2/rules/4/when/children/0",
+        "evidenceIds": [
+          "condition.d4-pay"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.experiment_run_status",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/6"
+      },
+      {
+        "evidenceId": "query.order.experiment_run_status",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/6/query"
+      },
+      {
+        "evidenceId": "condition.d4-terminated",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/1"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-terminated",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/28"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-terminated"
+        ],
+        "exampleId": "case-d4-single-cell-terminated",
+        "expectedOutcome": "READY",
+        "value": 1
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "1 means terminated experiment; missing values are treated as 0 by coalesce.",
+      "factCode": "order.experiment_run_status",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Order experiment run status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "order.experiment_run_status",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.experiment_run_status"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.experiment_run_status"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.order.experiment_run_status"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Order experiment run status",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.experiment_run_status"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.experiment_run_status"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.experiment_run_status"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.experiment_run_status",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-terminated",
+        "conditionPath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/1",
+        "evidenceIds": [
+          "condition.d4-terminated"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.extraction_qc_amount",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/7"
+      },
+      {
+        "evidenceId": "query.order.extraction_qc_amount",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/7/query"
+      },
+      {
+        "evidenceId": "condition.d4-pay",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "money",
+      "description": "Extraction and QC completed amount.",
+      "factCode": "order.extraction_qc_amount",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Extraction and QC amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    "mappingCandidate": {
+      "factCode": "order.extraction_qc_amount",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.extraction_qc_amount"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.extraction_qc_amount"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "money",
+          "evidenceIds": [
+            "query.order.extraction_qc_amount"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Extraction and QC amount",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.extraction_qc_amount"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.extraction_qc_amount"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "money",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": "CNY"
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.extraction_qc_amount"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.extraction_qc_amount",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-pay",
+        "conditionPath": "/stages/2/rules/4/when/children/0",
+        "evidenceIds": [
+          "condition.d4-pay"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.sequencing_services_complete",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/8"
+      },
+      {
+        "evidenceId": "query.order.sequencing_services_complete",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/8/query"
+      },
+      {
+        "evidenceId": "condition.d4-seq-complete",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/2"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-sequencing",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/14"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-sequencing"
+        ],
+        "exampleId": "case-d4-single-cell-sequencing",
+        "expectedOutcome": "READY",
+        "value": true
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": false
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "boolean",
+      "description": "True when every sequencing service completed quantity is at least requested and at least one sequencing service exists.",
+      "factCode": "order.sequencing_services_complete",
+      "factKind": "exists",
+      "grain": "order",
+      "name": "Sequencing services complete",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "order.sequencing_services_complete",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.sequencing_services_complete"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "exists"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.sequencing_services_complete"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "boolean",
+          "evidenceIds": [
+            "query.order.sequencing_services_complete"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Sequencing services complete",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.sequencing_services_complete"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        },
+        {
+          "dataType": "boolean",
+          "evidenceIds": [
+            "query.order.sequencing_services_complete"
+          ],
+          "fieldId": "service.isSequencing",
+          "logicalName": "Sequencing service flag",
+          "required": true,
+          "role": "filter"
+        },
+        {
+          "dataType": "number",
+          "evidenceIds": [
+            "query.order.sequencing_services_complete"
+          ],
+          "fieldId": "service.completedQuantity",
+          "logicalName": "Completed quantity",
+          "required": true,
+          "role": "filter"
+        },
+        {
+          "dataType": "number",
+          "evidenceIds": [
+            "query.order.sequencing_services_complete"
+          ],
+          "fieldId": "service.requestedQuantity",
+          "logicalName": "Requested quantity",
+          "required": true,
+          "role": "filter"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.sequencing_services_complete"
+        ],
+        "items": [
+          {
+            "evidenceIds": [
+              "query.order.sequencing_services_complete"
+            ],
+            "fieldId": "service.isSequencing",
+            "filterId": "sequencing-service",
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "required": true,
+            "value": {
+              "kind": "literal",
+              "literal": true,
+              "parameterName": null
+            }
+          }
+        ]
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.sequencing_services_complete"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.sequencing_services_complete",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-seq-complete",
+        "conditionPath": "/stages/2/rules/4/when/children/1/children/1/children/1/children/2",
+        "evidenceIds": [
+          "condition.d4-seq-complete"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.order.source_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/9"
+      },
+      {
+        "evidenceId": "query.order.source_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/9/query"
+      },
+      {
+        "evidenceId": "condition.d2-overseas",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/2/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d2-overseas",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/9"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d2-overseas"
+        ],
+        "exampleId": "case-d2-overseas",
+        "expectedOutcome": "READY",
+        "value": 2
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 1
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Source code 2 means overseas business.",
+      "factCode": "order.source_code",
+      "factKind": "source",
+      "grain": "order",
+      "name": "Order source code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "order.source_code",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.order.source_code"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "order",
+        "evidenceIds": [
+          "query.order.source_code"
+        ],
+        "grain": "order",
+        "keyParameters": [
+          "orderId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.order.source_code"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Order source code",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.order.source_code"
+          ],
+          "fieldId": "order.id",
+          "logicalName": "order key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.order.source_code"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.order.source_code"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#order.source_code",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d2-overseas",
+        "conditionPath": "/stages/2/rules/2/when",
+        "evidenceIds": [
+          "condition.d2-overseas"
+        ],
+        "outcome": "READY",
+        "priority": 30,
+        "ruleCode": "D2",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.release.special_application_count",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/10"
+      },
+      {
+        "evidenceId": "query.release.special_application_count",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/10/query"
+      },
+      {
+        "evidenceId": "condition.d1-count",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/1/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-count",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/8"
+      },
+      {
+        "evidenceId": "case-data-first-hit-d0",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/16"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      },
+      {
+        "evidenceId": "case-d1-duplicate-nodes",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/22"
+      },
+      {
+        "evidenceId": "case-d4-null-arrival",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/27"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-count"
+        ],
+        "exampleId": "case-d1-count",
+        "expectedOutcome": "READY",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-first-hit-d0"
+        ],
+        "exampleId": "case-data-first-hit-d0",
+        "expectedOutcome": "READY",
+        "value": 4
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": null
+      },
+      {
+        "evidenceIds": [
+          "case-d1-duplicate-nodes"
+        ],
+        "exampleId": "case-d1-duplicate-nodes",
+        "expectedOutcome": "READY",
+        "value": 2
+      },
+      {
+        "evidenceIds": [
+          "case-d4-null-arrival"
+        ],
+        "exampleId": "case-d4-null-arrival",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Count of raw-data special applications with type and completed approval node filters. Join rows are not de-duplicated.",
+      "factCode": "release.special_application_count",
+      "factKind": "aggregate",
+      "grain": "task",
+      "name": "Completed special application count",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "release.special_application_count",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": false,
+        "evidenceIds": [
+          "query.release.special_application_count"
+        ],
+        "function": "count",
+        "groupByFieldIds": [],
+        "inputFieldIds": [
+          "application.rowId"
+        ],
+        "mode": "compute"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.release.special_application_count"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.release.special_application_count"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Completed special application count",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.release.special_application_count"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        },
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.release.special_application_count"
+          ],
+          "fieldId": "application.type",
+          "logicalName": "Special application type",
+          "required": true,
+          "role": "filter"
+        },
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.release.special_application_count"
+          ],
+          "fieldId": "approval.nodeType",
+          "logicalName": "Approval node type",
+          "required": true,
+          "role": "filter"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.release.special_application_count"
+          ],
+          "fieldId": "application.rowId",
+          "logicalName": "Join row identity counted without de-duplication",
+          "required": true,
+          "role": "filter"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.release.special_application_count"
+        ],
+        "items": [
+          {
+            "evidenceIds": [
+              "query.release.special_application_count"
+            ],
+            "fieldId": "application.type",
+            "filterId": "application-type",
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "required": true,
+            "value": {
+              "kind": "literal",
+              "literal": 2,
+              "parameterName": null
+            }
+          },
+          {
+            "evidenceIds": [
+              "query.release.special_application_count"
+            ],
+            "fieldId": "approval.nodeType",
+            "filterId": "completed-approval-node",
+            "nullPolicy": "fail",
+            "operator": "in",
+            "required": true,
+            "value": {
+              "kind": "literal",
+              "literal": [
+                3
+              ],
+              "parameterName": null
+            }
+          }
+        ]
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.release.special_application_count"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#release.special_application_count",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d1-count",
+        "conditionPath": "/stages/2/rules/1/when",
+        "evidenceIds": [
+          "condition.d1-count"
+        ],
+        "outcome": "READY",
+        "priority": 20,
+        "ruleCode": "D1",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.data_lost_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/11"
+      },
+      {
+        "evidenceId": "query.task.data_lost_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/11/query"
+      },
+      {
+        "evidenceId": "condition.data-lost-1",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/1/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-absent",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-absent"
+        ],
+        "exampleId": "case-data-absent",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Plan hit code 1 means marked data lost and no release is required.",
+      "factCode": "task.data_lost_flag",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Data lost flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.data_lost_flag",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.data_lost_flag"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.data_lost_flag"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.task.data_lost_flag"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Data lost flag",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.data_lost_flag"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.data_lost_flag"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.data_lost_flag"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.data_lost_flag",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "data-lost-1",
+        "conditionPath": "/stages/1/rules/1/when",
+        "evidenceIds": [
+          "condition.data-lost-1"
+        ],
+        "outcome": "NO_RELEASE_REQUIRED",
+        "priority": 20,
+        "ruleCode": "DATA_LOST",
+        "stage": "prerequisites"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.in_raw_data_release_oa",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/12"
+      },
+      {
+        "evidenceId": "query.task.in_raw_data_release_oa",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/12/query"
+      },
+      {
+        "evidenceId": "condition.data-oa-in-process",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/4/rules/0/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-data-oa-blocks",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/17"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": false
+      },
+      {
+        "evidenceIds": [
+          "case-data-oa-blocks"
+        ],
+        "exampleId": "case-data-oa-blocks",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": true
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": false
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "boolean",
+      "description": "Exists in an in-progress raw-data release OA instance only.",
+      "factCode": "task.in_raw_data_release_oa",
+      "factKind": "exists",
+      "grain": "task",
+      "name": "In raw-data release OA",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.in_raw_data_release_oa",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.in_raw_data_release_oa"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "exists"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.in_raw_data_release_oa"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "boolean",
+          "evidenceIds": [
+            "query.task.in_raw_data_release_oa"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "In raw-data release OA",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.in_raw_data_release_oa"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.in_raw_data_release_oa"
+          ],
+          "fieldId": "oa.processKind",
+          "logicalName": "OA process kind",
+          "required": true,
+          "role": "filter"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.in_raw_data_release_oa"
+        ],
+        "items": [
+          {
+            "evidenceIds": [
+              "query.task.in_raw_data_release_oa"
+            ],
+            "fieldId": "oa.processKind",
+            "filterId": "oa-process-kind",
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "required": true,
+            "value": {
+              "kind": "literal",
+              "literal": "rawDataRelease",
+              "parameterName": null
+            }
+          }
+        ]
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "boolean",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.in_raw_data_release_oa"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.in_raw_data_release_oa",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "data-oa-in-process",
+        "conditionPath": "/stages/4/rules/0/when",
+        "evidenceIds": [
+          "condition.data-oa-in-process"
+        ],
+        "outcome": "WAITING_CONDITIONS",
+        "priority": 10,
+        "ruleCode": "OA_PROCESS_SCOPE",
+        "stage": "exclusions"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.offline_data_release_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/13"
+      },
+      {
+        "evidenceId": "query.task.offline_data_release_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/13/query"
+      },
+      {
+        "evidenceId": "condition.offline-data-1",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/2/when"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Plan hit code 1 means already released offline.",
+      "factCode": "task.offline_data_release_flag",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Offline raw-data release flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.offline_data_release_flag",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.offline_data_release_flag"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.offline_data_release_flag"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.task.offline_data_release_flag"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Offline raw-data release flag",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.offline_data_release_flag"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.offline_data_release_flag"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.offline_data_release_flag"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.offline_data_release_flag",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "offline-data-1",
+        "conditionPath": "/stages/1/rules/2/when",
+        "evidenceIds": [
+          "condition.offline-data-1"
+        ],
+        "outcome": "ALREADY_RELEASED",
+        "priority": 30,
+        "ruleCode": "OFFLINE_DATA_RELEASED",
+        "stage": "prerequisites"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.product_type_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/14"
+      },
+      {
+        "evidenceId": "query.task.product_type_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/14/query"
+      },
+      {
+        "evidenceId": "condition.d4-single-cell",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/1/children/0/children/0"
+      },
+      {
+        "evidenceId": "condition.d4-single-cell-extra",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/1/children/1/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-blocked",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/12"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-closed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/13"
+      },
+      {
+        "evidenceId": "case-d4-single-cell-sequencing",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/14"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 3
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-blocked"
+        ],
+        "exampleId": "case-d4-single-cell-blocked",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-closed"
+        ],
+        "exampleId": "case-d4-single-cell-closed",
+        "expectedOutcome": "READY",
+        "value": 14
+      },
+      {
+        "evidenceIds": [
+          "case-d4-single-cell-sequencing"
+        ],
+        "exampleId": "case-d4-single-cell-sequencing",
+        "expectedOutcome": "READY",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 3
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Product type at task grain; 1 and 14 are single-cell categories.",
+      "factCode": "task.product_type_code",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Product type code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.product_type_code",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.product_type_code"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.product_type_code"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.task.product_type_code"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Product type code",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.product_type_code"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.product_type_code"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.product_type_code"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.product_type_code",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-single-cell",
+        "conditionPath": "/stages/2/rules/4/when/children/1/children/0/children/0",
+        "evidenceIds": [
+          "condition.d4-single-cell"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      },
+      {
+        "conditionId": "d4-single-cell-extra",
+        "conditionPath": "/stages/2/rules/4/when/children/1/children/1/children/0",
+        "evidenceIds": [
+          "condition.d4-single-cell-extra"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.raw_data_present_flag",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/15"
+      },
+      {
+        "evidenceId": "query.task.raw_data_present_flag",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/15/query"
+      },
+      {
+        "evidenceId": "condition.raw-absent",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/3/when"
+      },
+      {
+        "evidenceId": "condition.raw-present",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/4/when/children/0/children/0"
+      },
+      {
+        "evidenceId": "condition.raw-absent-pending",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/4/when/children/1/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-absent",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/4"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d0-null-continues",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/7"
+      },
+      {
+        "evidenceId": "case-data-presence-null",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/19"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-absent"
+        ],
+        "exampleId": "case-data-absent",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 2
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-d0-null-continues"
+        ],
+        "exampleId": "case-d0-null-continues",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 0
+      },
+      {
+        "evidenceIds": [
+          "case-data-presence-null"
+        ],
+        "exampleId": "case-data-presence-null",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": null
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 0
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "Plan code 0 means present, 1 means absent; other values are undecided.",
+      "factCode": "task.raw_data_present_flag",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Raw data presence",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.raw_data_present_flag",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.raw_data_present_flag"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.raw_data_present_flag"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.task.raw_data_present_flag"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Raw data presence",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.raw_data_present_flag"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.raw_data_present_flag"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.raw_data_present_flag"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.raw_data_present_flag",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "raw-absent",
+        "conditionPath": "/stages/1/rules/3/when",
+        "evidenceIds": [
+          "condition.raw-absent"
+        ],
+        "outcome": "NO_RELEASE_REQUIRED",
+        "priority": 40,
+        "ruleCode": "NO_RAW_DATA",
+        "stage": "prerequisites"
+      },
+      {
+        "conditionId": "raw-present",
+        "conditionPath": "/stages/1/rules/4/when/children/0/children/0",
+        "evidenceIds": [
+          "condition.raw-present"
+        ],
+        "outcome": "WAITING_CONDITIONS",
+        "priority": 50,
+        "ruleCode": "RAW_DATA_AVAILABILITY_PENDING",
+        "stage": "prerequisites"
+      },
+      {
+        "conditionId": "raw-absent-pending",
+        "conditionPath": "/stages/1/rules/4/when/children/1/children/0",
+        "evidenceIds": [
+          "condition.raw-absent-pending"
+        ],
+        "outcome": "WAITING_CONDITIONS",
+        "priority": 50,
+        "ruleCode": "RAW_DATA_AVAILABILITY_PENDING",
+        "stage": "prerequisites"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.status_code",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/16"
+      },
+      {
+        "evidenceId": "query.task.status_code",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/16/query"
+      },
+      {
+        "evidenceId": "condition.data-status-null",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/0/when/children/0"
+      },
+      {
+        "evidenceId": "condition.data-status-ne-19",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/1/rules/0/when/children/1"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 19
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 10
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 19
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 19
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 19
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 19
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 19
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "integer",
+      "description": "19 means completed. Null is not completed.",
+      "factCode": "task.status_code",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Task status code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    "mappingCandidate": {
+      "factCode": "task.status_code",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.status_code"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.status_code"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "integer",
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Task status code",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.status_code"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.status_code"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "integer",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": null
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.status_code"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.status_code",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "data-status-null",
+        "conditionPath": "/stages/1/rules/0/when/children/0",
+        "evidenceIds": [
+          "condition.data-status-null"
+        ],
+        "outcome": "WAITING_COMPLETION",
+        "priority": 10,
+        "ruleCode": "TASK_NOT_COMPLETED",
+        "stage": "prerequisites"
+      },
+      {
+        "conditionId": "data-status-ne-19",
+        "conditionPath": "/stages/1/rules/0/when/children/1",
+        "evidenceIds": [
+          "condition.data-status-ne-19"
+        ],
+        "outcome": "WAITING_COMPLETION",
+        "priority": 10,
+        "ruleCode": "TASK_NOT_COMPLETED",
+        "stage": "prerequisites"
+      }
+    ]
+  },
+  {
+    "contractVersion": "3.1.0",
+    "evidence": [
+      {
+        "evidenceId": "fact.task.task_amount",
+        "kind": "factDeclaration",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/17"
+      },
+      {
+        "evidenceId": "query.task.task_amount",
+        "kind": "queryRequirement",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/factDeclarations/17/query"
+      },
+      {
+        "evidenceId": "condition.d4-pay",
+        "kind": "conditionUsage",
+        "sourceDocument": "candidate",
+        "sourcePath": "/stages/2/rules/4/when/children/0"
+      },
+      {
+        "evidenceId": "case-data-terminal",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/0"
+      },
+      {
+        "evidenceId": "case-data-not-completed",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/1"
+      },
+      {
+        "evidenceId": "case-data-lost",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/2"
+      },
+      {
+        "evidenceId": "case-data-offline-1",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/3"
+      },
+      {
+        "evidenceId": "case-data-pending-flag",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/5"
+      },
+      {
+        "evidenceId": "case-d0-zero",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/6"
+      },
+      {
+        "evidenceId": "case-d1-unknown",
+        "kind": "example",
+        "sourceDocument": "ruleResult",
+        "sourcePath": "/testCases/21"
+      }
+    ],
+    "examples": [
+      {
+        "evidenceIds": [
+          "case-data-terminal"
+        ],
+        "exampleId": "case-data-terminal",
+        "expectedOutcome": "SKIPPED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-not-completed"
+        ],
+        "exampleId": "case-data-not-completed",
+        "expectedOutcome": "WAITING_COMPLETION",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-lost"
+        ],
+        "exampleId": "case-data-lost",
+        "expectedOutcome": "NO_RELEASE_REQUIRED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-offline-1"
+        ],
+        "exampleId": "case-data-offline-1",
+        "expectedOutcome": "ALREADY_RELEASED",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-data-pending-flag"
+        ],
+        "exampleId": "case-data-pending-flag",
+        "expectedOutcome": "WAITING_CONDITIONS",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-d0-zero"
+        ],
+        "exampleId": "case-d0-zero",
+        "expectedOutcome": "READY",
+        "value": 1000
+      },
+      {
+        "evidenceIds": [
+          "case-d1-unknown"
+        ],
+        "exampleId": "case-d1-unknown",
+        "expectedOutcome": "INDETERMINATE",
+        "value": 1000
+      }
+    ],
+    "executable": false,
+    "fact": {
+      "allowedValues": [],
+      "dataType": "money",
+      "description": "Task-level completed amount; grain is task.",
+      "factCode": "task.task_amount",
+      "factKind": "source",
+      "grain": "task",
+      "name": "Task amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    "mappingCandidate": {
+      "factCode": "task.task_amount",
+      "mappingStatus": "unresolved",
+      "note": "Physical source is resolved by metadataReview.",
+      "reviewStatus": "candidate",
+      "viewActive": null,
+      "viewField": null,
+      "viewName": null
+    },
+    "provenance": {
+      "extractedSections": [
+        "1.3",
+        "5.1",
+        "5.2"
+      ],
+      "extractorVersion": "optimization-plan-sections-v1",
+      "model": "optimization-plan-translator-v1",
+      "parseInputCharacterCount": 88942,
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "parserVersion": "0.13.0",
+      "promptVersion": "optimization-plan-v31-align-20260920",
+      "provider": "reviewed_import",
+      "relativePath": "sources/project-release-rules/项目报告和原始数据释放优化方案.md",
+      "sourceFileByteLength": 136477,
+      "sourceName": "optimization-plan-v2.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "queryRequirements": {
+      "aggregation": {
+        "distinct": null,
+        "evidenceIds": [
+          "query.task.task_amount"
+        ],
+        "function": null,
+        "groupByFieldIds": [],
+        "inputFieldIds": [],
+        "mode": "none"
+      },
+      "entity": {
+        "entityType": "task",
+        "evidenceIds": [
+          "query.task.task_amount"
+        ],
+        "grain": "task",
+        "keyParameters": [
+          "taskId"
+        ]
+      },
+      "fields": [
+        {
+          "dataType": "money",
+          "evidenceIds": [
+            "query.task.task_amount"
+          ],
+          "fieldId": "factValue",
+          "logicalName": "Task amount",
+          "required": false,
+          "role": "value"
+        },
+        {
+          "dataType": "string",
+          "evidenceIds": [
+            "query.task.task_amount"
+          ],
+          "fieldId": "task.id",
+          "logicalName": "task key",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "filters": {
+        "completeness": "complete",
+        "evidenceIds": [
+          "query.task.task_amount"
+        ],
+        "items": []
+      },
+      "result": {
+        "cardinality": "scalar",
+        "columnName": "fact_value",
+        "dataType": "money",
+        "nullPolicy": "indeterminate",
+        "nullable": true,
+        "unit": "CNY"
+      },
+      "timeRange": {
+        "end": null,
+        "evidenceIds": [
+          "query.task.task_amount"
+        ],
+        "mode": "none",
+        "start": null,
+        "timeFieldId": null,
+        "timezone": null
+      }
+    },
+    "requestId": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a#task.task_amount",
+    "requiresMetadataSnapshot": true,
+    "ruleRef": {
+      "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+      "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+      "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+      "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+      "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+      "schemaVersion": "3.1.0",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    },
+    "status": "candidate",
+    "targetDialect": "sqlserver",
+    "tempTableAllowed": false,
+    "uncertainties": [],
+    "usages": [
+      {
+        "conditionId": "d4-pay",
+        "conditionPath": "/stages/2/rules/4/when/children/0",
+        "evidenceIds": [
+          "condition.d4-pay"
+        ],
+        "outcome": "READY",
+        "priority": 50,
+        "ruleCode": "D4",
+        "stage": "eligibility"
+      }
+    ]
+  }
+]

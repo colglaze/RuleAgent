@@ -158,12 +158,11 @@ def report_facts() -> list[dict[str, Any]]:
             "task",
         ),
         _fact(
-            "data.release_status",
-            "Raw-data release status",
-            "Raw-data release status used by R4 as the released flag.",
-            "enum",
+            "task.raw_data_present_flag",
+            "Raw data presence",
+            "Plan presence code used by R4: 0 means present. Not the raw-data release status.",
+            "integer",
             "task",
-            allowed_values=["准备释放", "释放中", "已释放", "等待完工", "等待满足条件", "无需释放"],
         ),
         _fact(
             "task.completion_date",
@@ -180,21 +179,21 @@ def report_facts() -> list[dict[str, Any]]:
             "order",
         ),
         _fact(
-            "product.id",
+            "task.product_id",
             "Product id",
-            "Product identifier; 759 is the special product.",
+            "Product identifier at task grain; 759 is the special product.",
             "integer",
             "task",
         ),
         _fact(
-            "product.category_code",
-            "Product category code",
-            "Category codes 2 and 12 are yeast library families; 1 and 14 are single-cell.",
+            "task.product_type_code",
+            "Product type code",
+            "Product type at task grain; 2 and 12 are yeast library families; 1 and 14 are single-cell.",
             "integer",
             "task",
         ),
         _fact(
-            "product.no_master_service_flag",
+            "task.no_main_service_flag",
             "No master service flag",
             "Plan hit code 0 means no master service.",
             "integer",
@@ -209,7 +208,12 @@ def report_facts() -> list[dict[str, Any]]:
             **money,
         ),
         _fact(
-            "task.amount", "Task amount", "Task-level completed amount.", "money", "task", **money
+            "task.task_amount",
+            "Task amount",
+            "Task-level completed amount; grain is task.",
+            "money",
+            "task",
+            **money,
         ),
         _fact(
             "order.report_release_amount",
@@ -407,7 +411,12 @@ def data_facts() -> list[dict[str, Any]]:
             **money,
         ),
         _fact(
-            "task.amount", "Task amount", "Task-level completed amount.", "money", "task", **money
+            "task.task_amount",
+            "Task amount",
+            "Task-level completed amount; grain is task.",
+            "money",
+            "task",
+            **money,
         ),
         _fact(
             "order.data_release_amount",
@@ -426,9 +435,9 @@ def data_facts() -> list[dict[str, Any]]:
             **money,
         ),
         _fact(
-            "product.category_code",
-            "Product category code",
-            "1 and 14 are single-cell categories.",
+            "task.product_type_code",
+            "Product type code",
+            "Product type at task grain; 1 and 14 are single-cell categories.",
             "integer",
             "task",
         ),

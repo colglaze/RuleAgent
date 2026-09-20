@@ -1,0 +1,24 @@
+{
+  "bundleCommit": "2240e5bd18e36d17650896a10cc61e1c18e3daa0",
+  "bundleDigest": "6d403f1a110ea1699a72aec76f38be944583670f96767f5e3f44b2ac2e565160",
+  "candidatePayloadSha256": "f1be5b8438b6ac5da6be9e9ae5a4df16e24ecfb40069b6460b7b1cf1044787ca",
+  "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+  "catalogPayloadSha256": "fbe3aeda9ba644bffe285c3d82b92796bdd0b975cab89f338ba752d374c945a7",
+  "executable": false,
+  "fileSha256": {
+    "candidate.json": "8d69c139fcd0a3a340e2f39cdc479128768238d6290705781ce0c39cb5665edd",
+    "catalog.json": "27a711e3787d0535c328530affc178546ca598fac88bcff758d090592b0c9879",
+    "requests.json": "fa0d6276bccabf2d243731b7d3d6fc8b905b5fc82492237d55c455e9c2269b27",
+    "result.json": "c783ce68f01242c47d2b3446498f44cdae0f41b2551bed96ae673c8c7c0f6d25"
+  },
+  "kind": "data",
+  "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+  "purpose": "optimization-plan-generation",
+  "requestCount": 18,
+  "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+  "ruleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+  "schemaVersion": "3.1.0",
+  "sourceFileSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f",
+  "status": "draft",
+  "testCaseCount": 29
+}

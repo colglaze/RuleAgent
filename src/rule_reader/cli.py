@@ -21,7 +21,10 @@ from rule_reader.application.fact_binding_handoffs.service import (
     load_checked_in_fact_binding_schema,
 )
 from rule_reader.application.rule_parsing.workflow import RuleParsingService
+from rule_reader.application.rule_parsing.workflow_v31 import OptimizationPlanParsingService
 from rule_reader.application.rule_versions.ports import RuleVersionPersistenceError
+from rule_reader.application.v3_persistence.ports import V3PersistenceError
+from rule_reader.application.v31_persistence.packages import persist_optimization_plan_packages
 from rule_reader.core.config import Settings
 from rule_reader.core.logging import configure_logging
 from rule_reader.core.version import ensure_supported_python
@@ -33,6 +36,10 @@ from rule_reader.infrastructure.fact_binding_handoffs import (
 )
 from rule_reader.infrastructure.migrations import FACT_BINDING_HANDOFFS_COLLECTION
 from rule_reader.infrastructure.mongodb import MongoManager, MongoStartupError
+from rule_reader.infrastructure.optimization_plan_artifacts import (
+    write_optimization_plan_packages,
+)
+from rule_reader.infrastructure.optimization_plan_source import read_optimization_plan_source
 from rule_reader.infrastructure.rule_versions import MongoRuleVersionRepository
 
 
@@ -57,6 +64,27 @@ def _parser() -> argparse.ArgumentParser:
     parse_parser.add_argument(
         "--idempotency-key",
         help="process-local idempotency key for this parsing operation",
+    )
+    optimization_parser = subparsers.add_parser(
+        "parse-optimization-plan",
+        help="generate Schema 3.1.0 optimization-plan deliveries without DeepSeek",
+    )
+    optimization_parser.add_argument(
+        "--source-root",
+        type=Path,
+        required=True,
+        help="private RuleDataReferences checkout containing the frozen optimization-plan path",
+    )
+    optimization_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        required=True,
+        help="directory for report/ and data/ complete-delivery packages",
+    )
+    optimization_parser.add_argument(
+        "--persist",
+        action="store_true",
+        help="insert-only persist both complete deliveries after writing packages",
     )
     handoff_parser = subparsers.add_parser(
         "persist-handoffs",
@@ -125,6 +153,22 @@ async def _parse_document(
         await parser.close()
         if manager is not None:
             await manager.close()
+
+
+async def _parse_optimization_plan(
+    settings: Settings,
+    source_root: Path,
+    output_dir: Path,
+    *,
+    persist: bool,
+) -> dict[str, object]:
+    source = read_optimization_plan_source(source_root)
+    service = OptimizationPlanParsingService()
+    run = await service.generate_from_source_bytes(source.file_bytes, source.source_text)
+    summary = write_optimization_plan_packages(output_dir, run)
+    if persist:
+        return await persist_optimization_plan_packages(output_dir, settings)
+    return summary
 
 
 async def _persist_fact_binding_handoffs(
@@ -236,6 +280,46 @@ def run(argv: Sequence[str] | None = None) -> int:
             )
             return 1
         print(parsed_json)
+        return 0
+
+    if args.command == "parse-optimization-plan":
+        try:
+            summary = asyncio.run(
+                _parse_optimization_plan(
+                    settings,
+                    args.source_root,
+                    args.output_dir,
+                    persist=args.persist,
+                )
+            )
+        except RuleParsingError as error:
+            print(
+                json.dumps(
+                    {"error": error.issue.to_dict()},
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                file=sys.stderr,
+            )
+            return 1
+        except V3PersistenceError as error:
+            print(
+                json.dumps(
+                    {
+                        "error": {
+                            "code": error.code,
+                            "message": str(error),
+                            "retryable": error.retryable,
+                            "details": [],
+                        }
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                file=sys.stderr,
+            )
+            return 1
+        print(json.dumps(summary, ensure_ascii=False, indent=2, sort_keys=True))
         return 0
 
     if args.command == "persist-handoffs":

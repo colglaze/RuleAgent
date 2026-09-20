@@ -1,6 +1,6 @@
 # DEV-20260917-01：优化方案新交接实施设计
 
-- 状态：`implemented-offline`
+- 状态：`implemented-persisted`（规则树已被 [DEV-20260920-02](DEV-20260920-02-optimization-plan-full-alignment.md) 对齐并写入 Schema v6；本文件仍冻结 3.1.0 契约）
 - 日期：2026-09-17
 - 对应需求：[REQ-20260917-01](REQ-20260917-01-optimization-plan-rule-handoff.md)
 - 业务决策：[BIZ-20260917-01](BIZ-20260917-01-optimization-plan-authority-agent1.md)

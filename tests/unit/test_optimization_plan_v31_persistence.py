@@ -5,12 +5,22 @@ from __future__ import annotations
 import asyncio
 from dataclasses import replace
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 from tests.optimization_plan_support import synthetic_source_identity
 from tests.unit.test_v3_persistence import LEGACY_COLLECTIONS, NEW_COLLECTIONS, FakeDatabase
 
-from rule_reader.application.v3_persistence.ports import V3PersistenceConflictError
+from rule_reader.application.rule_parsing.workflow_v31 import OptimizationPlanParsingService
+from rule_reader.application.v3_persistence.ports import (
+    V3PersistenceConflictError,
+    V3PersistenceError,
+)
+from rule_reader.application.v31_persistence import packages as package_mod
+from rule_reader.application.v31_persistence.packages import (
+    load_v31_artifact_dir,
+    persist_optimization_plan_output,
+)
 from rule_reader.application.v31_persistence.service import (
     V31PersistenceService,
     prepare_v31_delivery,
@@ -20,6 +30,9 @@ from rule_reader.domain.rules.purpose_v31 import (
     HISTORICAL_REPORT_RELEASE_V3_RULE_VERSION,
     DeliveryPurposeDeniedError,
     DeliveryPurposeV31,
+)
+from rule_reader.infrastructure.optimization_plan_artifacts import (
+    write_optimization_plan_packages,
 )
 from rule_reader.infrastructure.v31_persistence import MongoV31PersistenceRepository
 
@@ -167,3 +180,37 @@ def test_conflicting_payload_hash_is_rejected() -> None:
     )
     with pytest.raises(V3PersistenceConflictError, match="different payload hash"):
         asyncio.run(repository.save_rule(mutated))
+
+
+def test_package_loader_rejects_synthetic_source_hash(tmp_path: Path) -> None:
+    identity = synthetic_source_identity()
+    run_result = asyncio.run(OptimizationPlanParsingService().generate(identity))
+    write_optimization_plan_packages(tmp_path, run_result)
+    with pytest.raises(V3PersistenceError, match="frozen optimization plan"):
+        load_v31_artifact_dir(tmp_path / "report")
+
+
+def test_written_packages_persist_through_shared_loader(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    identity = synthetic_source_identity()
+    run_result = asyncio.run(OptimizationPlanParsingService().generate(identity))
+    write_optimization_plan_packages(tmp_path, run_result)
+    monkeypatch.setattr(
+        package_mod,
+        "APPROVED_SOURCE_FILE_SHA256",
+        run_result.report.result.source.source_sha256,
+    )
+    database = FakeDatabase()
+    service = _service(database)
+    persisted = asyncio.run(persist_optimization_plan_output(tmp_path, service))
+    assert persisted["report"]["consumable"] is True
+    assert persisted["data"]["consumable"] is True
+    assert persisted["report"]["ruleVersion"] == run_result.report.result.rule_version
+    loaded = asyncio.run(
+        service.get_complete_delivery(
+            run_result.report.result.rule_version,
+            DeliveryPurposeV31.OPTIMIZATION_PLAN_GENERATION,
+        )
+    )
+    assert loaded.consumable is True

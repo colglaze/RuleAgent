@@ -1,6 +1,6 @@
 # REQ-20260917-01：优化方案驱动的新版本规则与交接
 
-- 状态：`IMPLEMENTED_OFFLINE_AWAITING_REAL_WRITE_AUTHORIZATION`
+- 状态：`IMPLEMENTED_PERSISTED_AWAITING_SQLBOT_INTAKE`
 - 日期：2026-09-17
 - 来源决策：SqlBot [BIZ-20260917-03](../../SqlBot/docs/decisions/BIZ-20260917-03-optimization-plan-authority.md)
 - 可行性评估：SqlBot [DEV-20260917-02](../../SqlBot/docs/architecture/DEV-20260917-02-agent1-optimization-handoff-feasibility.md)
@@ -48,4 +48,5 @@
 ## 完成标准
 
 - 相关自动化测试通过；覆盖矩阵、契约差异和验证命令已记录。
-- 离线实现完成不等于真实落库或 SqlBot 已能生成总 SQL。
+- 离线实现完成不等于真实落库或 SqlBot 已能生成总 SQL。2026-09-20 已按用户授权将对齐后的
+  两个 3.1.0 `ruleVersion` insert-only 写入本机正式库；SqlBot intake 与总 SQL 仍未做。

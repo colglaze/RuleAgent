@@ -15,7 +15,8 @@
 
 1. 权威文本为优化方案全文（SHA-256
    `c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f`）。选择原因是该文档有顺序执行。
-2. 暂时不导入原始数据释放规则（D0–D4、数据侧前提、`evaluateDataRules`、`DataReleaseRule` 全部排除）。
+2. ~~暂时不导入原始数据释放规则（D0–D4、数据侧前提、`evaluateDataRules`、`DataReleaseRule` 全部排除）。~~
+   **已收回**（[BIZ-20260920-03](BIZ-20260920-03-optimization-plan-full-alignment.md)）：完全一致交付必须含独立原始数据 ruleSet。
 3. 本执行者不负责 SqlBot 生成完整视图式 SQL。
 4. 旧 MongoDB 版本、旧 source/ruleBlock SHA-256
    `f285643e5b2bb2ec7b13861716407afda4252c2fbc81eb75a4b0bb3ba4b37c6d`
@@ -43,7 +44,7 @@
 
 - 任何 MongoDB 写入（含 insert-only）；
 - DeepSeek 调用、SQL Server 访问、SqlBot 修改或 `generate-v3`；
-- 原始数据释放规则导入；
+- ~~原始数据释放规则导入~~（已由 [BIZ-20260920-03](BIZ-20260920-03-optimization-plan-full-alignment.md) 收回）；
 - 正式发布或 `executable=true`。
 
 ## 产物身份

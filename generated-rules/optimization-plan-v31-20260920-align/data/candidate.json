@@ -1,0 +1,1103 @@
+{
+  "blockingIssues": [],
+  "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+  "catalogId": "RAW_DATA_RELEASE_OPTIMIZATION_FACTS",
+  "catalogVersion": "2026-09-20.3",
+  "contractVersion": "3.1.0",
+  "defaultOutcome": "WAITING_CONDITIONS",
+  "defaultReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+  "evaluationTimezone": "Asia/Shanghai",
+  "proposedFacts": [],
+  "requiredFactCodes": [
+    "data.release_status",
+    "order.amount",
+    "order.arrival_amount_including_deposit",
+    "order.closed_flag",
+    "order.closed_loop_status",
+    "order.data_release_amount",
+    "order.experiment_run_status",
+    "order.extraction_qc_amount",
+    "order.sequencing_services_complete",
+    "order.source_code",
+    "release.special_application_count",
+    "task.data_lost_flag",
+    "task.in_raw_data_release_oa",
+    "task.offline_data_release_flag",
+    "task.product_type_code",
+    "task.raw_data_present_flag",
+    "task.status_code",
+    "task.task_amount"
+  ],
+  "ruleSetId": "RAW_DATA_RELEASE_ALL_001",
+  "runtimeParameters": [
+    {
+      "boundValue": null,
+      "dataType": "date",
+      "description": "Unified evaluation calendar date in Asia/Shanghai used for as-of reads.",
+      "inclusive": true,
+      "name": "evaluationDate",
+      "required": true,
+      "role": "evaluationClock"
+    }
+  ],
+  "scope": "Raw-data release evaluation for a completed experimental task.",
+  "sourceIdentity": {
+    "extractedSections": [
+      "1.3",
+      "5.1",
+      "5.2"
+    ],
+    "extractorVersion": "optimization-plan-sections-v1",
+    "parseInputCharacterCount": 88942,
+    "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+    "sourceFileByteLength": 136477,
+    "sourceFileSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+  },
+  "sourceViews": [
+    "optimization-plan"
+  ],
+  "stageSemantics": {
+    "eligibility": {
+      "onHit": "firstMatchThenContinue",
+      "unknown": "indeterminate"
+    },
+    "exclusions": {
+      "onHit": "terminate",
+      "unknown": "indeterminate"
+    },
+    "postGates": {
+      "onHit": "terminate",
+      "unknown": "indeterminate"
+    },
+    "prerequisites": {
+      "onHit": "terminate",
+      "unknown": "indeterminate"
+    },
+    "stateGuards": {
+      "onHit": "terminate",
+      "unknown": "indeterminate"
+    }
+  },
+  "stages": [
+    {
+      "emptyStageReason": null,
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Skip when raw-data status is already terminal.",
+          "outcome": "SKIPPED",
+          "priority": 10,
+          "reasonCode": "DATA_STATUS_TERMINAL_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "DATA_STATUS_TERMINAL",
+          "status": "active",
+          "title": "Skip when raw-data status is already terminal.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Raw-data status is a terminal in-progress or released state.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "data-status-terminal",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "data.release_status",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "in",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": [
+                "准备释放",
+                "释放中",
+                "已释放"
+              ]
+            }
+          }
+        }
+      ],
+      "stage": "stateGuards"
+    },
+    {
+      "emptyStageReason": null,
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Wait when the task is not completed.",
+          "outcome": "WAITING_COMPLETION",
+          "priority": 10,
+          "reasonCode": "TASK_NOT_COMPLETED_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "TASK_NOT_COMPLETED",
+          "status": "active",
+          "title": "Wait when the task is not completed.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [
+              {
+                "alreadySatisfied": null,
+                "children": [],
+                "collectionFactCode": null,
+                "description": "Task status is null.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "data-status-null",
+                "kind": "compare",
+                "left": {
+                  "children": [],
+                  "factCode": "task.status_code",
+                  "kind": "fact",
+                  "parameterName": null,
+                  "unit": null,
+                  "value": null
+                },
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "pass",
+                "operator": "is_null",
+                "right": null
+              },
+              {
+                "alreadySatisfied": null,
+                "children": [],
+                "collectionFactCode": null,
+                "description": "Task status is not completed.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "data-status-ne-19",
+                "kind": "compare",
+                "left": {
+                  "children": [],
+                  "factCode": "task.status_code",
+                  "kind": "fact",
+                  "parameterName": null,
+                  "unit": null,
+                  "value": null
+                },
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "fail",
+                "operator": "ne",
+                "right": {
+                  "children": [],
+                  "factCode": null,
+                  "kind": "literal",
+                  "parameterName": null,
+                  "unit": null,
+                  "value": 19
+                }
+              }
+            ],
+            "collectionFactCode": null,
+            "description": "Status is null or not 19.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "data-not-completed",
+            "kind": "any",
+            "left": null,
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "indeterminate",
+            "operator": null,
+            "right": null
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "No release when data-lost flag hit code is 1.",
+          "outcome": "NO_RELEASE_REQUIRED",
+          "priority": 20,
+          "reasonCode": "DATA_LOST_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "DATA_LOST",
+          "status": "active",
+          "title": "No release when data-lost flag hit code is 1.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Data-lost flag is 1.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "data-lost-1",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.data_lost_flag",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 1
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Already released when offline raw-data flag hit code is 1.",
+          "outcome": "ALREADY_RELEASED",
+          "priority": 30,
+          "reasonCode": "OFFLINE_DATA_RELEASED_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "OFFLINE_DATA_RELEASED",
+          "status": "active",
+          "title": "Already released when offline raw-data flag hit code is 1.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Offline raw-data flag is 1.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "offline-data-1",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.offline_data_release_flag",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 1
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "No release when raw data is absent-code 1.",
+          "outcome": "NO_RELEASE_REQUIRED",
+          "priority": 40,
+          "reasonCode": "NO_RAW_DATA_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "NO_RAW_DATA",
+          "status": "active",
+          "title": "No release when raw data is absent-code 1.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Raw-data presence is absent.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "raw-absent",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.raw_data_present_flag",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 1
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Wait when raw-data presence is not decided.",
+          "outcome": "WAITING_CONDITIONS",
+          "priority": 50,
+          "reasonCode": "RAW_DATA_AVAILABILITY_PENDING_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "RAW_DATA_AVAILABILITY_PENDING",
+          "status": "active",
+          "title": "Wait when raw-data presence is not decided.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [
+              {
+                "alreadySatisfied": null,
+                "children": [
+                  {
+                    "alreadySatisfied": null,
+                    "children": [],
+                    "collectionFactCode": null,
+                    "description": "Raw-data presence is present.",
+                    "duplicateMemberPolicy": null,
+                    "emptyCollectionPolicy": null,
+                    "enabled": true,
+                    "id": "raw-present",
+                    "kind": "compare",
+                    "left": {
+                      "children": [],
+                      "factCode": "task.raw_data_present_flag",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    },
+                    "memberPredicate": null,
+                    "missingMemberPolicy": null,
+                    "nullPolicy": "fail",
+                    "operator": "eq",
+                    "right": {
+                      "children": [],
+                      "factCode": null,
+                      "kind": "literal",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": 0
+                    }
+                  }
+                ],
+                "collectionFactCode": null,
+                "description": "Raw data is not present-code 0.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "not-raw-present",
+                "kind": "not",
+                "left": null,
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "indeterminate",
+                "operator": null,
+                "right": null
+              },
+              {
+                "alreadySatisfied": null,
+                "children": [
+                  {
+                    "alreadySatisfied": null,
+                    "children": [],
+                    "collectionFactCode": null,
+                    "description": "Raw-data presence is absent.",
+                    "duplicateMemberPolicy": null,
+                    "emptyCollectionPolicy": null,
+                    "enabled": true,
+                    "id": "raw-absent-pending",
+                    "kind": "compare",
+                    "left": {
+                      "children": [],
+                      "factCode": "task.raw_data_present_flag",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    },
+                    "memberPredicate": null,
+                    "missingMemberPolicy": null,
+                    "nullPolicy": "fail",
+                    "operator": "eq",
+                    "right": {
+                      "children": [],
+                      "factCode": null,
+                      "kind": "literal",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": 1
+                    }
+                  }
+                ],
+                "collectionFactCode": null,
+                "description": "Raw data is not absent-code 1.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "not-raw-absent",
+                "kind": "not",
+                "left": null,
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "indeterminate",
+                "operator": null,
+                "right": null
+              }
+            ],
+            "collectionFactCode": null,
+            "description": "Neither present-code 0 nor absent-code 1.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "raw-pending",
+            "kind": "all",
+            "left": null,
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "indeterminate",
+            "operator": null,
+            "right": null
+          }
+        }
+      ],
+      "stage": "prerequisites"
+    },
+    {
+      "emptyStageReason": null,
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Zero-amount order.",
+          "outcome": "READY",
+          "priority": 10,
+          "reasonCode": "D0_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "D0",
+          "status": "active",
+          "title": "Zero-amount order.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Order amount equals 0.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "d0-zero",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.amount",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 0
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Completed special application.",
+          "outcome": "READY",
+          "priority": 20,
+          "reasonCode": "D1_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "D1",
+          "status": "active",
+          "title": "Completed special application.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Completed raw-data special applications exist.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "d1-count",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "release.special_application_count",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "indeterminate",
+            "operator": "gt",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 0
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Overseas order source.",
+          "outcome": "READY",
+          "priority": 30,
+          "reasonCode": "D2_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "D2",
+          "status": "active",
+          "title": "Overseas order source.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Order source is overseas.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "d2-overseas",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.source_code",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": 2
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Closed-loop order status.",
+          "outcome": "READY",
+          "priority": 40,
+          "reasonCode": "D3_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "D3",
+          "status": "active",
+          "title": "Closed-loop order status.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Order closed-loop status is closed, terminated closed, or intervened closed.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "d3-closed",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "order.closed_loop_status",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "in",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": [
+                1,
+                2,
+                3
+              ]
+            }
+          }
+        },
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Full arrival with single-cell extra branch.",
+          "outcome": "READY",
+          "priority": 50,
+          "reasonCode": "D4_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "D4",
+          "status": "active",
+          "title": "Full arrival with single-cell extra branch.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [
+              {
+                "alreadySatisfied": null,
+                "children": [],
+                "collectionFactCode": null,
+                "description": "Arrival plus epsilon meets 100 percent of completed amount.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "d4-pay",
+                "kind": "compare",
+                "left": {
+                  "children": [
+                    {
+                      "children": [],
+                      "factCode": "order.arrival_amount_including_deposit",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    },
+                    {
+                      "children": [],
+                      "factCode": null,
+                      "kind": "literal",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": 0.1
+                    }
+                  ],
+                  "factCode": null,
+                  "kind": "add",
+                  "parameterName": null,
+                  "unit": null,
+                  "value": null
+                },
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "indeterminate",
+                "operator": "gte",
+                "right": {
+                  "children": [
+                    {
+                      "children": [],
+                      "factCode": "order.extraction_qc_amount",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    },
+                    {
+                      "children": [],
+                      "factCode": "task.task_amount",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    },
+                    {
+                      "children": [],
+                      "factCode": "order.data_release_amount",
+                      "kind": "fact",
+                      "parameterName": null,
+                      "unit": null,
+                      "value": null
+                    }
+                  ],
+                  "factCode": null,
+                  "kind": "add",
+                  "parameterName": null,
+                  "unit": null,
+                  "value": null
+                }
+              },
+              {
+                "alreadySatisfied": null,
+                "children": [
+                  {
+                    "alreadySatisfied": null,
+                    "children": [
+                      {
+                        "alreadySatisfied": null,
+                        "children": [],
+                        "collectionFactCode": null,
+                        "description": "Product category is single-cell.",
+                        "duplicateMemberPolicy": null,
+                        "emptyCollectionPolicy": null,
+                        "enabled": true,
+                        "id": "d4-single-cell",
+                        "kind": "compare",
+                        "left": {
+                          "children": [],
+                          "factCode": "task.product_type_code",
+                          "kind": "fact",
+                          "parameterName": null,
+                          "unit": null,
+                          "value": null
+                        },
+                        "memberPredicate": null,
+                        "missingMemberPolicy": null,
+                        "nullPolicy": "fail",
+                        "operator": "in",
+                        "right": {
+                          "children": [],
+                          "factCode": null,
+                          "kind": "literal",
+                          "parameterName": null,
+                          "unit": null,
+                          "value": [
+                            1,
+                            14
+                          ]
+                        }
+                      }
+                    ],
+                    "collectionFactCode": null,
+                    "description": "Category is not single-cell, including null.",
+                    "duplicateMemberPolicy": null,
+                    "emptyCollectionPolicy": null,
+                    "enabled": true,
+                    "id": "d4-not-single-cell",
+                    "kind": "not",
+                    "left": null,
+                    "memberPredicate": null,
+                    "missingMemberPolicy": null,
+                    "nullPolicy": "indeterminate",
+                    "operator": null,
+                    "right": null
+                  },
+                  {
+                    "alreadySatisfied": null,
+                    "children": [
+                      {
+                        "alreadySatisfied": null,
+                        "children": [],
+                        "collectionFactCode": null,
+                        "description": "Product category is single-cell.",
+                        "duplicateMemberPolicy": null,
+                        "emptyCollectionPolicy": null,
+                        "enabled": true,
+                        "id": "d4-single-cell-extra",
+                        "kind": "compare",
+                        "left": {
+                          "children": [],
+                          "factCode": "task.product_type_code",
+                          "kind": "fact",
+                          "parameterName": null,
+                          "unit": null,
+                          "value": null
+                        },
+                        "memberPredicate": null,
+                        "missingMemberPolicy": null,
+                        "nullPolicy": "fail",
+                        "operator": "in",
+                        "right": {
+                          "children": [],
+                          "factCode": null,
+                          "kind": "literal",
+                          "parameterName": null,
+                          "unit": null,
+                          "value": [
+                            1,
+                            14
+                          ]
+                        }
+                      },
+                      {
+                        "alreadySatisfied": null,
+                        "children": [
+                          {
+                            "alreadySatisfied": null,
+                            "children": [],
+                            "collectionFactCode": null,
+                            "description": "Order closed flag coalesced missing-as-1 equals 0.",
+                            "duplicateMemberPolicy": null,
+                            "emptyCollectionPolicy": null,
+                            "enabled": true,
+                            "id": "d4-closed-flag",
+                            "kind": "compare",
+                            "left": {
+                              "children": [
+                                {
+                                  "children": [],
+                                  "factCode": "order.closed_flag",
+                                  "kind": "fact",
+                                  "parameterName": null,
+                                  "unit": null,
+                                  "value": null
+                                },
+                                {
+                                  "children": [],
+                                  "factCode": null,
+                                  "kind": "literal",
+                                  "parameterName": null,
+                                  "unit": null,
+                                  "value": 1
+                                }
+                              ],
+                              "factCode": null,
+                              "kind": "coalesce",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": null
+                            },
+                            "memberPredicate": null,
+                            "missingMemberPolicy": null,
+                            "nullPolicy": "fail",
+                            "operator": "eq",
+                            "right": {
+                              "children": [],
+                              "factCode": null,
+                              "kind": "literal",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": 0
+                            }
+                          },
+                          {
+                            "alreadySatisfied": null,
+                            "children": [],
+                            "collectionFactCode": null,
+                            "description": "Experiment run status coalesced missing-as-0 equals 1.",
+                            "duplicateMemberPolicy": null,
+                            "emptyCollectionPolicy": null,
+                            "enabled": true,
+                            "id": "d4-terminated",
+                            "kind": "compare",
+                            "left": {
+                              "children": [
+                                {
+                                  "children": [],
+                                  "factCode": "order.experiment_run_status",
+                                  "kind": "fact",
+                                  "parameterName": null,
+                                  "unit": null,
+                                  "value": null
+                                },
+                                {
+                                  "children": [],
+                                  "factCode": null,
+                                  "kind": "literal",
+                                  "parameterName": null,
+                                  "unit": null,
+                                  "value": 0
+                                }
+                              ],
+                              "factCode": null,
+                              "kind": "coalesce",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": null
+                            },
+                            "memberPredicate": null,
+                            "missingMemberPolicy": null,
+                            "nullPolicy": "fail",
+                            "operator": "eq",
+                            "right": {
+                              "children": [],
+                              "factCode": null,
+                              "kind": "literal",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": 1
+                            }
+                          },
+                          {
+                            "alreadySatisfied": null,
+                            "children": [],
+                            "collectionFactCode": null,
+                            "description": "Sequencing services are complete.",
+                            "duplicateMemberPolicy": null,
+                            "emptyCollectionPolicy": null,
+                            "enabled": true,
+                            "id": "d4-seq-complete",
+                            "kind": "compare",
+                            "left": {
+                              "children": [],
+                              "factCode": "order.sequencing_services_complete",
+                              "kind": "fact",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": null
+                            },
+                            "memberPredicate": null,
+                            "missingMemberPolicy": null,
+                            "nullPolicy": "fail",
+                            "operator": "eq",
+                            "right": {
+                              "children": [],
+                              "factCode": null,
+                              "kind": "literal",
+                              "parameterName": null,
+                              "unit": null,
+                              "value": true
+                            }
+                          }
+                        ],
+                        "collectionFactCode": null,
+                        "description": "Closed, terminated, or every sequencing service is complete.",
+                        "duplicateMemberPolicy": null,
+                        "emptyCollectionPolicy": null,
+                        "enabled": true,
+                        "id": "d4-experiment-complete",
+                        "kind": "any",
+                        "left": null,
+                        "memberPredicate": null,
+                        "missingMemberPolicy": null,
+                        "nullPolicy": "indeterminate",
+                        "operator": null,
+                        "right": null
+                      }
+                    ],
+                    "collectionFactCode": null,
+                    "description": "Single-cell extra experiment branch.",
+                    "duplicateMemberPolicy": null,
+                    "emptyCollectionPolicy": null,
+                    "enabled": true,
+                    "id": "d4-single-extra",
+                    "kind": "all",
+                    "left": null,
+                    "memberPredicate": null,
+                    "missingMemberPolicy": null,
+                    "nullPolicy": "indeterminate",
+                    "operator": null,
+                    "right": null
+                  }
+                ],
+                "collectionFactCode": null,
+                "description": "Non-single-cell passes on amount; single-cell also needs experiment complete.",
+                "duplicateMemberPolicy": null,
+                "emptyCollectionPolicy": null,
+                "enabled": true,
+                "id": "d4-cell-gate",
+                "kind": "any",
+                "left": null,
+                "memberPredicate": null,
+                "missingMemberPolicy": null,
+                "nullPolicy": "indeterminate",
+                "operator": null,
+                "right": null
+              }
+            ],
+            "collectionFactCode": null,
+            "description": "Full arrival, with an extra experiment-complete branch for single-cell.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "d4-all",
+            "kind": "all",
+            "left": null,
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "indeterminate",
+            "operator": null,
+            "right": null
+          }
+        }
+      ],
+      "stage": "eligibility"
+    },
+    {
+      "emptyStageReason": "Raw-data release has no merge-group post-gate in the optimization plan.",
+      "rules": [],
+      "stage": "postGates"
+    },
+    {
+      "emptyStageReason": null,
+      "rules": [
+        {
+          "blockingIssueIds": [],
+          "failureReason": "Wait when already in a raw-data release OA instance.",
+          "outcome": "WAITING_CONDITIONS",
+          "priority": 10,
+          "reasonCode": "OA_PROCESS_SCOPE_MATCHED",
+          "recommendations": [
+            "Review against the optimization plan structure and examples."
+          ],
+          "ruleCode": "OA_PROCESS_SCOPE",
+          "status": "active",
+          "title": "Wait when already in a raw-data release OA instance.",
+          "when": {
+            "alreadySatisfied": null,
+            "children": [],
+            "collectionFactCode": null,
+            "description": "Task is in a raw-data release OA instance.",
+            "duplicateMemberPolicy": null,
+            "emptyCollectionPolicy": null,
+            "enabled": true,
+            "id": "data-oa-in-process",
+            "kind": "compare",
+            "left": {
+              "children": [],
+              "factCode": "task.in_raw_data_release_oa",
+              "kind": "fact",
+              "parameterName": null,
+              "unit": null,
+              "value": null
+            },
+            "memberPredicate": null,
+            "missingMemberPolicy": null,
+            "nullPolicy": "fail",
+            "operator": "eq",
+            "right": {
+              "children": [],
+              "factCode": null,
+              "kind": "literal",
+              "parameterName": null,
+              "unit": null,
+              "value": true
+            }
+          }
+        }
+      ],
+      "stage": "exclusions"
+    }
+  ],
+  "title": "Optimization-plan raw data release"
+}

@@ -1,0 +1,21 @@
+{
+  "dataFiles": {
+    "candidate.json": "8d69c139fcd0a3a340e2f39cdc479128768238d6290705781ce0c39cb5665edd",
+    "catalog.json": "27a711e3787d0535c328530affc178546ca598fac88bcff758d090592b0c9879",
+    "requests.json": "fa0d6276bccabf2d243731b7d3d6fc8b905b5fc82492237d55c455e9c2269b27",
+    "result.json": "c783ce68f01242c47d2b3446498f44cdae0f41b2551bed96ae673c8c7c0f6d25"
+  },
+  "dataRequestCount": 18,
+  "dataRuleVersion": "RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a",
+  "mongodbWritten": true,
+  "parseInputSha256": "aebdbf4cf89d469ccd2bfc61d9f70aa24d4361e3ed5fb947c1221f8f8676b662",
+  "reportFiles": {
+    "candidate.json": "20338eb3b21ec7a6eff256c6453b6c6c067aee05e685234635149a0e1e1d6ba6",
+    "catalog.json": "bff8b0a6c734bd2db9242ef258b7552000292d10c6ed9df53d743961490d0cb0",
+    "requests.json": "5789d46ae9fb23289ab920aa68738bf1e8ea4e7cdba5ab2356a93aaa0f1301da",
+    "result.json": "d91e8866546366a222f4ab5a75ed87225262360d46440ba029fe99a4558981de"
+  },
+  "reportRequestCount": 33,
+  "reportRuleVersion": "REPORT_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-6d94836af30f",
+  "sourceFileSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+}

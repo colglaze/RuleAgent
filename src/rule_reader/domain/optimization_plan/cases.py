@@ -58,14 +58,14 @@ REPORT_BASE: dict[str, Any] = {
     "task.qc_report_flag": 1,
     "order.amount": 1000,
     "release.special_application_count": 0,
-    "data.release_status": "等待满足条件",
+    "task.raw_data_present_flag": 1,
     "task.completion_date": "2025-01-01",
     "order.source_code": 1,
-    "product.id": 1,
-    "product.category_code": 3,
-    "product.no_master_service_flag": 1,
+    "task.product_id": 1,
+    "task.product_type_code": 3,
+    "task.no_main_service_flag": 1,
     "order.extraction_qc_amount": 0,
-    "task.amount": 1000,
+    "task.task_amount": 1000,
     "order.report_release_amount": 0,
     "order.arrival_amount_including_deposit": 0,
     "order.deposit_amount": 0,
@@ -95,10 +95,10 @@ DATA_BASE: dict[str, Any] = {
     "order.source_code": 1,
     "order.closed_loop_status": 0,
     "order.extraction_qc_amount": 0,
-    "task.amount": 1000,
+    "task.task_amount": 1000,
     "order.data_release_amount": 0,
     "order.arrival_amount_including_deposit": 0,
-    "product.category_code": 3,
+    "task.product_type_code": 3,
     "order.closed_flag": 1,
     "order.experiment_run_status": 0,
     "order.sequencing_services_complete": False,
@@ -290,10 +290,13 @@ def report_test_cases() -> list[dict[str, Any]]:
             ),
             _case(
                 "r4-on-cutoff",
-                "Released raw data on the inclusive cutoff hits R4.",
+                "Presence code 0 on the inclusive cutoff hits R4.",
                 _overlay(
                     REPORT_BASE,
-                    **{"data.release_status": "已释放", "task.completion_date": "2024-11-21"},
+                    **{
+                        "task.raw_data_present_flag": 0,
+                        "task.completion_date": "2024-11-21",
+                    },
                 ),
                 _READY,
                 "R4_MATCHED",
@@ -301,10 +304,13 @@ def report_test_cases() -> list[dict[str, Any]]:
             ),
             _case(
                 "r4-after-cutoff",
-                "Released raw data after the cutoff hits R4.",
+                "Presence code 0 after the cutoff hits R4.",
                 _overlay(
                     REPORT_BASE,
-                    **{"data.release_status": "已释放", "task.completion_date": "2024-11-22"},
+                    **{
+                        "task.raw_data_present_flag": 0,
+                        "task.completion_date": "2024-11-22",
+                    },
                 ),
                 _READY,
                 "R4_MATCHED",
@@ -312,13 +318,58 @@ def report_test_cases() -> list[dict[str, Any]]:
             ),
             _case(
                 "r4-before-cutoff",
-                "Released raw data before the cutoff does not hit R4.",
+                "Presence code 0 before the cutoff does not hit R4.",
                 _overlay(
                     REPORT_BASE,
-                    **{"data.release_status": "已释放", "task.completion_date": "2024-11-20"},
+                    **{
+                        "task.raw_data_present_flag": 0,
+                        "task.completion_date": "2024-11-20",
+                    },
                 ),
                 _WAIT,
                 "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r4-presence-1-on-cutoff",
+                "Presence code 1 does not hit R4 even on the cutoff.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "task.raw_data_present_flag": 1,
+                        "task.completion_date": "2024-11-21",
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r4-null-flag",
+                "Null presence code does not hit R4.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "task.raw_data_present_flag": None,
+                        "task.completion_date": "2024-11-21",
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r4-null-date",
+                "Presence code 0 with a null completion date does not hit R4; later dated rules stay unknown.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "task.raw_data_present_flag": 0,
+                        "task.completion_date": None,
+                    },
+                ),
+                _IND,
+                "FACT_VALUE_MISSING_OR_INVALID",
                 [],
             ),
             _case(
@@ -335,8 +386,8 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "product.id": 759,
-                        "task.amount": 100000,
+                        "task.product_id": 759,
+                        "task.task_amount": 100000,
                         "order.arrival_amount_including_deposit": 69999.9,
                     },
                 ),
@@ -350,8 +401,24 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "product.id": 759,
-                        "task.amount": 100000,
+                        "task.product_id": 759,
+                        "task.task_amount": 100000,
+                        "order.arrival_amount_including_deposit": 69999.8,
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r3-insufficient-enterprise-not-r5",
+                "Special product flag is true but arrival is short; enterprise 100 percent must not fall through to R5.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "task.product_id": 759,
+                        "order.customer_org_type": 14,
+                        "task.task_amount": 100000,
                         "order.arrival_amount_including_deposit": 69999.8,
                     },
                 ),
@@ -365,8 +432,8 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "product.id": 759,
-                        "task.amount": 100001,
+                        "task.product_id": 759,
+                        "task.task_amount": 100001,
                         "order.arrival_amount_including_deposit": 50000.4,
                     },
                 ),
@@ -380,8 +447,8 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "product.id": 759,
-                        "task.amount": 100001,
+                        "task.product_id": 759,
+                        "task.task_amount": 100001,
                         "order.arrival_amount_including_deposit": 50000.3,
                     },
                 ),
@@ -395,8 +462,8 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "product.id": 759,
-                        "task.amount": 100000,
+                        "task.product_id": 759,
+                        "task.task_amount": 100000,
                         "order.arrival_amount_including_deposit": None,
                     },
                 ),
@@ -410,7 +477,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 10,
                         "task.completion_date": "2026-04-02",
                     },
@@ -426,7 +493,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 10,
                         "task.completion_date": "2026-04-01",
                     },
@@ -442,7 +509,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 10,
                         "task.completion_date": "2026-04-03",
                     },
@@ -458,7 +525,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 10,
                         "task.completion_date": "2026-04-02T22:00:00+08:00",
                     },
@@ -474,7 +541,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 0,
                         "task.completion_date": "2026-03-18",
                     },
@@ -489,7 +556,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 "Amount at 5000 hits R8 when completion plus 180 equals evaluation date.",
                 _overlay(
                     REPORT_BASE,
-                    **{"task.amount": 5000, "task.completion_date": "2025-12-03"},
+                    **{"task.task_amount": 5000, "task.completion_date": "2025-12-03"},
                 ),
                 _READY,
                 "R8_MATCHED",
@@ -501,7 +568,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 "Yeast family with no master service hits R8 without calendar equality.",
                 _overlay(
                     REPORT_BASE,
-                    **{"product.category_code": 2, "product.no_master_service_flag": 0},
+                    **{"task.product_type_code": 2, "task.no_main_service_flag": 0},
                 ),
                 _READY,
                 "R8_MATCHED",
@@ -513,7 +580,7 @@ def report_test_cases() -> list[dict[str, Any]]:
                 _overlay(
                     REPORT_BASE,
                     **{
-                        "task.amount": 4999,
+                        "task.task_amount": 4999,
                         "order.invoice_amount": 10,
                         "task.completion_date": "2026-02-13",
                     },
@@ -841,6 +908,146 @@ def report_test_cases() -> list[dict[str, Any]]:
                 "OA_PROCESS_SCOPE_MATCHED",
                 ["R0", "OA_PROCESS_SCOPE"],
             ),
+            _case(
+                "report-experiment-null",
+                "Null experiment status is not 2 or 7 and continues.",
+                _overlay(REPORT_BASE, **{"task.experiment_status_code": None}),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r2-not-overseas",
+                "Order source other than 2 does not hit R2.",
+                _overlay(REPORT_BASE, **{"order.source_code": 1}),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r5-framework-skips-to-r7",
+                "Framework plus enterprise full arrival skips R5 and hits R7.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "order.framework_type": 0,
+                        "order.customer_org_type": 14,
+                        "order.arrival_amount_including_deposit": 1000,
+                    },
+                ),
+                _READY,
+                "R7_MATCHED",
+                ["R7"],
+            ),
+            _case(
+                "r6-framework-skips-to-r7",
+                "Framework plus non-enterprise full arrival skips R6 and hits R7.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "order.framework_type": 2,
+                        "order.arrival_amount_including_deposit": 1000,
+                    },
+                ),
+                _READY,
+                "R7_MATCHED",
+                ["R7"],
+            ),
+            _case(
+                "r6-contract-unsealed",
+                "R6 condition B non-template unsigned receipt fails the seal predicate.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "order.arrival_amount_including_deposit": 800,
+                        "order.deposit_amount": 40,
+                        "order.seal_scope_contract_ids": ["C-FAIL"],
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+                members=[
+                    {
+                        "memberKey": "C-FAIL",
+                        "facts": {
+                            "contract.quota_kind": 1,
+                            "contract.template_kind": 0,
+                            "contract.receipt_status": 0,
+                            "contract.effective_mode": 0,
+                            "contract.countersign_date": "2024-01-01",
+                            "contract.sign_method": 0,
+                        },
+                    }
+                ],
+            ),
+            _case(
+                "r6-contract-contact-esign-blocked",
+                "R6 branch 5 rejects signed-not-sealed contact e-sign.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "order.arrival_amount_including_deposit": 800,
+                        "order.deposit_amount": 40,
+                        "order.seal_scope_contract_ids": ["C-E2"],
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+                members=[
+                    {
+                        "memberKey": "C-E2",
+                        "facts": {
+                            "contract.quota_kind": 1,
+                            "contract.template_kind": 1,
+                            "contract.receipt_status": 0,
+                            "contract.effective_mode": 0,
+                            "contract.countersign_date": "2022-01-01",
+                            "contract.sign_method": 2,
+                        },
+                    }
+                ],
+            ),
+            _case(
+                "r7-insufficient",
+                "Framework misses both 80 percent arrival and 20 percent deposit.",
+                _overlay(
+                    REPORT_BASE,
+                    **{
+                        "order.framework_type": 0,
+                        "order.arrival_amount_including_deposit": 100,
+                        "order.deposit_amount": 0,
+                    },
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+            ),
+            _case(
+                "r8-yeast-before-go-live",
+                "Yeast exception does not hit R8 before the go-live date.",
+                _overlay(
+                    REPORT_BASE,
+                    **{"task.product_type_code": 2, "task.no_main_service_flag": 0},
+                ),
+                _WAIT,
+                "NO_ORDERED_RELEASE_RULE_MATCHED",
+                [],
+                runtime={"evaluationDate": "2026-04-14"},
+            ),
+            _case(
+                "r8-yeast-on-go-live",
+                "Yeast exception hits R8 on the inclusive go-live date.",
+                _overlay(
+                    REPORT_BASE,
+                    **{"task.product_type_code": 12, "task.no_main_service_flag": 0},
+                ),
+                _READY,
+                "R8_MATCHED",
+                ["R8"],
+                runtime={"evaluationDate": "2026-04-15"},
+            ),
         ]
     )
     return cases
@@ -962,7 +1169,7 @@ def data_test_cases() -> list[dict[str, Any]]:
             _overlay(
                 DATA_BASE,
                 **{
-                    "product.category_code": 1,
+                    "task.product_type_code": 1,
                     "order.arrival_amount_including_deposit": 1000,
                 },
             ),
@@ -977,7 +1184,7 @@ def data_test_cases() -> list[dict[str, Any]]:
             _overlay(
                 DATA_BASE,
                 **{
-                    "product.category_code": 14,
+                    "task.product_type_code": 14,
                     "order.arrival_amount_including_deposit": 1000,
                     "order.closed_flag": 0,
                 },
@@ -993,7 +1200,7 @@ def data_test_cases() -> list[dict[str, Any]]:
             _overlay(
                 DATA_BASE,
                 **{
-                    "product.category_code": 1,
+                    "task.product_type_code": 1,
                     "order.arrival_amount_including_deposit": 999.9,
                     "order.sequencing_services_complete": True,
                 },
@@ -1028,6 +1235,112 @@ def data_test_cases() -> list[dict[str, Any]]:
             _WAIT,
             "OA_PROCESS_SCOPE_MATCHED",
             ["D0", "OA_PROCESS_SCOPE"],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "data-offline-0-not-already",
+            "Raw-data offline flag 0 is not the plan hit code 1.",
+            _overlay(DATA_BASE, **{"task.offline_data_release_flag": 0}),
+            _WAIT,
+            "NO_ORDERED_RELEASE_RULE_MATCHED",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "data-presence-null",
+            "Null raw-data presence is undecided.",
+            _overlay(DATA_BASE, **{"task.raw_data_present_flag": None}),
+            _WAIT,
+            "RAW_DATA_AVAILABILITY_PENDING_MATCHED",
+            ["RAW_DATA_AVAILABILITY_PENDING"],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d1-no-match",
+            "Count 0 is no D1 match.",
+            _overlay(DATA_BASE, **{"release.special_application_count": 0}),
+            _WAIT,
+            "NO_ORDERED_RELEASE_RULE_MATCHED",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d1-unknown",
+            "Missing special-application count is unknown at D1.",
+            _overlay(DATA_BASE, **{"release.special_application_count": None}),
+            _IND,
+            "FACT_VALUE_MISSING_OR_INVALID",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d1-duplicate-nodes",
+            "Join-row count 2 from duplicate nodes still hits D1.",
+            _overlay(DATA_BASE, **{"release.special_application_count": 2}),
+            _READY,
+            "D1_MATCHED",
+            ["D1"],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d2-not-overseas",
+            "Order source other than 2 does not hit D2.",
+            _overlay(DATA_BASE, **{"order.source_code": 1}),
+            _WAIT,
+            "NO_ORDERED_RELEASE_RULE_MATCHED",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d3-not-closed",
+            "Closed-loop status 0 does not hit D3.",
+            _overlay(DATA_BASE, **{"order.closed_loop_status": 0}),
+            _WAIT,
+            "NO_ORDERED_RELEASE_RULE_MATCHED",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d3-status-1",
+            "Closed-loop status 1 hits D3.",
+            _overlay(DATA_BASE, **{"order.closed_loop_status": 1}),
+            _READY,
+            "D3_MATCHED",
+            ["D3"],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d3-status-3",
+            "Closed-loop status 3 hits D3.",
+            _overlay(DATA_BASE, **{"order.closed_loop_status": 3}),
+            _READY,
+            "D3_MATCHED",
+            ["D3"],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d4-null-arrival",
+            "Null arrival at D4 is unknown.",
+            _overlay(DATA_BASE, **{"order.arrival_amount_including_deposit": None}),
+            _IND,
+            "FACT_VALUE_MISSING_OR_INVALID",
+            [],
+            runtime=dict(DATA_RUNTIME),
+        ),
+        _case(
+            "d4-single-cell-terminated",
+            "Single-cell extra branch passes when experiment run status is terminated.",
+            _overlay(
+                DATA_BASE,
+                **{
+                    "task.product_type_code": 1,
+                    "order.arrival_amount_including_deposit": 1000,
+                    "order.experiment_run_status": 1,
+                },
+            ),
+            _READY,
+            "D4_MATCHED",
+            ["D4"],
             runtime=dict(DATA_RUNTIME),
         ),
     ]

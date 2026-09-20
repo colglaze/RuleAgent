@@ -58,7 +58,7 @@ def _node(
 def _data_completed_amount() -> dict[str, Any]:
     return add(
         fact("order.extraction_qc_amount"),
-        fact("task.amount"),
+        fact("task.task_amount"),
         fact("order.data_release_amount"),
     )
 
@@ -95,13 +95,13 @@ def eligibility_d4() -> dict[str, Any]:
     single_cell = in_list(
         "d4-single-cell",
         "Product category is single-cell.",
-        fact("product.category_code"),
+        fact("task.product_type_code"),
         list(SINGLE_CELL_CATEGORY_CODES),
     )
     single_cell_extra = in_list(
         "d4-single-cell-extra",
         "Product category is single-cell.",
-        fact("product.category_code"),
+        fact("task.product_type_code"),
         list(SINGLE_CELL_CATEGORY_CODES),
     )
     experiment_complete = any_of(

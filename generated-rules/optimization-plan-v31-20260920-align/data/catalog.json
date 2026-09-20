@@ -1,0 +1,511 @@
+{
+  "catalogDigest": "2845743f259a43ca79f5f08c6e4ae482f12b53bd864388aff068a95efb1211b4",
+  "catalogId": "RAW_DATA_RELEASE_OPTIMIZATION_FACTS",
+  "catalogVersion": "2026-09-20.3",
+  "contractVersion": "3.0.0",
+  "evidence": [
+    {
+      "evidenceId": "plan.structure",
+      "locator": "section:1.3+5.1+5.2",
+      "note": "Extractor optimization-plan-sections-v1; formulas expanded into the condition tree.",
+      "sourceId": "optimization-plan-v2.0",
+      "sourceKind": "ruleText",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f"
+    }
+  ],
+  "facts": [
+    {
+      "allowedValues": [
+        "准备释放",
+        "释放中",
+        "已释放",
+        "等待完工",
+        "等待满足条件",
+        "无需释放"
+      ],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "enum",
+      "description": "Current raw-data release status; terminal states skip evaluation.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "data.release_status",
+      "grain": "task",
+      "name": "Raw-data release status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "19 means completed. Null is not completed.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.status_code",
+      "grain": "task",
+      "name": "Task status code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Plan hit code 1 means marked data lost and no release is required.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.data_lost_flag",
+      "grain": "task",
+      "name": "Data lost flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Plan hit code 1 means already released offline.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.offline_data_release_flag",
+      "grain": "task",
+      "name": "Offline raw-data release flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Plan code 0 means present, 1 means absent; other values are undecided.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.raw_data_present_flag",
+      "grain": "task",
+      "name": "Raw data presence",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "Order amount; 0 hits D0, null continues.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.amount",
+      "grain": "order",
+      "name": "Order amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Count of raw-data special applications with type and completed approval node filters. Join rows are not de-duplicated.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "release.special_application_count",
+      "grain": "task",
+      "name": "Completed special application count",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Source code 2 means overseas business.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.source_code",
+      "grain": "order",
+      "name": "Order source code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "1 closed, 2 terminated closed, 3 intervened closed.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.closed_loop_status",
+      "grain": "order",
+      "name": "Order closed-loop status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "Extraction and QC completed amount.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.extraction_qc_amount",
+      "grain": "order",
+      "name": "Extraction and QC amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "Task-level completed amount; grain is task.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.task_amount",
+      "grain": "task",
+      "name": "Task amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "Completed amount attributed to raw-data release.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.data_release_amount",
+      "grain": "order",
+      "name": "Raw-data release amount",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "money",
+      "description": "Order arrival that already includes deposit.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.arrival_amount_including_deposit",
+      "grain": "order",
+      "name": "Arrival including deposit",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": "CNY"
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "Product type at task grain; 1 and 14 are single-cell categories.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.product_type_code",
+      "grain": "task",
+      "name": "Product type code",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "0 means closed; missing values are treated as 1 by coalesce.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.closed_flag",
+      "grain": "order",
+      "name": "Order closed flag",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "integer",
+      "description": "1 means terminated experiment; missing values are treated as 0 by coalesce.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.experiment_run_status",
+      "grain": "order",
+      "name": "Order experiment run status",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "boolean",
+      "description": "True when every sequencing service completed quantity is at least requested and at least one sequencing service exists.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "order.sequencing_services_complete",
+      "grain": "order",
+      "name": "Sequencing services complete",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical order key.",
+          "name": "orderId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    },
+    {
+      "allowedValues": [],
+      "bindingIssues": [
+        "Physical mapping is owned by metadataReview."
+      ],
+      "bindingProfileRef": null,
+      "dataType": "boolean",
+      "description": "Exists in an in-progress raw-data release OA instance only.",
+      "evidenceRefs": [
+        "plan.structure"
+      ],
+      "factCode": "task.in_raw_data_release_oa",
+      "grain": "task",
+      "name": "In raw-data release OA",
+      "nullPolicy": "indeterminate",
+      "nullable": true,
+      "parameters": [
+        {
+          "dataType": "string",
+          "description": "Logical task key.",
+          "name": "taskId",
+          "required": true,
+          "role": "entityKey"
+        }
+      ],
+      "unit": null
+    }
+  ]
+}

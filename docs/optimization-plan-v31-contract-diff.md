@@ -17,6 +17,12 @@
 
 3.0.0 不得塞入运行参数或集合量词。3.1.0 不得静默降级为 3.0.0。
 
+2026-09-20 完全一致对齐后，**唯一待消费**的 3.1.0 身份为
+`REPORT_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-6d94836af30f` 与
+`RAW_DATA_RELEASE_ALL_001@20260920T131600000000Z-c049af189fc3-2845743f259a`
+（[BIZ-20260920-03](BIZ-20260920-03-optimization-plan-full-alignment.md)）。
+2026-09-17 的 3.1.0 与 2026-09-20 的 3.0.0 公式树都不是本用途交付。
+
 ## Agent1 已落实的门禁
 
 - 读取完整交付时校验 tree/catalog/result/batch 闭包；缺任一则 `consumable=false`。

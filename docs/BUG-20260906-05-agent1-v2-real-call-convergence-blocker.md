@@ -2,7 +2,7 @@
 
 - 来源 REQ：[REQ-20260818-03](REQ-20260818-03-rule-parser.md)、[REQ-20260827-02](REQ-20260827-02-deepseek-retry-audit-idempotency.md)
 - 关联记录：[PROG-20260906](PROG-20260906.md)、历史同类缺陷 [BUG-20260902-01](BUG-20260902-01-latest-rule-agent1-semantic-rejection.md)、[BUG-20260903-02](BUG-20260903-02-agent1-v3-single-call-schema-rejection.md)
-- 状态：`OPEN - 21 次真实调用未收敛；等待用户决策（继续有界重试 / 两阶段流程改造 / 维持 reviewed_import 路线）`
+- 状态：`CLOSED - 2026-09-20 用户选择路径③：该文档不再走真实 DeepSeek Agent1；生成改走 3.1.0 优化方案转译器`
 
 ## 现象
 
@@ -88,3 +88,39 @@ outcome、token usage），与 `artifacts/` 中日志一致。
   构成证据缺口；失败面演化表与 token 消耗只能作为当日会话记录引用，无法在当前环境复核。
 - 默认离线测试基线 `203 passed, 6 deselected` 已于 2026-09-07 在本机复现（`.venv/Scripts/python.exe
   -m pytest -q`），这是当前可直接复现的证据。
+
+## 2026-09-20 再授权的一次真实运行
+
+用户指令：「你调用agent1生成一次mongo」。范围：同一冻结来源
+`项目报告释放规则.md`（规范化 7501 字符，SHA-256 `562eabd40e5a…`），`deepseek-v4-flash`，
+`maxOutputTokens=65536`，`maxRetries=2`（一轮 CLI `parse --persist`，最多 3 次 Provider 调用），
+写入本机 `rule_reader.rule_versions`。
+
+结果：
+
+- 进程退出码 1，耗时约 143s，stdout 为空，因此未进入持久化。
+- `rule_versions` 仍为 2 条（`…T092511…` 与 `…T080726…`），`rule_versions_v3` 仍为 3 条；
+  confirmed V3 payload SHA-256 仍为 `fb6c1e3c…`。
+- 本轮 stderr 共 4207 字符，与 logging 文本混排，未能解析为门禁 JSON；原始正文未另存，
+  因此本轮不能断言具体 outcome 码。这不改变“未写入”的事实。
+- 缺陷保持 OPEN。关闭仍须满足上文三条验收之一。
+
+## 关闭（2026-09-20，路径③）
+
+用户确认「改」，采纳路径③：冻结来源《项目报告释放规则》**不再**以真实 DeepSeek Agent1
+（`parse --file … --persist`）作为生成手段。依据：
+
+- 该文档已有 Phase 1.9 `reviewed_import` V2 草稿；继续真实调用不能越过案例一致性门禁
+  （2026-09-06 共 21 次，2026-09-20 再 1 轮仍未写入）。
+- 当前待消费身份是优化方案 Schema 3.1.0 完整交付，由 Agent1 确定性转译器生成并已 insert-only
+  写入 MongoDB Schema v6。见 [REQ-20260920-01](REQ-20260920-01-agent1-optimization-plan-generation.md)。
+- 路径①有界重试预期收益低；路径②两阶段方案仍未立项，且 [DEV-20260902-02](DEV-20260902-02-agent1-v3-prompt.md)
+  写明不保证收敛。
+
+关闭后约束：
+
+- 不得再自动对该文档发起真实 Provider 调用。
+- `parse --persist` 对其他 Markdown 来源仍可用；本缺陷不降低任何门禁。
+- 3.1.0 生成继续走 `parse-optimization-plan`（可选 `--persist`），不把 DeepSeek 接到 3.1.0 JSON。
+
+
