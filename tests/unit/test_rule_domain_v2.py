@@ -11,6 +11,7 @@ from rule_reader.domain.rules.v2 import RuleCandidateV2, RuleParseResultV2
 from rule_reader.domain.rules.validation_v2 import (
     SemanticValidationErrorV2,
     enrich_candidate_v2,
+    evaluate_condition,
     validate_candidate_v2,
 )
 
@@ -442,3 +443,87 @@ def test_v2_rejects_executable_sql_and_credentials_in_free_text(
 
     with pytest.raises(SemanticValidationErrorV2, match="contains"):
         validate_candidate_v2(candidate)
+
+
+def _date_fact() -> dict[str, object]:
+    return {
+        "factCode": "task.completion_date",
+        "name": "完工日",
+        "factKind": "source",
+        "dataType": "date",
+        "description": "任务完工日",
+        "nullable": True,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+            {
+                "name": "taskId",
+                "dataType": "string",
+                "description": "任务 ID",
+                "required": True,
+            }
+        ],
+    }
+
+
+def test_v2_iso_date_literal_is_typed_and_compared_as_date() -> None:
+    from rule_reader.domain.rules.models import FactDataType
+    from rule_reader.domain.rules.v2 import ConditionNodeV2, RequiredFactV2
+    from rule_reader.domain.rules.validation_v2 import EvaluationResult, infer_expression_type
+
+    fact = RequiredFactV2.model_validate(_date_fact())
+    node = ConditionNodeV2.model_validate(
+        {
+            "id": "cutoff",
+            "kind": "compare",
+            "description": "完工日不早于字面量阈值",
+            "left": {"kind": "fact", "factCode": "task.completion_date"},
+            "operator": "gte",
+            "right": {"kind": "literal", "value": "2024-11-21"},
+            "nullPolicy": "fail",
+        }
+    )
+    facts = {fact.fact_code: fact}
+    issues: list[str] = []
+    assert node.right is not None
+    assert infer_expression_type(node.right, facts, issues) is FactDataType.DATE
+    assert issues == []
+    assert (
+        evaluate_condition(node, {"task.completion_date": "2024-11-21"}, facts)
+        is EvaluationResult.PASS
+    )
+    assert (
+        evaluate_condition(node, {"task.completion_date": "2024-11-20"}, facts)
+        is EvaluationResult.FAIL
+    )
+
+
+def test_v2_today_expression_uses_supplied_evaluation_date() -> None:
+    from datetime import date
+
+    from rule_reader.domain.rules.v2 import ConditionNodeV2, RequiredFactV2
+    from rule_reader.domain.rules.validation_v2 import EvaluationResult
+
+    fact = RequiredFactV2.model_validate(_date_fact())
+    node = ConditionNodeV2.model_validate(
+        {
+            "id": "today-eq-plus-60",
+            "kind": "compare",
+            "description": "评估日等于完工日加 60 天",
+            "left": {"kind": "today"},
+            "operator": "eq",
+            "right": {
+                "kind": "dateAdd",
+                "unit": "day",
+                "children": [
+                    {"kind": "fact", "factCode": "task.completion_date"},
+                    {"kind": "literal", "value": 60},
+                ],
+            },
+            "nullPolicy": "fail",
+        }
+    )
+    facts = {fact.fact_code: fact}
+    given = {"task.completion_date": "2026-04-02"}
+    assert evaluate_condition(node, given, facts, date(2026, 6, 1)) is EvaluationResult.PASS
+    assert evaluate_condition(node, given, facts, date(2026, 6, 2)) is EvaluationResult.FAIL

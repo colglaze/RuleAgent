@@ -42,9 +42,9 @@ SYSTEM_PROMPT = "\n".join(
         ),
         (
             "5a. expression.kind 只能是 fact、literal、add、subtract、multiply、"
-            "divide、coalesce、dateAdd；日期加法必须精确写 dateAdd，禁止 round、"
-            "sum、percentage、date_add 或其他契约外节点。聚合计算声明为 aggregate "
-            "事实，不要伪造表达式节点。"
+            "divide、coalesce、dateAdd、today；日期加法必须精确写 dateAdd，禁止 round、"
+            "sum、percentage、date_add 或其他契约外节点。评估当日用 today，不要查询"
+            "evaluation 表。聚合计算声明为 aggregate 事实，不要伪造表达式节点。"
         ),
         (
             "6. 每个事实完整声明 factKind、dataType、grain、parameters、nullable、"

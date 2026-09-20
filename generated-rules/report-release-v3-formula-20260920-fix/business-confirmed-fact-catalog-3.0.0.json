@@ -1,0 +1,798 @@
+{
+  "contractVersion": "3.0.0",
+  "catalogId": "REPORT_RELEASE_FORMULA_FACTS",
+  "catalogVersion": "2026-09-20.2",
+  "catalogDigest": "3505deed16006bb948fb8fbbb24643e0d8e74381e53c1fb062bcce3797e5907c",
+  "facts": [
+    {
+      "factCode": "report.release_status",
+      "name": "报告释放状态",
+      "description": "释放状态；准备释放/释放中/已释放为终态并跳过。空值继续评估。",
+      "dataType": "enum",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [
+        "准备释放",
+        "释放中",
+        "已释放"
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.status_code",
+      "name": "任务状态",
+      "description": "任务状态码；19 为内部完工确认。空或非 19 则等待完工。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.experiment_status_code",
+      "name": "任务单实验状态",
+      "description": "实验状态；2 为失败线下确认收入，7 为问题项目，二者无需释放。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.offline_report_release_flag",
+      "name": "线下报告释放标志",
+      "description": "Java 比较 0 表示已线下释放。工作簿 4/5 不得写入 active when。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.batch_report_release_flag",
+      "name": "批量报告释放标志",
+      "description": "Java 比较 0 表示标记批量释放。工作簿 4/5 不得写入 active when。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.project_report_flag",
+      "name": "项目报告有无",
+      "description": "0 表示有项目报告；1 表示无。空或其他值进入报告待定。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.qc_report_flag",
+      "name": "质控报告有无",
+      "description": "0 表示有质控报告；1 表示无。与项目报告共同判定前提 3。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.raw_data_flag",
+      "name": "原始数据有无",
+      "description": "仅供 R4：0 表示原始数据已释放。不是原始数据释放规则集。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.completion_date",
+      "name": "完工日期",
+      "description": "任务完工日。R4 与阈值比较；R8 用日期相等匹配完工日加天数。",
+      "dataType": "date",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.no_main_service_flag",
+      "name": "无主服务标志",
+      "description": "0 表示无主服务，供 R8D 与产品类型共同判定。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.product_id",
+      "name": "任务产品编号",
+      "description": "当前正式实验任务单的产品编号。R3 要求 759，并继续展开 70%/50% 金额树。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.product_type_code",
+      "name": "任务产品类型",
+      "description": "当前任务的产品类型。2/12 为酵母筛库或家族库；空值可进入 R8ABC，不因 in{2,12} 变成不确定。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "fail",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.in_oa_process",
+      "name": "任务在未结束项目报告 OA 流程中",
+      "description": "存在未结束的项目报告 OA 流程时为真，命中后排除触发。",
+      "dataType": "boolean",
+      "nullable": false,
+      "nullPolicy": "fail",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [
+        true,
+        false
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.amount",
+      "name": "订单金额",
+      "description": "订单金额。R0 在等于 0 时命中。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.source_code",
+      "name": "订单来源",
+      "description": "订单来源。2 表示海外业务，命中 R2。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.associated_receipts_including_deposit",
+      "name": "订单关联到款含押金",
+      "description": "到款含押金 = 项目款 + 押金。金额比较保留 +0.1 容差。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.associated_deposit",
+      "name": "订单关联押金",
+      "description": "订单关联押金。用于 R6 条件 B 与 R7 押金分支。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.extraction_qc_amount",
+      "name": "抽提质检金额",
+      "description": "抽提质检金额。计入累计完工金额与 R3 基准金额。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "task.task_amount",
+      "name": "任务单金额",
+      "description": "当前正式实验任务单金额（rwdje），不是订单下全部任务合计。计入累计完工与 R3 基准；R8 用其分档 5000。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.report_released_amount",
+      "name": "订单项目报告释放金额",
+      "description": "已释放项目报告金额。计入累计完工，不使用原始数据释放金额。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.invoice_amount",
+      "name": "订单开票金额",
+      "description": "开票金额。R8 在任务单金额小于 5000 时用是否大于 0 选择 60/75 天。",
+      "dataType": "money",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": "CNY",
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.is_framework",
+      "name": "是否框架协议",
+      "description": "框架协议为真当协议类型属于 {0,2}；空视为非框架。",
+      "dataType": "boolean",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [
+        true,
+        false
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.is_enterprise",
+      "name": "是否企业单位",
+      "description": "企业单位为真当单位类型属于 {14,16}；空视为非企业。",
+      "dataType": "boolean",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [
+        true,
+        false
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "release.special_application_count",
+      "name": "特殊申请已审批数量",
+      "description": "项目报告类型且当前节点类型属于 {3} 的特殊申请条数；大于 0 命中 R1。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "indeterminate",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.in_scope_contract_count",
+      "name": "范围内合同份数",
+      "description": "盖章范围=执行合同∪关联合同（剩余金额合计>0）的合同份数。0 表示范围为空，R6 条件 B 盖章失败，不是 INDETERMINATE。Seal modeling=A：五分支是本计数与 unsealed 计数的聚合谓词，不进入 R6 when。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "fail",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "order.unsealed_in_scope_contract_count",
+      "name": "范围内未盖章合同份数",
+      "description": "范围内不满足 isContractSealed 五分支的合同份数。五分支互斥顺序：(1) 额度类型=3 小程序确认；(2) 非范本且已盖章（签收状态∈{1,2}）；(3) 范本且额度内小金额且签收状态∈{0,1,2}；(4) 会签日>=2023-11-01 且生效方式=盖章且已盖章；(5) 其余：已盖章，或已签字未盖章且签字方式不是联系人电子签。任一份失败则本计数>=1，条件 B 失败。",
+      "dataType": "integer",
+      "nullable": true,
+      "nullPolicy": "fail",
+      "grain": "order",
+      "parameters": [
+        {
+          "name": "orderId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Order identifier."
+        }
+      ],
+      "allowedValues": [],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    },
+    {
+      "factCode": "report.merge_group_eligible",
+      "name": "合并报告组约束满足",
+      "description": "非合并组，或相关任务已处于准备释放/释放中/已释放，或实时通过报告前提并命中任一报告资格规则。不含原始数据规则。",
+      "dataType": "boolean",
+      "nullable": false,
+      "nullPolicy": "fail",
+      "grain": "task",
+      "parameters": [
+        {
+          "name": "taskId",
+          "role": "entityKey",
+          "dataType": "string",
+          "required": true,
+          "description": "Formal experiment task identifier."
+        }
+      ],
+      "allowedValues": [
+        true,
+        false
+      ],
+      "unit": null,
+      "evidenceRefs": [
+        "plan.full-document",
+        "plan.rule-block"
+      ],
+      "bindingProfileRef": null,
+      "bindingIssues": [
+        "No approved V3 binding profile; mapping stays unresolved."
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "evidenceId": "plan.full-document",
+      "sourceKind": "ruleText",
+      "sourceId": "optimization-plan",
+      "sourceSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f",
+      "locator": "full-document",
+      "note": "2026-09-20 用户指定的优化方案全文身份。"
+    },
+    {
+      "evidenceId": "plan.rule-block",
+      "sourceKind": "ruleText",
+      "sourceId": "REPORT_RELEASE_ALL_001.rule-block.txt",
+      "sourceSha256": "e04a686188f6f67393780be95a6054c06b9b50a17ff10ddd24104b5456422ff5",
+      "locator": "extracted-report-side-block",
+      "note": "实际送入解析器的报告侧规则块，含 1.3 树、5.2 报告 Java 与 5.5 报告金额。"
+    }
+  ]
+}

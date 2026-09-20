@@ -152,6 +152,17 @@ NUMERIC_TYPES = {
 }
 
 
+def _parse_temporal_literal(value: Any) -> date | datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        if "T" in value:
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
 def _literal_type(value: Any) -> FactDataType:
     if isinstance(value, bool):
         return FactDataType.BOOLEAN
@@ -161,6 +172,11 @@ def _literal_type(value: Any) -> FactDataType:
         return FactDataType.NUMBER
     if isinstance(value, list):
         return FactDataType.LIST
+    parsed = _parse_temporal_literal(value)
+    if isinstance(parsed, datetime):
+        return FactDataType.DATETIME
+    if isinstance(parsed, date):
+        return FactDataType.DATE
     return FactDataType.STRING
 
 
@@ -236,6 +252,8 @@ def infer_expression_type(
         return fact.data_type
     if expression.kind is ExpressionKind.LITERAL:
         return _literal_type(expression.value)
+    if expression.kind is ExpressionKind.TODAY:
+        return FactDataType.DATE
 
     child_types = [infer_expression_type(child, facts, issues) for child in expression.children]
     if expression.kind in {
@@ -322,9 +340,13 @@ def _evaluate_expression(
     given: dict[str, Any],
     facts: dict[str, RequiredFactV2],
     resolving: set[str],
+    evaluation_date: date | None = None,
 ) -> EvaluationValue:
     if expression.kind is ExpressionKind.LITERAL:
-        return expression.value
+        parsed = _parse_temporal_literal(expression.value)
+        return parsed if parsed is not None else expression.value
+    if expression.kind is ExpressionKind.TODAY:
+        return evaluation_date if evaluation_date is not None else date.today()
     if expression.kind is ExpressionKind.FACT:
         code = expression.fact_code or ""
         if code in given:
@@ -341,11 +363,14 @@ def _evaluate_expression(
             return MISSING
         resolving.add(code)
         try:
-            return _evaluate_expression(fact.derivation, given, facts, resolving)
+            return _evaluate_expression(fact.derivation, given, facts, resolving, evaluation_date)
         finally:
             resolving.remove(code)
 
-    values = [_evaluate_expression(child, given, facts, resolving) for child in expression.children]
+    values = [
+        _evaluate_expression(child, given, facts, resolving, evaluation_date)
+        for child in expression.children
+    ]
     if expression.kind is ExpressionKind.COALESCE:
         return next(
             (item for item in values if not isinstance(item, _Missing) and item is not None),
@@ -393,10 +418,11 @@ def _evaluate_compare(
     node: ConditionNodeV2,
     given: dict[str, Any],
     facts: dict[str, RequiredFactV2],
+    evaluation_date: date | None = None,
 ) -> EvaluationResult:
     assert node.left is not None
     assert node.operator is not None
-    left = _evaluate_expression(node.left, given, facts, set())
+    left = _evaluate_expression(node.left, given, facts, set(), evaluation_date)
     operator = node.operator
     if operator is RuleOperator.IS_NULL:
         return EvaluationResult.PASS if left is None else EvaluationResult.FAIL
@@ -408,7 +434,7 @@ def _evaluate_compare(
         return EvaluationResult.FAIL if left is None or left == "" else EvaluationResult.PASS
     if isinstance(left, _Missing) or left is None or node.right is None:
         return _null_result(node.null_policy)
-    right = _evaluate_expression(node.right, given, facts, set())
+    right = _evaluate_expression(node.right, given, facts, set(), evaluation_date)
     if isinstance(right, _Missing) or right is None:
         return _null_result(node.null_policy)
 
@@ -449,12 +475,13 @@ def evaluate_condition(
     node: ConditionNodeV2,
     given: dict[str, Any],
     facts: dict[str, RequiredFactV2],
+    evaluation_date: date | None = None,
 ) -> EvaluationResult:
     if not node.enabled:
         return EvaluationResult.PASS
     if node.kind is ConditionKindV2.COMPARE:
-        return _evaluate_compare(node, given, facts)
-    results = [evaluate_condition(child, given, facts) for child in node.children]
+        return _evaluate_compare(node, given, facts, evaluation_date)
+    results = [evaluate_condition(child, given, facts, evaluation_date) for child in node.children]
     if node.kind is ConditionKindV2.NOT:
         return {
             EvaluationResult.PASS: EvaluationResult.FAIL,

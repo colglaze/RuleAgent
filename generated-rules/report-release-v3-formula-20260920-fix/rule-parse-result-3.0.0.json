@@ -1,0 +1,4826 @@
+{
+  "schemaVersion": "3.0.0",
+  "ruleVersion": "REPORT_RELEASE_ALL_001@20260920T092000000000Z-e04a686188f6-3505deed1600",
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "generatedAt": "2026-09-20T09:20:00Z",
+  "status": "draft",
+  "executable": false,
+  "source": {
+    "sourceName": "REPORT_RELEASE_ALL_001.rule-block.txt",
+    "relativePath": "REPORT_RELEASE_ALL_001.rule-block.txt",
+    "sourceSha256": "e04a686188f6f67393780be95a6054c06b9b50a17ff10ddd24104b5456422ff5",
+    "sourceCharacterCount": 42437,
+    "parserVersion": "0.12.0-formula-fix",
+    "promptVersion": "report-release-v3-formula-20260920-fix",
+    "provider": "reviewed_import",
+    "model": "reviewed-import-v3-formula"
+  },
+  "parser": {
+    "parserVersion": "0.12.0-formula-fix",
+    "promptVersion": "report-release-v3-formula-20260920-fix",
+    "provider": "reviewed_import",
+    "model": "reviewed-import-v3-formula"
+  },
+  "catalogRef": {
+    "catalogId": "REPORT_RELEASE_FORMULA_FACTS",
+    "catalogVersion": "2026-09-20.2",
+    "catalogDigest": "3505deed16006bb948fb8fbbb24643e0d8e74381e53c1fb062bcce3797e5907c"
+  },
+  "candidateRef": {
+    "payloadSha256": "7b3783af996af6164a9a364cc0810ad0a6116b6f817efc2afdb2d05489c93418",
+    "ruleBlockSha256": "e04a686188f6f67393780be95a6054c06b9b50a17ff10ddd24104b5456422ff5"
+  },
+  "factDeclarations": [
+    {
+      "fact": {
+        "factCode": "report.release_status",
+        "name": "报告释放状态",
+        "factKind": "source",
+        "dataType": "enum",
+        "description": "释放状态；准备释放/释放中/已释放为终态并跳过。空值继续评估。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          "准备释放",
+          "释放中",
+          "已释放"
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "report.release_status",
+            "dataType": "enum",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.release_status",
+              "query.report.release_status"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.release_status",
+              "query.report.release_status"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.report.release_status",
+                "query.report.release_status"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.report.release_status",
+            "query.report.release_status"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "enum",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.status_code",
+        "name": "任务状态",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "任务状态码；19 为内部完工确认。空或非 19 则等待完工。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.status_code",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.status_code",
+              "query.task.status_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.status_code",
+              "query.task.status_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.status_code",
+                "query.task.status_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.status_code",
+            "query.task.status_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.experiment_status_code",
+        "name": "任务单实验状态",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "实验状态；2 为失败线下确认收入，7 为问题项目，二者无需释放。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.experiment_status_code",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.experiment_status_code",
+              "query.task.experiment_status_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.experiment_status_code",
+              "query.task.experiment_status_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.experiment_status_code",
+                "query.task.experiment_status_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.experiment_status_code",
+            "query.task.experiment_status_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.offline_report_release_flag",
+        "name": "线下报告释放标志",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "Java 比较 0 表示已线下释放。工作簿 4/5 不得写入 active when。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.offline_report_release_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.offline_report_release_flag",
+              "query.task.offline_report_release_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.offline_report_release_flag",
+              "query.task.offline_report_release_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.offline_report_release_flag",
+                "query.task.offline_report_release_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.offline_report_release_flag",
+            "query.task.offline_report_release_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": [
+        {
+          "uncertaintyId": "coding.offline-release-flag",
+          "code": "SOURCE_CODING_DIVERGENCE",
+          "impact": "warning",
+          "reason": "Workbook legend 4=yes/5=no is warning-only for metadataReview; active when compares Java 0/1.",
+          "evidenceIds": [
+            "query.task.offline_report_release_flag"
+          ]
+        }
+      ]
+    },
+    {
+      "fact": {
+        "factCode": "task.batch_report_release_flag",
+        "name": "批量报告释放标志",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "Java 比较 0 表示标记批量释放。工作簿 4/5 不得写入 active when。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.batch_report_release_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.batch_report_release_flag",
+              "query.task.batch_report_release_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.batch_report_release_flag",
+              "query.task.batch_report_release_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.batch_report_release_flag",
+                "query.task.batch_report_release_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.batch_report_release_flag",
+            "query.task.batch_report_release_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": [
+        {
+          "uncertaintyId": "coding.batch-release-flag",
+          "code": "SOURCE_CODING_DIVERGENCE",
+          "impact": "warning",
+          "reason": "Workbook legend 4=yes/5=no is warning-only for metadataReview; active when compares Java 0/1.",
+          "evidenceIds": [
+            "query.task.batch_report_release_flag"
+          ]
+        }
+      ]
+    },
+    {
+      "fact": {
+        "factCode": "task.project_report_flag",
+        "name": "项目报告有无",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "0 表示有项目报告；1 表示无。空或其他值进入报告待定。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.project_report_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.project_report_flag",
+              "query.task.project_report_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.project_report_flag",
+              "query.task.project_report_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.project_report_flag",
+                "query.task.project_report_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.project_report_flag",
+            "query.task.project_report_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.qc_report_flag",
+        "name": "质控报告有无",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "0 表示有质控报告；1 表示无。与项目报告共同判定前提 3。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.qc_report_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.qc_report_flag",
+              "query.task.qc_report_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.qc_report_flag",
+              "query.task.qc_report_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.qc_report_flag",
+                "query.task.qc_report_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.qc_report_flag",
+            "query.task.qc_report_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.raw_data_flag",
+        "name": "原始数据有无",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "仅供 R4：0 表示原始数据已释放。不是原始数据释放规则集。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.raw_data_flag",
+            "query.task.raw_data_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.raw_data_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.raw_data_flag",
+              "query.task.raw_data_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.raw_data_flag",
+              "query.task.raw_data_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.raw_data_flag",
+                "query.task.raw_data_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.raw_data_flag",
+            "query.task.raw_data_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.raw_data_flag",
+            "query.task.raw_data_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.raw_data_flag",
+            "query.task.raw_data_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.completion_date",
+        "name": "完工日期",
+        "factKind": "source",
+        "dataType": "date",
+        "description": "任务完工日。R4 与阈值比较；R8 用日期相等匹配完工日加天数。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.completion_date",
+            "query.task.completion_date"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.completion_date",
+            "dataType": "date",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.completion_date",
+              "query.task.completion_date"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.completion_date",
+              "query.task.completion_date"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.completion_date",
+                "query.task.completion_date"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.completion_date",
+            "query.task.completion_date"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.completion_date",
+            "query.task.completion_date"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.completion_date",
+            "query.task.completion_date"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "date",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.no_main_service_flag",
+        "name": "无主服务标志",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "0 表示无主服务，供 R8D 与产品类型共同判定。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.no_main_service_flag",
+            "query.task.no_main_service_flag"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.no_main_service_flag",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.no_main_service_flag",
+              "query.task.no_main_service_flag"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.no_main_service_flag",
+              "query.task.no_main_service_flag"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.no_main_service_flag",
+                "query.task.no_main_service_flag"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.no_main_service_flag",
+            "query.task.no_main_service_flag"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.no_main_service_flag",
+            "query.task.no_main_service_flag"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.no_main_service_flag",
+            "query.task.no_main_service_flag"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.product_id",
+        "name": "任务产品编号",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "当前正式实验任务单的产品编号。R3 要求 759，并继续展开 70%/50% 金额树。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.product_id",
+            "query.task.product_id"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.product_id",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.product_id",
+              "query.task.product_id"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.product_id",
+              "query.task.product_id"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.product_id",
+                "query.task.product_id"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.product_id",
+            "query.task.product_id"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.product_id",
+            "query.task.product_id"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.product_id",
+            "query.task.product_id"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.product_type_code",
+        "name": "任务产品类型",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "当前任务的产品类型。2/12 为酵母筛库或家族库；空值可进入 R8ABC，不因 in{2,12} 变成不确定。",
+        "nullable": true,
+        "nullPolicy": "fail",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.product_type_code",
+            "query.task.product_type_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.product_type_code",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.product_type_code",
+              "query.task.product_type_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.product_type_code",
+              "query.task.product_type_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.product_type_code",
+                "query.task.product_type_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.product_type_code",
+            "query.task.product_type_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.product_type_code",
+            "query.task.product_type_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.product_type_code",
+            "query.task.product_type_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.in_oa_process",
+        "name": "任务在未结束项目报告 OA 流程中",
+        "factKind": "exists",
+        "dataType": "boolean",
+        "description": "存在未结束的项目报告 OA 流程时为真，命中后排除触发。",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.in_oa_process",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          },
+          {
+            "fieldId": "existenceScope",
+            "role": "filter",
+            "logicalName": "unfinishedProjectReportProcess",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.in_oa_process",
+              "query.task.in_oa_process"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.in_oa_process",
+                "query.task.in_oa_process"
+              ]
+            },
+            {
+              "filterId": "task.scope",
+              "fieldId": "existenceScope",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": true
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.in_oa_process",
+                "query.task.in_oa_process"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "aggregation": {
+          "mode": "exists",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.in_oa_process",
+            "query.task.in_oa_process"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": false,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.amount",
+        "name": "订单金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "订单金额。R0 在等于 0 时命中。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.amount",
+              "query.order.amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.amount",
+              "query.order.amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.amount",
+                "query.order.amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.amount",
+            "query.order.amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.source_code",
+        "name": "订单来源",
+        "factKind": "source",
+        "dataType": "integer",
+        "description": "订单来源。2 表示海外业务，命中 R2。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.source_code",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.source_code",
+              "query.order.source_code"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.source_code",
+              "query.order.source_code"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.source_code",
+                "query.order.source_code"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.source_code",
+            "query.order.source_code"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.associated_receipts_including_deposit",
+        "name": "订单关联到款含押金",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "到款含押金 = 项目款 + 押金。金额比较保留 +0.1 容差。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.associated_receipts_including_deposit",
+            "query.order.associated_receipts_including_deposit"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.associated_receipts_including_deposit",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.associated_receipts_including_deposit",
+              "query.order.associated_receipts_including_deposit"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.associated_receipts_including_deposit",
+              "query.order.associated_receipts_including_deposit"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.associated_receipts_including_deposit",
+                "query.order.associated_receipts_including_deposit"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.associated_receipts_including_deposit",
+            "query.order.associated_receipts_including_deposit"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.associated_receipts_including_deposit",
+            "query.order.associated_receipts_including_deposit"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.associated_receipts_including_deposit",
+            "query.order.associated_receipts_including_deposit"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.associated_deposit",
+        "name": "订单关联押金",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "订单关联押金。用于 R6 条件 B 与 R7 押金分支。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.associated_deposit",
+            "query.order.associated_deposit"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.associated_deposit",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.associated_deposit",
+              "query.order.associated_deposit"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.associated_deposit",
+              "query.order.associated_deposit"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.associated_deposit",
+                "query.order.associated_deposit"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.associated_deposit",
+            "query.order.associated_deposit"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.associated_deposit",
+            "query.order.associated_deposit"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.associated_deposit",
+            "query.order.associated_deposit"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.extraction_qc_amount",
+        "name": "抽提质检金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "抽提质检金额。计入累计完工金额与 R3 基准金额。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.extraction_qc_amount",
+            "query.order.extraction_qc_amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.extraction_qc_amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.extraction_qc_amount",
+              "query.order.extraction_qc_amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.extraction_qc_amount",
+              "query.order.extraction_qc_amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.extraction_qc_amount",
+                "query.order.extraction_qc_amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.extraction_qc_amount",
+            "query.order.extraction_qc_amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.extraction_qc_amount",
+            "query.order.extraction_qc_amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.extraction_qc_amount",
+            "query.order.extraction_qc_amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "task.task_amount",
+        "name": "任务单金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "当前正式实验任务单金额（rwdje），不是订单下全部任务合计。计入累计完工与 R3 基准；R8 用其分档 5000。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.task.task_amount",
+            "query.task.task_amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "task.task_amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.task_amount",
+              "query.task.task_amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.task.task_amount",
+              "query.task.task_amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.task.task_amount",
+                "query.task.task_amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.task.task_amount",
+            "query.task.task_amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.task.task_amount",
+            "query.task.task_amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.task.task_amount",
+            "query.task.task_amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.report_released_amount",
+        "name": "订单项目报告释放金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "已释放项目报告金额。计入累计完工，不使用原始数据释放金额。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.report_released_amount",
+            "query.order.report_released_amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.report_released_amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.report_released_amount",
+              "query.order.report_released_amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.report_released_amount",
+              "query.order.report_released_amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.report_released_amount",
+                "query.order.report_released_amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.report_released_amount",
+            "query.order.report_released_amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.report_released_amount",
+            "query.order.report_released_amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.report_released_amount",
+            "query.order.report_released_amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.invoice_amount",
+        "name": "订单开票金额",
+        "factKind": "source",
+        "dataType": "money",
+        "description": "开票金额。R8 在任务单金额小于 5000 时用是否大于 0 选择 60/75 天。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": "CNY",
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.invoice_amount",
+            "query.order.invoice_amount"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.invoice_amount",
+            "dataType": "money",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.invoice_amount",
+              "query.order.invoice_amount"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.invoice_amount",
+              "query.order.invoice_amount"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.invoice_amount",
+                "query.order.invoice_amount"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.invoice_amount",
+            "query.order.invoice_amount"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.invoice_amount",
+            "query.order.invoice_amount"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.invoice_amount",
+            "query.order.invoice_amount"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "money",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": "CNY"
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.is_framework",
+        "name": "是否框架协议",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "框架协议为真当协议类型属于 {0,2}；空视为非框架。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.is_framework",
+            "query.order.is_framework"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.is_framework",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.is_framework",
+              "query.order.is_framework"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.is_framework",
+              "query.order.is_framework"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.is_framework",
+                "query.order.is_framework"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.is_framework",
+            "query.order.is_framework"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.is_framework",
+            "query.order.is_framework"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.is_framework",
+            "query.order.is_framework"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.is_enterprise",
+        "name": "是否企业单位",
+        "factKind": "source",
+        "dataType": "boolean",
+        "description": "企业单位为真当单位类型属于 {14,16}；空视为非企业。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.is_enterprise",
+            "query.order.is_enterprise"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.is_enterprise",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.is_enterprise",
+              "query.order.is_enterprise"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.is_enterprise",
+              "query.order.is_enterprise"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.is_enterprise",
+                "query.order.is_enterprise"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.is_enterprise",
+            "query.order.is_enterprise"
+          ]
+        },
+        "aggregation": {
+          "mode": "none",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.order.is_enterprise",
+            "query.order.is_enterprise"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.is_enterprise",
+            "query.order.is_enterprise"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "release.special_application_count",
+        "name": "特殊申请已审批数量",
+        "factKind": "aggregate",
+        "dataType": "integer",
+        "description": "项目报告类型且当前节点类型属于 {3} 的特殊申请条数；大于 0 命中 R1。",
+        "nullable": true,
+        "nullPolicy": "indeterminate",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "release.special_application_count",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          },
+          {
+            "fieldId": "applicationType",
+            "role": "filter",
+            "logicalName": "specialApplicationType",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          },
+          {
+            "fieldId": "currentNodeType",
+            "role": "filter",
+            "logicalName": "currentNodeType",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          },
+          {
+            "fieldId": "applicationRow",
+            "role": "value",
+            "logicalName": "specialApplicationRow",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.release.special_application_count",
+              "query.release.special_application_count"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.special_application_count",
+                "query.release.special_application_count"
+              ]
+            },
+            {
+              "filterId": "application.type",
+              "fieldId": "applicationType",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": 1
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.special_application_count",
+                "query.release.special_application_count"
+              ]
+            },
+            {
+              "filterId": "application.node",
+              "fieldId": "currentNodeType",
+              "operator": "in",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": [
+                  3
+                ]
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.release.special_application_count",
+                "query.release.special_application_count"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "aggregation": {
+          "mode": "compute",
+          "function": "count",
+          "inputFieldIds": [
+            "applicationRow"
+          ],
+          "groupByFieldIds": [],
+          "distinct": false,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.release.special_application_count",
+            "query.release.special_application_count"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "indeterminate",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.in_scope_contract_count",
+        "name": "范围内合同份数",
+        "factKind": "aggregate",
+        "dataType": "integer",
+        "description": "盖章范围=执行合同∪关联合同（剩余金额合计>0）的合同份数。0 表示范围为空，R6 条件 B 盖章失败，不是 INDETERMINATE。Seal modeling=A：五分支是本计数与 unsealed 计数的聚合谓词，不进入 R6 when。",
+        "nullable": true,
+        "nullPolicy": "fail",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.in_scope_contract_count",
+            "query.order.in_scope_contract_count"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.in_scope_contract_count",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.in_scope_contract_count",
+              "query.order.in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.in_scope_contract_count",
+              "query.order.in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "contractRow",
+            "role": "value",
+            "logicalName": "inScopeContractRow",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.in_scope_contract_count",
+              "query.order.in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "inScopeMembership",
+            "role": "filter",
+            "logicalName": "executionOrRelatedPositiveRemainingContract",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.in_scope_contract_count",
+              "query.order.in_scope_contract_count"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.in_scope_contract_count",
+                "query.order.in_scope_contract_count"
+              ]
+            },
+            {
+              "filterId": "contract.in-scope",
+              "fieldId": "inScopeMembership",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": true
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.in_scope_contract_count",
+                "query.order.in_scope_contract_count"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.in_scope_contract_count",
+            "query.order.in_scope_contract_count"
+          ]
+        },
+        "aggregation": {
+          "mode": "compute",
+          "function": "count",
+          "inputFieldIds": [
+            "contractRow"
+          ],
+          "groupByFieldIds": [],
+          "distinct": false,
+          "evidenceIds": [
+            "fact.order.in_scope_contract_count",
+            "query.order.in_scope_contract_count"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.in_scope_contract_count",
+            "query.order.in_scope_contract_count"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "order.unsealed_in_scope_contract_count",
+        "name": "范围内未盖章合同份数",
+        "factKind": "aggregate",
+        "dataType": "integer",
+        "description": "范围内不满足 isContractSealed 五分支的合同份数。五分支互斥顺序：(1) 额度类型=3 小程序确认；(2) 非范本且已盖章（签收状态∈{1,2}）；(3) 范本且额度内小金额且签收状态∈{0,1,2}；(4) 会签日>=2023-11-01 且生效方式=盖章且已盖章；(5) 其余：已盖章，或已签字未盖章且签字方式不是联系人电子签。任一份失败则本计数>=1，条件 B 失败。",
+        "nullable": true,
+        "nullPolicy": "fail",
+        "grain": "order",
+        "parameters": [
+          {
+            "name": "orderId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Order identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": []
+      },
+      "query": {
+        "entity": {
+          "entityType": "order",
+          "grain": "order",
+          "keyParameters": [
+            "orderId"
+          ],
+          "evidenceIds": [
+            "fact.order.unsealed_in_scope_contract_count",
+            "query.order.unsealed_in_scope_contract_count"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "order.unsealed_in_scope_contract_count",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.unsealed_in_scope_contract_count",
+              "query.order.unsealed_in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "parameter.orderId",
+            "role": "entityKey",
+            "logicalName": "orderId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.unsealed_in_scope_contract_count",
+              "query.order.unsealed_in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "contractRow",
+            "role": "value",
+            "logicalName": "inScopeContractRow",
+            "dataType": "integer",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.unsealed_in_scope_contract_count",
+              "query.order.unsealed_in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "inScopeMembership",
+            "role": "filter",
+            "logicalName": "executionOrRelatedPositiveRemainingContract",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.unsealed_in_scope_contract_count",
+              "query.order.unsealed_in_scope_contract_count"
+            ]
+          },
+          {
+            "fieldId": "meetsSealCondition",
+            "role": "filter",
+            "logicalName": "contractMeetsExclusiveSealCases",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.order.unsealed_in_scope_contract_count",
+              "query.order.unsealed_in_scope_contract_count"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "order.key",
+              "fieldId": "parameter.orderId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "orderId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.unsealed_in_scope_contract_count",
+                "query.order.unsealed_in_scope_contract_count"
+              ]
+            },
+            {
+              "filterId": "contract.in-scope",
+              "fieldId": "inScopeMembership",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": true
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.unsealed_in_scope_contract_count",
+                "query.order.unsealed_in_scope_contract_count"
+              ]
+            },
+            {
+              "filterId": "contract.unsealed",
+              "fieldId": "meetsSealCondition",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": false
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.order.unsealed_in_scope_contract_count",
+                "query.order.unsealed_in_scope_contract_count"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.order.unsealed_in_scope_contract_count",
+            "query.order.unsealed_in_scope_contract_count"
+          ]
+        },
+        "aggregation": {
+          "mode": "compute",
+          "function": "count",
+          "inputFieldIds": [
+            "contractRow"
+          ],
+          "groupByFieldIds": [],
+          "distinct": false,
+          "evidenceIds": [
+            "fact.order.unsealed_in_scope_contract_count",
+            "query.order.unsealed_in_scope_contract_count"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.order.unsealed_in_scope_contract_count",
+            "query.order.unsealed_in_scope_contract_count"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "integer",
+          "cardinality": "scalar",
+          "nullable": true,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    },
+    {
+      "fact": {
+        "factCode": "report.merge_group_eligible",
+        "name": "合并报告组约束满足",
+        "factKind": "exists",
+        "dataType": "boolean",
+        "description": "非合并组，或相关任务已处于准备释放/释放中/已释放，或实时通过报告前提并命中任一报告资格规则。不含原始数据规则。",
+        "nullable": false,
+        "nullPolicy": "fail",
+        "grain": "task",
+        "parameters": [
+          {
+            "name": "taskId",
+            "role": "entityKey",
+            "dataType": "string",
+            "required": true,
+            "description": "Formal experiment task identifier."
+          }
+        ],
+        "unit": null,
+        "allowedValues": [
+          true,
+          false
+        ]
+      },
+      "query": {
+        "entity": {
+          "entityType": "task",
+          "grain": "task",
+          "keyParameters": [
+            "taskId"
+          ],
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "fields": [
+          {
+            "fieldId": "factValue",
+            "role": "value",
+            "logicalName": "report.merge_group_eligible",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          },
+          {
+            "fieldId": "parameter.taskId",
+            "role": "entityKey",
+            "logicalName": "taskId",
+            "dataType": "string",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          },
+          {
+            "fieldId": "existenceScope",
+            "role": "filter",
+            "logicalName": "reportMergeGroup",
+            "dataType": "boolean",
+            "required": true,
+            "evidenceIds": [
+              "fact.report.merge_group_eligible",
+              "query.report.merge_group_eligible"
+            ]
+          }
+        ],
+        "filters": {
+          "items": [
+            {
+              "filterId": "task.key",
+              "fieldId": "parameter.taskId",
+              "operator": "eq",
+              "value": {
+                "kind": "parameter",
+                "parameterName": "taskId",
+                "literal": null
+              },
+              "nullPolicy": "error",
+              "required": true,
+              "evidenceIds": [
+                "fact.report.merge_group_eligible",
+                "query.report.merge_group_eligible"
+              ]
+            },
+            {
+              "filterId": "task.scope",
+              "fieldId": "existenceScope",
+              "operator": "eq",
+              "value": {
+                "kind": "literal",
+                "parameterName": null,
+                "literal": true
+              },
+              "nullPolicy": "fail",
+              "required": true,
+              "evidenceIds": [
+                "fact.report.merge_group_eligible",
+                "query.report.merge_group_eligible"
+              ]
+            }
+          ],
+          "completeness": "complete",
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "aggregation": {
+          "mode": "exists",
+          "function": null,
+          "inputFieldIds": [],
+          "groupByFieldIds": [],
+          "distinct": null,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "timeRange": {
+          "mode": "none",
+          "timeFieldId": null,
+          "start": null,
+          "end": null,
+          "timezone": null,
+          "evidenceIds": [
+            "fact.report.merge_group_eligible",
+            "query.report.merge_group_eligible"
+          ]
+        },
+        "result": {
+          "columnName": "fact_value",
+          "dataType": "boolean",
+          "cardinality": "scalar",
+          "nullable": false,
+          "nullPolicy": "fail",
+          "unit": null
+        }
+      },
+      "uncertainties": []
+    }
+  ],
+  "testCases": [
+    {
+      "caseId": "state-terminal-skip",
+      "description": "终态跳过",
+      "given": {
+        "report.release_status": "准备释放",
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "SKIPPED",
+      "expectedReasonCode": "REPORT_STATUS_TERMINAL_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "REPORT_STATUS_TERMINAL"
+      ]
+    },
+    {
+      "caseId": "prereq-not-completed",
+      "description": "未完工",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 226,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_COMPLETION",
+      "expectedReasonCode": "TASK_NOT_COMPLETED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "TASK_NOT_COMPLETED"
+      ]
+    },
+    {
+      "caseId": "prereq-not-completed-null",
+      "description": "完工状态为空",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": null,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_COMPLETION",
+      "expectedReasonCode": "TASK_NOT_COMPLETED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "TASK_NOT_COMPLETED"
+      ]
+    },
+    {
+      "caseId": "prereq-experiment-offline",
+      "description": "实验状态 2",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 2,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "EXPERIMENT_STATUS_OFFLINE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "EXPERIMENT_STATUS_OFFLINE"
+      ]
+    },
+    {
+      "caseId": "prereq-experiment-problem",
+      "description": "实验状态 7",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 7,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "EXPERIMENT_STATUS_PROBLEM_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "EXPERIMENT_STATUS_PROBLEM"
+      ]
+    },
+    {
+      "caseId": "prereq-offline-released",
+      "description": "线下释放标志为 0",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 0,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "ALREADY_RELEASED",
+      "expectedReasonCode": "OFFLINE_REPORT_RELEASED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "OFFLINE_REPORT_RELEASED"
+      ]
+    },
+    {
+      "caseId": "prereq-no-report",
+      "description": "无项目报告且无质控报告",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 1,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "NO_RELEASE_REQUIRED",
+      "expectedReasonCode": "NO_PROJECT_REPORT_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "NO_PROJECT_REPORT"
+      ]
+    },
+    {
+      "caseId": "prereq-availability-unknown",
+      "description": "报告有无为空",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": null,
+        "task.qc_report_flag": null,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "REPORT_AVAILABILITY_UNKNOWN_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "REPORT_AVAILABILITY_UNKNOWN"
+      ]
+    },
+    {
+      "caseId": "prereq-availability-other",
+      "description": "报告有无为其他值",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 2,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "REPORT_AVAILABILITY_UNKNOWN_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "REPORT_AVAILABILITY_UNKNOWN"
+      ]
+    },
+    {
+      "caseId": "r0-zero-order",
+      "description": "R0 首次命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 0.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R0_ZERO_ORDER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER"
+      ]
+    },
+    {
+      "caseId": "r1-special-approval",
+      "description": "R1 首次命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 2,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R1_SPECIAL_APPROVAL_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R1_SPECIAL_APPROVAL"
+      ]
+    },
+    {
+      "caseId": "r9-batch-release",
+      "description": "R9 比较 0",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 0,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R9_BATCH_RELEASE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R9_BATCH_RELEASE"
+      ]
+    },
+    {
+      "caseId": "r4-raw-data-released",
+      "description": "R4 yssj=0 且完工日达标",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 0,
+        "task.completion_date": "2024-11-21",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R4_RAW_DATA_RELEASED_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R4_RAW_DATA_RELEASED"
+      ]
+    },
+    {
+      "caseId": "r2-overseas-order",
+      "description": "R2 ddly=2",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 2,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R2_OVERSEAS_ORDER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R2_OVERSEAS_ORDER"
+      ]
+    },
+    {
+      "caseId": "r3-ratio-70-pass",
+      "description": "R3 70% 过",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 759,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 7000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R3_SPECIAL_PRODUCT_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R3_SPECIAL_PRODUCT"
+      ]
+    },
+    {
+      "caseId": "r3-ratio-50-pass",
+      "description": "R3 50% 过",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 759,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 75000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 150000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R3_SPECIAL_PRODUCT_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R3_SPECIAL_PRODUCT"
+      ]
+    },
+    {
+      "caseId": "r3-ratio-insufficient",
+      "description": "R3 金额不足",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 759,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 6000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r8-exact-day",
+      "description": "R8 恰好当天命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-04-02",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 100.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r8-miss-day",
+      "description": "R8 错过当天不命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-04-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 100.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r8d-yeast",
+      "description": "R8D 酵母筛库无主服务",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 0,
+        "task.product_id": 1,
+        "task.product_type_code": 2,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r8abc-empty-product-type",
+      "description": "产品类型为空仍可进入 R8ABC",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-04-02",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": null,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 100.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r8b-day-75",
+      "description": "R8B 金额小于 5000 未开票且恰好完工后 75 天",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-03-18",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r8b-day-74",
+      "description": "R8B 完工后 74 天不命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-03-19",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r8b-day-76",
+      "description": "R8B 完工后 76 天不命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2026-03-17",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 4000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r8c-day-180",
+      "description": "R8C 金额不少于 5000 且恰好完工后 180 天",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2025-12-03",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 5000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R8_TIME_TRIGGER_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R8_TIME_TRIGGER"
+      ]
+    },
+    {
+      "caseId": "r8c-day-181",
+      "description": "R8C 错过当天不命中",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2025-12-02",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 5000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r5-enterprise",
+      "description": "R5 非框架企业全额到款",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 10000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": true,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R5_ENTERPRISE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R5_ENTERPRISE"
+      ]
+    },
+    {
+      "caseId": "r5-framework-excluded",
+      "description": "R5 框架单不应误入",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 10000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": true,
+        "order.is_enterprise": true,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R7_FRAMEWORK_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R7_FRAMEWORK"
+      ]
+    },
+    {
+      "caseId": "r6-condition-a",
+      "description": "R6 条件 A",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 10000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R6_NON_ENTERPRISE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R6_NON_ENTERPRISE"
+      ]
+    },
+    {
+      "caseId": "r7-framework-pass",
+      "description": "R7 框架协议 80% 到款",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 8000.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": true,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R7_FRAMEWORK_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R7_FRAMEWORK"
+      ]
+    },
+    {
+      "caseId": "r6-condition-b-seal-fail",
+      "description": "R6 条件 B 盖章失败",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 8000.0,
+        "order.associated_deposit": 400.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 1,
+        "order.unsealed_in_scope_contract_count": 1,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "r6-condition-b-seal-pass",
+      "description": "R6 条件 B 金额满足且范围内合同均盖章",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 8000.0,
+        "order.associated_deposit": 400.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 2,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "READY",
+      "expectedReasonCode": "R6_NON_ENTERPRISE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R6_NON_ENTERPRISE"
+      ]
+    },
+    {
+      "caseId": "r6-condition-b-empty-contracts",
+      "description": "R6 条件 B 范围为空则失败",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 8000.0,
+        "order.associated_deposit": 400.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+      "expectedMatchedRuleCodes": []
+    },
+    {
+      "caseId": "postgate-merge-blocked",
+      "description": "合并门闩降级",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 0.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": false
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "MERGED_REPORT_GATE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER",
+        "MERGED_REPORT_GATE"
+      ]
+    },
+    {
+      "caseId": "exclusion-oa-process",
+      "description": "OA 排除",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": true,
+        "order.amount": 0.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": 0.0,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "WAITING_CONDITIONS",
+      "expectedReasonCode": "OA_PROCESS_SCOPE_MATCHED",
+      "expectedMatchedRuleCodes": [
+        "R0_ZERO_ORDER",
+        "OA_PROCESS_SCOPE"
+      ]
+    },
+    {
+      "caseId": "indeterminate-missing-amount",
+      "description": "金额缺失为 INDETERMINATE",
+      "given": {
+        "report.release_status": null,
+        "task.status_code": 19,
+        "task.experiment_status_code": 1,
+        "task.offline_report_release_flag": 1,
+        "task.batch_report_release_flag": 1,
+        "task.project_report_flag": 0,
+        "task.qc_report_flag": 1,
+        "task.raw_data_flag": 1,
+        "task.completion_date": "2024-01-01",
+        "task.no_main_service_flag": 1,
+        "task.product_id": 1,
+        "task.product_type_code": 1,
+        "task.in_oa_process": false,
+        "order.amount": 12000.0,
+        "order.source_code": 1,
+        "order.associated_receipts_including_deposit": null,
+        "order.associated_deposit": 0.0,
+        "order.extraction_qc_amount": 0.0,
+        "task.task_amount": 10000.0,
+        "order.report_released_amount": 0.0,
+        "order.invoice_amount": 0.0,
+        "order.is_framework": false,
+        "order.is_enterprise": false,
+        "release.special_application_count": 0,
+        "__evaluation_date": "2026-06-01",
+        "order.in_scope_contract_count": 0,
+        "order.unsealed_in_scope_contract_count": 0,
+        "report.merge_group_eligible": true
+      },
+      "expectedOutcome": "INDETERMINATE",
+      "expectedReasonCode": "FACT_VALUE_MISSING_OR_INVALID",
+      "expectedMatchedRuleCodes": []
+    }
+  ],
+  "agent2ReadinessReady": true
+}

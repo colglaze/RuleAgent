@@ -52,6 +52,7 @@ class RuleEvaluationV3:
 
 NUMERIC_TYPES = {FactDataType.INTEGER, FactDataType.NUMBER, FactDataType.MONEY}
 DuplicateValue = TypeVar("DuplicateValue", str, int)
+EVALUATION_DATE_GIVEN_KEY = "__evaluation_date"
 
 
 def _duplicates(values: Sequence[DuplicateValue]) -> list[DuplicateValue]:
@@ -286,13 +287,41 @@ def _matches_data_type(value: Any, data_type: FactDataType) -> bool:
     return False
 
 
+def _parse_evaluation_date(value: Any) -> date:
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            if "T" in value:
+                return datetime.fromisoformat(value.replace("Z", "+00:00")).date()
+            return date.fromisoformat(value)
+        except ValueError as error:
+            raise SemanticValidationErrorV3(
+                [f"{EVALUATION_DATE_GIVEN_KEY} must be an ISO date"]
+            ) from error
+    raise SemanticValidationErrorV3([f"{EVALUATION_DATE_GIVEN_KEY} must be an ISO date"])
+
+
+def _split_evaluation_given(given: dict[str, Any]) -> tuple[dict[str, Any], date | None]:
+    if EVALUATION_DATE_GIVEN_KEY not in given:
+        return given, None
+    facts_given = {key: value for key, value in given.items() if key != EVALUATION_DATE_GIVEN_KEY}
+    raw = given[EVALUATION_DATE_GIVEN_KEY]
+    if raw is None:
+        return facts_given, None
+    return facts_given, _parse_evaluation_date(raw)
+
+
 def _safe_evaluate_condition(
     node: ConditionNodeV2,
     given: dict[str, Any],
     facts: dict[str, RequiredFactV2],
+    evaluation_date: date | None = None,
 ) -> EvaluationResult:
     try:
-        return evaluate_condition(node, given, facts)
+        return evaluate_condition(node, given, facts, evaluation_date)
     except (ArithmeticError, TypeError, ValueError):
         return EvaluationResult.INDETERMINATE
 
@@ -325,7 +354,8 @@ def evaluate_rule_structure_v3(
     validate_rule_structure_candidate_v3(candidate, catalog)
     if candidate.blocking_issues:
         return RuleEvaluationV3(RuleOutcomeV3.INDETERMINATE, (), "BUSINESS_CONFIRMATION_REQUIRED")
-    input_issues = _given_issues_v3(catalog, given)
+    facts_given, evaluation_date = _split_evaluation_given(given)
+    input_issues = _given_issues_v3(catalog, facts_given)
     if input_issues:
         raise SemanticValidationErrorV3(input_issues)
 
@@ -341,7 +371,7 @@ def evaluate_rule_structure_v3(
             assert rule.when is not None
             assert rule.outcome is not None
             assert rule.reason_code is not None
-            result = _safe_evaluate_condition(rule.when, given, facts)
+            result = _safe_evaluate_condition(rule.when, facts_given, facts, evaluation_date)
             if result is EvaluationResult.PASS:
                 outcome = rule.outcome
                 reason_code = rule.reason_code
@@ -390,15 +420,19 @@ def validate_rule_reachability_witnesses_v3(
             if given is None:
                 earlier.append(rule)
                 continue
-            for issue in _given_issues_v3(catalog, given):
+            facts_given, evaluation_date = _split_evaluation_given(given)
+            for issue in _given_issues_v3(catalog, facts_given):
                 issues.append(f"witness for {rule.rule_code}: {issue}")
             assert rule.when is not None
-            target_result = _safe_evaluate_condition(rule.when, given, facts)
+            target_result = _safe_evaluate_condition(rule.when, facts_given, facts, evaluation_date)
             if target_result is not EvaluationResult.PASS:
                 issues.append(f"witness for {rule.rule_code} does not make the target rule pass")
             for prior in earlier:
                 assert prior.when is not None
-                if _safe_evaluate_condition(prior.when, given, facts) is EvaluationResult.PASS:
+                if (
+                    _safe_evaluate_condition(prior.when, facts_given, facts, evaluation_date)
+                    is EvaluationResult.PASS
+                ):
                     issues.append(
                         f"witness for {rule.rule_code} is captured by earlier rule "
                         f"{prior.rule_code}"

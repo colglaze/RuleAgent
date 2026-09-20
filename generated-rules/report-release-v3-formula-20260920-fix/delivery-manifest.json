@@ -1,0 +1,248 @@
+{
+  "blockingCount": 0,
+  "candidatePayloadSha256": "7b3783af996af6164a9a364cc0810ad0a6116b6f817efc2afdb2d05489c93418",
+  "catalogDigest": "3505deed16006bb948fb8fbbb24643e0d8e74381e53c1fb062bcce3797e5907c",
+  "executable": false,
+  "factCount": 27,
+  "facts": [
+    {
+      "factCode": "report.release_status",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.status_code",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.experiment_status_code",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.offline_report_release_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.batch_report_release_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.project_report_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.qc_report_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.raw_data_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.completion_date",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.no_main_service_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.product_id",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.product_type_code",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.in_oa_process",
+      "grain": "task",
+      "kind": "exists"
+    },
+    {
+      "factCode": "order.amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.source_code",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.associated_receipts_including_deposit",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.associated_deposit",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.extraction_qc_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.task_amount",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.report_released_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.invoice_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.is_framework",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.is_enterprise",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "release.special_application_count",
+      "grain": "task",
+      "kind": "aggregate"
+    },
+    {
+      "factCode": "order.in_scope_contract_count",
+      "grain": "order",
+      "kind": "aggregate"
+    },
+    {
+      "factCode": "order.unsealed_in_scope_contract_count",
+      "grain": "order",
+      "kind": "aggregate"
+    },
+    {
+      "factCode": "report.merge_group_eligible",
+      "grain": "task",
+      "kind": "exists"
+    }
+  ],
+  "fileSha256": {
+    "business-confirmed-fact-catalog-3.0.0.json": "b50d5b60fc054f0a135baa8df18ec42413c197a0e7e545119fb8b2b3e952d4ef",
+    "fact-binding-requests-3.0.0.json": "2a23fc9daa6ed79afe3d4fe8ae36ca1d5382c2e4d90b231c86e0ea4630790604",
+    "rule-parse-result-3.0.0.json": "f3d112ab423862a3c1e2cf7e01242c1a58d170a56627ece8de1364f0276b89c9",
+    "rule-structure-candidate-3.0.0.json": "fbd8676e115e2cc26837be5736ef7ab3f2ea981b252f08c257d0b74243707c84",
+    "v3-agent2-readiness.json": "67e5ae2338183fe8449316cffde250a7d8fa5f1960aa879e081a421d7893bfc4"
+  },
+  "mongodbWritten": false,
+  "planSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f",
+  "ready": true,
+  "ruleBlockCharacterCount": 42437,
+  "ruleBlockSha256": "e04a686188f6f67393780be95a6054c06b9b50a17ff10ddd24104b5456422ff5",
+  "ruleVersion": "REPORT_RELEASE_ALL_001@20260920T092000000000Z-e04a686188f6-3505deed1600",
+  "sealModeling": "A",
+  "stages": {
+    "eligibility": [
+      {
+        "ruleCode": "R0_ZERO_ORDER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R1_SPECIAL_APPROVAL",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R9_BATCH_RELEASE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R4_RAW_DATA_RELEASED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R2_OVERSEAS_ORDER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R3_SPECIAL_PRODUCT",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R8_TIME_TRIGGER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R5_ENTERPRISE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R6_NON_ENTERPRISE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R7_FRAMEWORK",
+        "status": "active"
+      }
+    ],
+    "exclusions": [
+      {
+        "ruleCode": "OA_PROCESS_SCOPE",
+        "status": "active"
+      }
+    ],
+    "postGates": [
+      {
+        "ruleCode": "MERGED_REPORT_GATE",
+        "status": "active"
+      }
+    ],
+    "prerequisites": [
+      {
+        "ruleCode": "TASK_NOT_COMPLETED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+        "status": "active"
+      },
+      {
+        "ruleCode": "OFFLINE_REPORT_RELEASED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "NO_PROJECT_REPORT",
+        "status": "active"
+      },
+      {
+        "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+        "status": "active"
+      }
+    ],
+    "stateGuards": [
+      {
+        "ruleCode": "REPORT_STATUS_TERMINAL",
+        "status": "active"
+      }
+    ]
+  },
+  "status": "draft",
+  "supersededRuleVersion": "REPORT_RELEASE_ALL_001@20260920T085100000000Z-e04a686188f6-fe1a673845af"
+}
