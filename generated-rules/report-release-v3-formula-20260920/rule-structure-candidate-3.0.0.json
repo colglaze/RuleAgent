@@ -1,0 +1,2970 @@
+{
+  "contractVersion": "3.0.0",
+  "ruleSetId": "REPORT_RELEASE_ALL_001",
+  "title": "有序项目报告释放规则（公式树）",
+  "scope": "OA 正式实验任务单项目报告释放；按 stateGuards、prerequisites、R0/R1/R9/R4/R2/R3/R8/R5/R6/R7、postGates、exclusions 顺序。不含原始数据规则。",
+  "catalogId": "REPORT_RELEASE_FORMULA_FACTS",
+  "catalogVersion": "2026-09-20.1",
+  "catalogDigest": "fe1a673845af331ee7d0d735a28e822c3dc7d850887daac83aff9328dca002fd",
+  "sourceViews": [
+    "optimization-plan-section-1.3-report-tree",
+    "optimization-plan-section-5.2-report-engine",
+    "optimization-plan-section-5.5-report-amounts"
+  ],
+  "requiredFactCodes": [
+    "contract.countersign_date",
+    "contract.effective_mode",
+    "contract.non_template_flag",
+    "contract.quota_type",
+    "contract.receipt_status",
+    "contract.sign_method",
+    "order.amount",
+    "order.associated_deposit",
+    "order.associated_receipts_including_deposit",
+    "order.extraction_qc_amount",
+    "order.invoice_amount",
+    "order.is_enterprise",
+    "order.is_framework",
+    "order.report_released_amount",
+    "order.source_code",
+    "order.task_amount",
+    "product.id",
+    "product.type_code",
+    "release.special_application_count",
+    "report.merge_group_eligible",
+    "report.release_status",
+    "rule.contract_countersign_cutoff",
+    "rule.raw_data_completion_cutoff",
+    "runtime.current_date",
+    "task.batch_report_release_flag",
+    "task.completion_date",
+    "task.experiment_status_code",
+    "task.in_oa_process",
+    "task.no_main_service_flag",
+    "task.offline_report_release_flag",
+    "task.project_report_flag",
+    "task.qc_report_flag",
+    "task.raw_data_flag",
+    "task.status_code"
+  ],
+  "stages": [
+    {
+      "stage": "stateGuards",
+      "rules": [
+        {
+          "ruleCode": "REPORT_STATUS_TERMINAL",
+          "priority": 10,
+          "title": "释放状态表终态检查",
+          "status": "active",
+          "when": {
+            "id": "release-status-terminal",
+            "kind": "compare",
+            "description": "release status terminal",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "report.release_status",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "in",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": [
+                "准备释放",
+                "释放中",
+                "已释放"
+              ],
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "SKIPPED",
+          "reasonCode": "REPORT_STATUS_TERMINAL_MATCHED",
+          "failureReason": "释放状态表终态检查。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "prerequisites",
+      "rules": [
+        {
+          "ruleCode": "TASK_NOT_COMPLETED",
+          "priority": 10,
+          "title": "任务尚未完工",
+          "status": "active",
+          "when": {
+            "id": "task-not-completed",
+            "kind": "any",
+            "description": "task not completed",
+            "enabled": true,
+            "children": [
+              {
+                "id": "task-status-null",
+                "kind": "compare",
+                "description": "task status null",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.status_code",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "is_null",
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "task-status-ne-19",
+                "kind": "compare",
+                "description": "task status ne 19",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.status_code",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "ne",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 19,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_COMPLETION",
+          "reasonCode": "TASK_NOT_COMPLETED_MATCHED",
+          "failureReason": "任务尚未完工。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+          "priority": 20,
+          "title": "失败导致线下确认收入",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-offline",
+            "kind": "compare",
+            "description": "experiment status offline",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 2,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_OFFLINE_MATCHED",
+          "failureReason": "失败导致线下确认收入。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+          "priority": 30,
+          "title": "问题项目无需释放",
+          "status": "active",
+          "when": {
+            "id": "experiment-status-problem",
+            "kind": "compare",
+            "description": "experiment status problem",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.experiment_status_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 7,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "EXPERIMENT_STATUS_PROBLEM_MATCHED",
+          "failureReason": "问题项目无需释放。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "OFFLINE_REPORT_RELEASED",
+          "priority": 40,
+          "title": "项目报告已线下释放",
+          "status": "active",
+          "when": {
+            "id": "offline-report-released",
+            "kind": "compare",
+            "description": "offline report released",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.offline_report_release_flag",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "ALREADY_RELEASED",
+          "reasonCode": "OFFLINE_REPORT_RELEASED_MATCHED",
+          "failureReason": "项目报告已线下释放。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "NO_PROJECT_REPORT",
+          "priority": 50,
+          "title": "任务无需项目报告",
+          "status": "active",
+          "when": {
+            "id": "no-project-report",
+            "kind": "all",
+            "description": "no project report",
+            "enabled": true,
+            "children": [
+              {
+                "id": "project-report-absent",
+                "kind": "compare",
+                "description": "project report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.project_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 1,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              },
+              {
+                "id": "qc-report-absent",
+                "kind": "compare",
+                "description": "qc report absent",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.qc_report_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 1,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "NO_RELEASE_REQUIRED",
+          "reasonCode": "NO_PROJECT_REPORT_MATCHED",
+          "failureReason": "任务无需项目报告。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+          "priority": 60,
+          "title": "有无项目报告待定",
+          "status": "active",
+          "when": {
+            "id": "report-availability-unknown",
+            "kind": "all",
+            "description": "report availability unknown",
+            "enabled": true,
+            "children": [
+              {
+                "id": "not-has-any-report",
+                "kind": "not",
+                "description": "not has any report",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "has-any-report",
+                    "kind": "any",
+                    "description": "has any report",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "has-project-report",
+                        "kind": "compare",
+                        "description": "has project report",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "task.project_report_flag",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "eq",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      },
+                      {
+                        "id": "has-qc-report",
+                        "kind": "compare",
+                        "description": "has qc report",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "task.qc_report_flag",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "eq",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "not-both-absent",
+                "kind": "not",
+                "description": "not both absent",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "both-reports-absent",
+                    "kind": "all",
+                    "description": "both reports absent",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "no-project-report-flag",
+                        "kind": "compare",
+                        "description": "no project report flag",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "task.project_report_flag",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "eq",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 1,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      },
+                      {
+                        "id": "no-qc-report-flag",
+                        "kind": "compare",
+                        "description": "no qc report flag",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "task.qc_report_flag",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "eq",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 1,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "REPORT_AVAILABILITY_UNKNOWN_MATCHED",
+          "failureReason": "有无项目报告待定。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "eligibility",
+      "rules": [
+        {
+          "ruleCode": "R0_ZERO_ORDER",
+          "priority": 10,
+          "title": "R0 0元订单",
+          "status": "active",
+          "when": {
+            "id": "r0-zero-order",
+            "kind": "compare",
+            "description": "r0 zero order",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.amount",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R0_ZERO_ORDER_MATCHED",
+          "failureReason": "R0 0元订单。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R1_SPECIAL_APPROVAL",
+          "priority": 20,
+          "title": "R1 特殊申请已审批",
+          "status": "active",
+          "when": {
+            "id": "r1-special-approval",
+            "kind": "compare",
+            "description": "r1 special approval",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "release.special_application_count",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "gt",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R1_SPECIAL_APPROVAL_MATCHED",
+          "failureReason": "R1 特殊申请已审批。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R9_BATCH_RELEASE",
+          "priority": 30,
+          "title": "R9 标记批量释放",
+          "status": "active",
+          "when": {
+            "id": "r9-batch-release",
+            "kind": "compare",
+            "description": "r9 batch release",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.batch_report_release_flag",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 0,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R9_BATCH_RELEASE_MATCHED",
+          "failureReason": "R9 标记批量释放。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R4_RAW_DATA_RELEASED",
+          "priority": 40,
+          "title": "R4 原始数据已释放",
+          "status": "active",
+          "when": {
+            "id": "r4-raw-data-released",
+            "kind": "all",
+            "description": "r4 raw data released",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r4-yssj",
+                "kind": "compare",
+                "description": "r4 yssj",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.raw_data_flag",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 0,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              },
+              {
+                "id": "r4-wgsj",
+                "kind": "compare",
+                "description": "r4 wgsj",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "task.completion_date",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "gte",
+                "right": {
+                  "kind": "fact",
+                  "factCode": "rule.raw_data_completion_cutoff",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R4_RAW_DATA_RELEASED_MATCHED",
+          "failureReason": "R4 原始数据已释放。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R2_OVERSEAS_ORDER",
+          "priority": 50,
+          "title": "R2 海外业务订单",
+          "status": "active",
+          "when": {
+            "id": "r2-overseas-order",
+            "kind": "compare",
+            "description": "r2 overseas order",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "order.source_code",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": 2,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R2_OVERSEAS_ORDER_MATCHED",
+          "failureReason": "R2 海外业务订单。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R3_SPECIAL_PRODUCT",
+          "priority": 60,
+          "title": "R3 特殊产品金额树",
+          "status": "active",
+          "when": {
+            "id": "r3-special-product",
+            "kind": "all",
+            "description": "r3 special product",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r3-product",
+                "kind": "compare",
+                "description": "r3 product",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "product.id",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": 759,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              },
+              {
+                "id": "r3-amount-branches",
+                "kind": "any",
+                "description": "r3 amount branches",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r3-ratio-70",
+                    "kind": "all",
+                    "description": "r3 ratio 70",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r3-base-le",
+                        "kind": "compare",
+                        "description": "r3 base le",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.extraction_qc_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "fact",
+                              "factCode": "order.task_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "operator": "lte",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 100000,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r3-paid-70",
+                        "kind": "compare",
+                        "description": "r3 paid 70",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.associated_receipts_including_deposit",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.1,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "operator": "gte",
+                        "right": {
+                          "kind": "multiply",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "add",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.extraction_qc_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.task_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.report_released_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.7,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r3-ratio-50",
+                    "kind": "all",
+                    "description": "r3 ratio 50",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r3-base-gt",
+                        "kind": "compare",
+                        "description": "r3 base gt",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.extraction_qc_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "fact",
+                              "factCode": "order.task_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "operator": "gt",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 100000,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r3-paid-50",
+                        "kind": "compare",
+                        "description": "r3 paid 50",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.associated_receipts_including_deposit",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.1,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "operator": "gte",
+                        "right": {
+                          "kind": "multiply",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "add",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.extraction_qc_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.task_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.report_released_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.5,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R3_SPECIAL_PRODUCT_MATCHED",
+          "failureReason": "R3 特殊产品金额树。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R8_TIME_TRIGGER",
+          "priority": 70,
+          "title": "R8 完工时间触发",
+          "status": "active",
+          "when": {
+            "id": "r8-time-trigger",
+            "kind": "any",
+            "description": "r8 time trigger",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r8d",
+                "kind": "all",
+                "description": "r8d",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r8d-yeast-type",
+                    "kind": "compare",
+                    "description": "r8d yeast type",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "product.type_code",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "in",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": [
+                        2,
+                        12
+                      ],
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  },
+                  {
+                    "id": "r8d-no-main",
+                    "kind": "compare",
+                    "description": "r8d no main",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "task.no_main_service_flag",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "eq",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": 0,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r8-abc",
+                "kind": "all",
+                "description": "r8 abc",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r8-not-yeast",
+                    "kind": "not",
+                    "description": "r8 not yeast",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r8abc-yeast-type",
+                        "kind": "compare",
+                        "description": "r8abc yeast type",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "product.type_code",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "in",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": [
+                            2,
+                            12
+                          ],
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r8-not-759",
+                    "kind": "any",
+                    "description": "r8 not 759",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r8-not-759-null",
+                        "kind": "compare",
+                        "description": "r8 not 759 null",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "product.id",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "is_null",
+                        "right": null,
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r8-not-759-ne",
+                        "kind": "compare",
+                        "description": "r8 not 759 ne",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "product.id",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "ne",
+                        "right": {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 759,
+                          "children": [],
+                          "unit": null
+                        },
+                        "nullPolicy": "fail"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r8-abc-amount",
+                    "kind": "any",
+                    "description": "r8 abc amount",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r8-under-5000",
+                        "kind": "all",
+                        "description": "r8 under 5000",
+                        "enabled": true,
+                        "children": [
+                          {
+                            "id": "r8-amount-lt",
+                            "kind": "compare",
+                            "description": "r8 amount lt",
+                            "enabled": true,
+                            "children": [],
+                            "left": {
+                              "kind": "fact",
+                              "factCode": "order.task_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            "operator": "lt",
+                            "right": {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 5000,
+                              "children": [],
+                              "unit": null
+                            },
+                            "nullPolicy": "fail"
+                          },
+                          {
+                            "id": "r8-ab",
+                            "kind": "any",
+                            "description": "r8 ab",
+                            "enabled": true,
+                            "children": [
+                              {
+                                "id": "r8a",
+                                "kind": "all",
+                                "description": "r8a",
+                                "enabled": true,
+                                "children": [
+                                  {
+                                    "id": "r8-invoiced",
+                                    "kind": "compare",
+                                    "description": "r8 invoiced",
+                                    "enabled": true,
+                                    "children": [],
+                                    "left": {
+                                      "kind": "fact",
+                                      "factCode": "order.invoice_amount",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "operator": "gt",
+                                    "right": {
+                                      "kind": "literal",
+                                      "factCode": null,
+                                      "value": 0,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "nullPolicy": "fail"
+                                  },
+                                  {
+                                    "id": "r8a-today",
+                                    "kind": "compare",
+                                    "description": "r8a today",
+                                    "enabled": true,
+                                    "children": [],
+                                    "left": {
+                                      "kind": "fact",
+                                      "factCode": "runtime.current_date",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "operator": "eq",
+                                    "right": {
+                                      "kind": "dateAdd",
+                                      "factCode": null,
+                                      "value": null,
+                                      "children": [
+                                        {
+                                          "kind": "fact",
+                                          "factCode": "task.completion_date",
+                                          "value": null,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        {
+                                          "kind": "literal",
+                                          "factCode": null,
+                                          "value": 60,
+                                          "children": [],
+                                          "unit": null
+                                        }
+                                      ],
+                                      "unit": "day"
+                                    },
+                                    "nullPolicy": "indeterminate"
+                                  }
+                                ],
+                                "left": null,
+                                "operator": null,
+                                "right": null,
+                                "nullPolicy": "indeterminate"
+                              },
+                              {
+                                "id": "r8b",
+                                "kind": "all",
+                                "description": "r8b",
+                                "enabled": true,
+                                "children": [
+                                  {
+                                    "id": "r8-not-invoiced",
+                                    "kind": "not",
+                                    "description": "r8 not invoiced",
+                                    "enabled": true,
+                                    "children": [
+                                      {
+                                        "id": "r8-unpaid-invoice",
+                                        "kind": "compare",
+                                        "description": "r8 unpaid invoice",
+                                        "enabled": true,
+                                        "children": [],
+                                        "left": {
+                                          "kind": "fact",
+                                          "factCode": "order.invoice_amount",
+                                          "value": null,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "operator": "gt",
+                                        "right": {
+                                          "kind": "literal",
+                                          "factCode": null,
+                                          "value": 0,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "nullPolicy": "fail"
+                                      }
+                                    ],
+                                    "left": null,
+                                    "operator": null,
+                                    "right": null,
+                                    "nullPolicy": "indeterminate"
+                                  },
+                                  {
+                                    "id": "r8b-today",
+                                    "kind": "compare",
+                                    "description": "r8b today",
+                                    "enabled": true,
+                                    "children": [],
+                                    "left": {
+                                      "kind": "fact",
+                                      "factCode": "runtime.current_date",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "operator": "eq",
+                                    "right": {
+                                      "kind": "dateAdd",
+                                      "factCode": null,
+                                      "value": null,
+                                      "children": [
+                                        {
+                                          "kind": "fact",
+                                          "factCode": "task.completion_date",
+                                          "value": null,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        {
+                                          "kind": "literal",
+                                          "factCode": null,
+                                          "value": 75,
+                                          "children": [],
+                                          "unit": null
+                                        }
+                                      ],
+                                      "unit": "day"
+                                    },
+                                    "nullPolicy": "indeterminate"
+                                  }
+                                ],
+                                "left": null,
+                                "operator": null,
+                                "right": null,
+                                "nullPolicy": "indeterminate"
+                              }
+                            ],
+                            "left": null,
+                            "operator": null,
+                            "right": null,
+                            "nullPolicy": "indeterminate"
+                          }
+                        ],
+                        "left": null,
+                        "operator": null,
+                        "right": null,
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r8c",
+                        "kind": "all",
+                        "description": "r8c",
+                        "enabled": true,
+                        "children": [
+                          {
+                            "id": "r8-amount-ge",
+                            "kind": "compare",
+                            "description": "r8 amount ge",
+                            "enabled": true,
+                            "children": [],
+                            "left": {
+                              "kind": "fact",
+                              "factCode": "order.task_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            "operator": "gte",
+                            "right": {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 5000,
+                              "children": [],
+                              "unit": null
+                            },
+                            "nullPolicy": "fail"
+                          },
+                          {
+                            "id": "r8c-today",
+                            "kind": "compare",
+                            "description": "r8c today",
+                            "enabled": true,
+                            "children": [],
+                            "left": {
+                              "kind": "fact",
+                              "factCode": "runtime.current_date",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            "operator": "eq",
+                            "right": {
+                              "kind": "dateAdd",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "fact",
+                                  "factCode": "task.completion_date",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "literal",
+                                  "factCode": null,
+                                  "value": 180,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": "day"
+                            },
+                            "nullPolicy": "indeterminate"
+                          }
+                        ],
+                        "left": null,
+                        "operator": null,
+                        "right": null,
+                        "nullPolicy": "indeterminate"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R8_TIME_TRIGGER_MATCHED",
+          "failureReason": "R8 完工时间触发。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R5_ENTERPRISE",
+          "priority": 80,
+          "title": "R5 非框架企业单位",
+          "status": "active",
+          "when": {
+            "id": "r5-enterprise",
+            "kind": "all",
+            "description": "r5 enterprise",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r5-not-framework",
+                "kind": "not",
+                "description": "r5 not framework",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r5-is-framework-check",
+                    "kind": "compare",
+                    "description": "r5 is framework check",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "order.is_framework",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "eq",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": true,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r5-is-enterprise",
+                "kind": "compare",
+                "description": "r5 is enterprise",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "order.is_enterprise",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": true,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              },
+              {
+                "id": "r5-not-759",
+                "kind": "any",
+                "description": "r5 not 759",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r5-not-759-null",
+                    "kind": "compare",
+                    "description": "r5 not 759 null",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "product.id",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "is_null",
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r5-not-759-ne",
+                    "kind": "compare",
+                    "description": "r5 not 759 ne",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "product.id",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "ne",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": 759,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r5-full-payment",
+                "kind": "compare",
+                "description": "r5 full payment",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "add",
+                  "factCode": null,
+                  "value": null,
+                  "children": [
+                    {
+                      "kind": "fact",
+                      "factCode": "order.associated_receipts_including_deposit",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": 0.1,
+                      "children": [],
+                      "unit": null
+                    }
+                  ],
+                  "unit": null
+                },
+                "operator": "gte",
+                "right": {
+                  "kind": "add",
+                  "factCode": null,
+                  "value": null,
+                  "children": [
+                    {
+                      "kind": "fact",
+                      "factCode": "order.extraction_qc_amount",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    {
+                      "kind": "fact",
+                      "factCode": "order.task_amount",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    {
+                      "kind": "fact",
+                      "factCode": "order.report_released_amount",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    }
+                  ],
+                  "unit": null
+                },
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R5_ENTERPRISE_MATCHED",
+          "failureReason": "R5 非框架企业单位。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R6_NON_ENTERPRISE",
+          "priority": 90,
+          "title": "R6 非框架非企业单位",
+          "status": "active",
+          "when": {
+            "id": "r6-non-enterprise",
+            "kind": "all",
+            "description": "r6 non enterprise",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r6-not-framework",
+                "kind": "not",
+                "description": "r6 not framework",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r6-is-framework-check",
+                    "kind": "compare",
+                    "description": "r6 is framework check",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "order.is_framework",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "eq",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": true,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r6-not-enterprise",
+                "kind": "not",
+                "description": "r6 not enterprise",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r6-is-enterprise-check",
+                    "kind": "compare",
+                    "description": "r6 is enterprise check",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "order.is_enterprise",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "eq",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": true,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r6-not-759",
+                "kind": "any",
+                "description": "r6 not 759",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r6-not-759-null",
+                    "kind": "compare",
+                    "description": "r6 not 759 null",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "product.id",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "is_null",
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r6-not-759-ne",
+                    "kind": "compare",
+                    "description": "r6 not 759 ne",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "product.id",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "ne",
+                    "right": {
+                      "kind": "literal",
+                      "factCode": null,
+                      "value": 759,
+                      "children": [],
+                      "unit": null
+                    },
+                    "nullPolicy": "fail"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              },
+              {
+                "id": "r6-or-ab",
+                "kind": "any",
+                "description": "r6 or ab",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r6-cond-a",
+                    "kind": "compare",
+                    "description": "r6 cond a",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "add",
+                      "factCode": null,
+                      "value": null,
+                      "children": [
+                        {
+                          "kind": "fact",
+                          "factCode": "order.associated_receipts_including_deposit",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0.1,
+                          "children": [],
+                          "unit": null
+                        }
+                      ],
+                      "unit": null
+                    },
+                    "operator": "gte",
+                    "right": {
+                      "kind": "add",
+                      "factCode": null,
+                      "value": null,
+                      "children": [
+                        {
+                          "kind": "fact",
+                          "factCode": "order.extraction_qc_amount",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        {
+                          "kind": "fact",
+                          "factCode": "order.task_amount",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        {
+                          "kind": "fact",
+                          "factCode": "order.report_released_amount",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        }
+                      ],
+                      "unit": null
+                    },
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r6-cond-b",
+                    "kind": "all",
+                    "description": "r6 cond b",
+                    "enabled": true,
+                    "children": [
+                      {
+                        "id": "r6-b-arrival",
+                        "kind": "compare",
+                        "description": "r6 b arrival",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.associated_receipts_including_deposit",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.1,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "operator": "gte",
+                        "right": {
+                          "kind": "multiply",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "add",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.extraction_qc_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.task_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.report_released_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.8,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r6-b-deposit",
+                        "kind": "compare",
+                        "description": "r6 b deposit",
+                        "enabled": true,
+                        "children": [],
+                        "left": {
+                          "kind": "fact",
+                          "factCode": "order.associated_deposit",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        "operator": "gte",
+                        "right": {
+                          "kind": "multiply",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "subtract",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "add",
+                                  "factCode": null,
+                                  "value": null,
+                                  "children": [
+                                    {
+                                      "kind": "fact",
+                                      "factCode": "order.extraction_qc_amount",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    {
+                                      "kind": "fact",
+                                      "factCode": "order.task_amount",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    {
+                                      "kind": "fact",
+                                      "factCode": "order.report_released_amount",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    }
+                                  ],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.associated_receipts_including_deposit",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": null
+                            },
+                            {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 0.2,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        "nullPolicy": "indeterminate"
+                      },
+                      {
+                        "id": "r6-seal",
+                        "kind": "any",
+                        "description": "r6 seal",
+                        "enabled": true,
+                        "children": [
+                          {
+                            "id": "seal-c1",
+                            "kind": "compare",
+                            "description": "seal c1",
+                            "enabled": true,
+                            "children": [],
+                            "left": {
+                              "kind": "fact",
+                              "factCode": "contract.quota_type",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            "operator": "eq",
+                            "right": {
+                              "kind": "literal",
+                              "factCode": null,
+                              "value": 3,
+                              "children": [],
+                              "unit": null
+                            },
+                            "nullPolicy": "fail"
+                          },
+                          {
+                            "id": "seal-c2",
+                            "kind": "all",
+                            "description": "seal c2",
+                            "enabled": true,
+                            "children": [
+                              {
+                                "id": "seal-c2-non-template",
+                                "kind": "compare",
+                                "description": "seal c2 non template",
+                                "enabled": true,
+                                "children": [],
+                                "left": {
+                                  "kind": "fact",
+                                  "factCode": "contract.non_template_flag",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                "operator": "eq",
+                                "right": {
+                                  "kind": "literal",
+                                  "factCode": null,
+                                  "value": 0,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                "nullPolicy": "fail"
+                              },
+                              {
+                                "id": "seal-c2-stamped",
+                                "kind": "compare",
+                                "description": "seal c2 stamped",
+                                "enabled": true,
+                                "children": [],
+                                "left": {
+                                  "kind": "fact",
+                                  "factCode": "contract.receipt_status",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                "operator": "in",
+                                "right": {
+                                  "kind": "literal",
+                                  "factCode": null,
+                                  "value": [
+                                    1,
+                                    2
+                                  ],
+                                  "children": [],
+                                  "unit": null
+                                },
+                                "nullPolicy": "fail"
+                              }
+                            ],
+                            "left": null,
+                            "operator": null,
+                            "right": null,
+                            "nullPolicy": "indeterminate"
+                          },
+                          {
+                            "id": "seal-fanben",
+                            "kind": "all",
+                            "description": "seal fanben",
+                            "enabled": true,
+                            "children": [
+                              {
+                                "id": "seal-is-fanben",
+                                "kind": "not",
+                                "description": "seal is fanben",
+                                "enabled": true,
+                                "children": [
+                                  {
+                                    "id": "seal-non-template-zero",
+                                    "kind": "compare",
+                                    "description": "seal non template zero",
+                                    "enabled": true,
+                                    "children": [],
+                                    "left": {
+                                      "kind": "fact",
+                                      "factCode": "contract.non_template_flag",
+                                      "value": null,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "operator": "eq",
+                                    "right": {
+                                      "kind": "literal",
+                                      "factCode": null,
+                                      "value": 0,
+                                      "children": [],
+                                      "unit": null
+                                    },
+                                    "nullPolicy": "fail"
+                                  }
+                                ],
+                                "left": null,
+                                "operator": null,
+                                "right": null,
+                                "nullPolicy": "indeterminate"
+                              },
+                              {
+                                "id": "seal-fanben-or",
+                                "kind": "any",
+                                "description": "seal fanben or",
+                                "enabled": true,
+                                "children": [
+                                  {
+                                    "id": "seal-c3",
+                                    "kind": "all",
+                                    "description": "seal c3",
+                                    "enabled": true,
+                                    "children": [
+                                      {
+                                        "id": "seal-c3-quota",
+                                        "kind": "compare",
+                                        "description": "seal c3 quota",
+                                        "enabled": true,
+                                        "children": [],
+                                        "left": {
+                                          "kind": "fact",
+                                          "factCode": "contract.quota_type",
+                                          "value": null,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "operator": "eq",
+                                        "right": {
+                                          "kind": "literal",
+                                          "factCode": null,
+                                          "value": 0,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "nullPolicy": "fail"
+                                      },
+                                      {
+                                        "id": "seal-c3-receipt",
+                                        "kind": "compare",
+                                        "description": "seal c3 receipt",
+                                        "enabled": true,
+                                        "children": [],
+                                        "left": {
+                                          "kind": "fact",
+                                          "factCode": "contract.receipt_status",
+                                          "value": null,
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "operator": "in",
+                                        "right": {
+                                          "kind": "literal",
+                                          "factCode": null,
+                                          "value": [
+                                            0,
+                                            1,
+                                            2
+                                          ],
+                                          "children": [],
+                                          "unit": null
+                                        },
+                                        "nullPolicy": "fail"
+                                      }
+                                    ],
+                                    "left": null,
+                                    "operator": null,
+                                    "right": null,
+                                    "nullPolicy": "indeterminate"
+                                  },
+                                  {
+                                    "id": "seal-not-c3",
+                                    "kind": "all",
+                                    "description": "seal not c3",
+                                    "enabled": true,
+                                    "children": [
+                                      {
+                                        "id": "seal-quota-not-small",
+                                        "kind": "not",
+                                        "description": "seal quota not small",
+                                        "enabled": true,
+                                        "children": [
+                                          {
+                                            "id": "seal-quota-small",
+                                            "kind": "compare",
+                                            "description": "seal quota small",
+                                            "enabled": true,
+                                            "children": [],
+                                            "left": {
+                                              "kind": "fact",
+                                              "factCode": "contract.quota_type",
+                                              "value": null,
+                                              "children": [],
+                                              "unit": null
+                                            },
+                                            "operator": "eq",
+                                            "right": {
+                                              "kind": "literal",
+                                              "factCode": null,
+                                              "value": 0,
+                                              "children": [],
+                                              "unit": null
+                                            },
+                                            "nullPolicy": "fail"
+                                          }
+                                        ],
+                                        "left": null,
+                                        "operator": null,
+                                        "right": null,
+                                        "nullPolicy": "indeterminate"
+                                      },
+                                      {
+                                        "id": "seal-c45",
+                                        "kind": "any",
+                                        "description": "seal c45",
+                                        "enabled": true,
+                                        "children": [
+                                          {
+                                            "id": "seal-c4",
+                                            "kind": "all",
+                                            "description": "seal c4",
+                                            "enabled": true,
+                                            "children": [
+                                              {
+                                                "id": "seal-c4-c4-cond",
+                                                "kind": "all",
+                                                "description": "seal c4 c4 cond",
+                                                "enabled": true,
+                                                "children": [
+                                                  {
+                                                    "id": "seal-c4-c4-date",
+                                                    "kind": "compare",
+                                                    "description": "seal c4 c4 date",
+                                                    "enabled": true,
+                                                    "children": [],
+                                                    "left": {
+                                                      "kind": "fact",
+                                                      "factCode": "contract.countersign_date",
+                                                      "value": null,
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "operator": "gte",
+                                                    "right": {
+                                                      "kind": "fact",
+                                                      "factCode": "rule.contract_countersign_cutoff",
+                                                      "value": null,
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "nullPolicy": "fail"
+                                                  },
+                                                  {
+                                                    "id": "seal-c4-c4-mode",
+                                                    "kind": "compare",
+                                                    "description": "seal c4 c4 mode",
+                                                    "enabled": true,
+                                                    "children": [],
+                                                    "left": {
+                                                      "kind": "fact",
+                                                      "factCode": "contract.effective_mode",
+                                                      "value": null,
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "operator": "eq",
+                                                    "right": {
+                                                      "kind": "literal",
+                                                      "factCode": null,
+                                                      "value": 1,
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "nullPolicy": "fail"
+                                                  }
+                                                ],
+                                                "left": null,
+                                                "operator": null,
+                                                "right": null,
+                                                "nullPolicy": "indeterminate"
+                                              },
+                                              {
+                                                "id": "seal-c4-stamped",
+                                                "kind": "compare",
+                                                "description": "seal c4 stamped",
+                                                "enabled": true,
+                                                "children": [],
+                                                "left": {
+                                                  "kind": "fact",
+                                                  "factCode": "contract.receipt_status",
+                                                  "value": null,
+                                                  "children": [],
+                                                  "unit": null
+                                                },
+                                                "operator": "in",
+                                                "right": {
+                                                  "kind": "literal",
+                                                  "factCode": null,
+                                                  "value": [
+                                                    1,
+                                                    2
+                                                  ],
+                                                  "children": [],
+                                                  "unit": null
+                                                },
+                                                "nullPolicy": "fail"
+                                              }
+                                            ],
+                                            "left": null,
+                                            "operator": null,
+                                            "right": null,
+                                            "nullPolicy": "indeterminate"
+                                          },
+                                          {
+                                            "id": "seal-c5",
+                                            "kind": "all",
+                                            "description": "seal c5",
+                                            "enabled": true,
+                                            "children": [
+                                              {
+                                                "id": "seal-not-c4-cond",
+                                                "kind": "not",
+                                                "description": "seal not c4 cond",
+                                                "enabled": true,
+                                                "children": [
+                                                  {
+                                                    "id": "seal-c5-c4-cond",
+                                                    "kind": "all",
+                                                    "description": "seal c5 c4 cond",
+                                                    "enabled": true,
+                                                    "children": [
+                                                      {
+                                                        "id": "seal-c5-c4-date",
+                                                        "kind": "compare",
+                                                        "description": "seal c5 c4 date",
+                                                        "enabled": true,
+                                                        "children": [],
+                                                        "left": {
+                                                          "kind": "fact",
+                                                          "factCode": "contract.countersign_date",
+                                                          "value": null,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "operator": "gte",
+                                                        "right": {
+                                                          "kind": "fact",
+                                                          "factCode": "rule.contract_countersign_cutoff",
+                                                          "value": null,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "nullPolicy": "fail"
+                                                      },
+                                                      {
+                                                        "id": "seal-c5-c4-mode",
+                                                        "kind": "compare",
+                                                        "description": "seal c5 c4 mode",
+                                                        "enabled": true,
+                                                        "children": [],
+                                                        "left": {
+                                                          "kind": "fact",
+                                                          "factCode": "contract.effective_mode",
+                                                          "value": null,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "operator": "eq",
+                                                        "right": {
+                                                          "kind": "literal",
+                                                          "factCode": null,
+                                                          "value": 1,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "nullPolicy": "fail"
+                                                      }
+                                                    ],
+                                                    "left": null,
+                                                    "operator": null,
+                                                    "right": null,
+                                                    "nullPolicy": "indeterminate"
+                                                  }
+                                                ],
+                                                "left": null,
+                                                "operator": null,
+                                                "right": null,
+                                                "nullPolicy": "indeterminate"
+                                              },
+                                              {
+                                                "id": "seal-c5-receipt",
+                                                "kind": "any",
+                                                "description": "seal c5 receipt",
+                                                "enabled": true,
+                                                "children": [
+                                                  {
+                                                    "id": "seal-c5-stamped",
+                                                    "kind": "compare",
+                                                    "description": "seal c5 stamped",
+                                                    "enabled": true,
+                                                    "children": [],
+                                                    "left": {
+                                                      "kind": "fact",
+                                                      "factCode": "contract.receipt_status",
+                                                      "value": null,
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "operator": "in",
+                                                    "right": {
+                                                      "kind": "literal",
+                                                      "factCode": null,
+                                                      "value": [
+                                                        1,
+                                                        2
+                                                      ],
+                                                      "children": [],
+                                                      "unit": null
+                                                    },
+                                                    "nullPolicy": "fail"
+                                                  },
+                                                  {
+                                                    "id": "seal-c5-signed",
+                                                    "kind": "all",
+                                                    "description": "seal c5 signed",
+                                                    "enabled": true,
+                                                    "children": [
+                                                      {
+                                                        "id": "seal-c5-receipt0",
+                                                        "kind": "compare",
+                                                        "description": "seal c5 receipt0",
+                                                        "enabled": true,
+                                                        "children": [],
+                                                        "left": {
+                                                          "kind": "fact",
+                                                          "factCode": "contract.receipt_status",
+                                                          "value": null,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "operator": "eq",
+                                                        "right": {
+                                                          "kind": "literal",
+                                                          "factCode": null,
+                                                          "value": 0,
+                                                          "children": [],
+                                                          "unit": null
+                                                        },
+                                                        "nullPolicy": "fail"
+                                                      },
+                                                      {
+                                                        "id": "seal-c5-sign-ok",
+                                                        "kind": "any",
+                                                        "description": "seal c5 sign ok",
+                                                        "enabled": true,
+                                                        "children": [
+                                                          {
+                                                            "id": "seal-c5-sign-null",
+                                                            "kind": "compare",
+                                                            "description": "seal c5 sign null",
+                                                            "enabled": true,
+                                                            "children": [],
+                                                            "left": {
+                                                              "kind": "fact",
+                                                              "factCode": "contract.sign_method",
+                                                              "value": null,
+                                                              "children": [],
+                                                              "unit": null
+                                                            },
+                                                            "operator": "is_null",
+                                                            "right": null,
+                                                            "nullPolicy": "indeterminate"
+                                                          },
+                                                          {
+                                                            "id": "seal-c5-sign-ne",
+                                                            "kind": "compare",
+                                                            "description": "seal c5 sign ne",
+                                                            "enabled": true,
+                                                            "children": [],
+                                                            "left": {
+                                                              "kind": "fact",
+                                                              "factCode": "contract.sign_method",
+                                                              "value": null,
+                                                              "children": [],
+                                                              "unit": null
+                                                            },
+                                                            "operator": "ne",
+                                                            "right": {
+                                                              "kind": "literal",
+                                                              "factCode": null,
+                                                              "value": 2,
+                                                              "children": [],
+                                                              "unit": null
+                                                            },
+                                                            "nullPolicy": "fail"
+                                                          }
+                                                        ],
+                                                        "left": null,
+                                                        "operator": null,
+                                                        "right": null,
+                                                        "nullPolicy": "indeterminate"
+                                                      }
+                                                    ],
+                                                    "left": null,
+                                                    "operator": null,
+                                                    "right": null,
+                                                    "nullPolicy": "indeterminate"
+                                                  }
+                                                ],
+                                                "left": null,
+                                                "operator": null,
+                                                "right": null,
+                                                "nullPolicy": "indeterminate"
+                                              }
+                                            ],
+                                            "left": null,
+                                            "operator": null,
+                                            "right": null,
+                                            "nullPolicy": "indeterminate"
+                                          }
+                                        ],
+                                        "left": null,
+                                        "operator": null,
+                                        "right": null,
+                                        "nullPolicy": "indeterminate"
+                                      }
+                                    ],
+                                    "left": null,
+                                    "operator": null,
+                                    "right": null,
+                                    "nullPolicy": "indeterminate"
+                                  }
+                                ],
+                                "left": null,
+                                "operator": null,
+                                "right": null,
+                                "nullPolicy": "indeterminate"
+                              }
+                            ],
+                            "left": null,
+                            "operator": null,
+                            "right": null,
+                            "nullPolicy": "indeterminate"
+                          }
+                        ],
+                        "left": null,
+                        "operator": null,
+                        "right": null,
+                        "nullPolicy": "indeterminate"
+                      }
+                    ],
+                    "left": null,
+                    "operator": null,
+                    "right": null,
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R6_NON_ENTERPRISE_MATCHED",
+          "failureReason": "R6 非框架非企业单位。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        },
+        {
+          "ruleCode": "R7_FRAMEWORK",
+          "priority": 100,
+          "title": "R7 框架协议",
+          "status": "active",
+          "when": {
+            "id": "r7-framework",
+            "kind": "all",
+            "description": "r7 framework",
+            "enabled": true,
+            "children": [
+              {
+                "id": "r7-is-framework",
+                "kind": "compare",
+                "description": "r7 is framework",
+                "enabled": true,
+                "children": [],
+                "left": {
+                  "kind": "fact",
+                  "factCode": "order.is_framework",
+                  "value": null,
+                  "children": [],
+                  "unit": null
+                },
+                "operator": "eq",
+                "right": {
+                  "kind": "literal",
+                  "factCode": null,
+                  "value": true,
+                  "children": [],
+                  "unit": null
+                },
+                "nullPolicy": "fail"
+              },
+              {
+                "id": "r7-or",
+                "kind": "any",
+                "description": "r7 or",
+                "enabled": true,
+                "children": [
+                  {
+                    "id": "r7-arrival",
+                    "kind": "compare",
+                    "description": "r7 arrival",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "add",
+                      "factCode": null,
+                      "value": null,
+                      "children": [
+                        {
+                          "kind": "fact",
+                          "factCode": "order.associated_receipts_including_deposit",
+                          "value": null,
+                          "children": [],
+                          "unit": null
+                        },
+                        {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0.1,
+                          "children": [],
+                          "unit": null
+                        }
+                      ],
+                      "unit": null
+                    },
+                    "operator": "gte",
+                    "right": {
+                      "kind": "multiply",
+                      "factCode": null,
+                      "value": null,
+                      "children": [
+                        {
+                          "kind": "add",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "fact",
+                              "factCode": "order.extraction_qc_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "fact",
+                              "factCode": "order.task_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            },
+                            {
+                              "kind": "fact",
+                              "factCode": "order.report_released_amount",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0.8,
+                          "children": [],
+                          "unit": null
+                        }
+                      ],
+                      "unit": null
+                    },
+                    "nullPolicy": "indeterminate"
+                  },
+                  {
+                    "id": "r7-deposit",
+                    "kind": "compare",
+                    "description": "r7 deposit",
+                    "enabled": true,
+                    "children": [],
+                    "left": {
+                      "kind": "fact",
+                      "factCode": "order.associated_deposit",
+                      "value": null,
+                      "children": [],
+                      "unit": null
+                    },
+                    "operator": "gte",
+                    "right": {
+                      "kind": "multiply",
+                      "factCode": null,
+                      "value": null,
+                      "children": [
+                        {
+                          "kind": "subtract",
+                          "factCode": null,
+                          "value": null,
+                          "children": [
+                            {
+                              "kind": "add",
+                              "factCode": null,
+                              "value": null,
+                              "children": [
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.extraction_qc_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.task_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                },
+                                {
+                                  "kind": "fact",
+                                  "factCode": "order.report_released_amount",
+                                  "value": null,
+                                  "children": [],
+                                  "unit": null
+                                }
+                              ],
+                              "unit": null
+                            },
+                            {
+                              "kind": "fact",
+                              "factCode": "order.associated_receipts_including_deposit",
+                              "value": null,
+                              "children": [],
+                              "unit": null
+                            }
+                          ],
+                          "unit": null
+                        },
+                        {
+                          "kind": "literal",
+                          "factCode": null,
+                          "value": 0.2,
+                          "children": [],
+                          "unit": null
+                        }
+                      ],
+                      "unit": null
+                    },
+                    "nullPolicy": "indeterminate"
+                  }
+                ],
+                "left": null,
+                "operator": null,
+                "right": null,
+                "nullPolicy": "indeterminate"
+              }
+            ],
+            "left": null,
+            "operator": null,
+            "right": null,
+            "nullPolicy": "indeterminate"
+          },
+          "outcome": "READY",
+          "reasonCode": "R7_FRAMEWORK_MATCHED",
+          "failureReason": "R7 框架协议。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "postGates",
+      "rules": [
+        {
+          "ruleCode": "MERGED_REPORT_GATE",
+          "priority": 10,
+          "title": "合并报告组未齐则等待满足条件",
+          "status": "active",
+          "when": {
+            "id": "merged-report-gate",
+            "kind": "compare",
+            "description": "merged report gate",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "report.merge_group_eligible",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "ne",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "MERGED_REPORT_GATE_MATCHED",
+          "failureReason": "合并报告组未齐则等待满足条件。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    },
+    {
+      "stage": "exclusions",
+      "rules": [
+        {
+          "ruleCode": "OA_PROCESS_SCOPE",
+          "priority": 10,
+          "title": "在项目报告 OA 流程中则排除",
+          "status": "active",
+          "when": {
+            "id": "oa-process-scope",
+            "kind": "compare",
+            "description": "oa process scope",
+            "enabled": true,
+            "children": [],
+            "left": {
+              "kind": "fact",
+              "factCode": "task.in_oa_process",
+              "value": null,
+              "children": [],
+              "unit": null
+            },
+            "operator": "eq",
+            "right": {
+              "kind": "literal",
+              "factCode": null,
+              "value": true,
+              "children": [],
+              "unit": null
+            },
+            "nullPolicy": "fail"
+          },
+          "outcome": "WAITING_CONDITIONS",
+          "reasonCode": "OA_PROCESS_SCOPE_MATCHED",
+          "failureReason": "在项目报告 OA 流程中则排除。",
+          "recommendations": [
+            "按优化方案 Java 与 2026-09-20 裁决核对对应事实。"
+          ],
+          "blockingIssueIds": []
+        }
+      ]
+    }
+  ],
+  "defaultOutcome": "WAITING_CONDITIONS",
+  "defaultReasonCode": "NO_ORDERED_RELEASE_RULE_MATCHED",
+  "blockingIssues": [],
+  "proposedFacts": []
+}

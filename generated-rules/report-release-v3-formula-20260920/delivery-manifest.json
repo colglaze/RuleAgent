@@ -1,0 +1,281 @@
+{
+  "blockingCount": 0,
+  "candidatePayloadSha256": "e06ce1390069c8ead5c16835162190d8d549820efcbd50ce16fc80e91de0b8d1",
+  "catalogDigest": "fe1a673845af331ee7d0d735a28e822c3dc7d850887daac83aff9328dca002fd",
+  "executable": false,
+  "factCount": 34,
+  "facts": [
+    {
+      "factCode": "report.release_status",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.status_code",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.experiment_status_code",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.offline_report_release_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.batch_report_release_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.project_report_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.qc_report_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.raw_data_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.completion_date",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.no_main_service_flag",
+      "grain": "task",
+      "kind": "source"
+    },
+    {
+      "factCode": "product.id",
+      "grain": "product",
+      "kind": "source"
+    },
+    {
+      "factCode": "product.type_code",
+      "grain": "product",
+      "kind": "source"
+    },
+    {
+      "factCode": "task.in_oa_process",
+      "grain": "task",
+      "kind": "exists"
+    },
+    {
+      "factCode": "order.amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.source_code",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.associated_receipts_including_deposit",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.associated_deposit",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.extraction_qc_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.task_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.report_released_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.invoice_amount",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.is_framework",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "order.is_enterprise",
+      "grain": "order",
+      "kind": "source"
+    },
+    {
+      "factCode": "release.special_application_count",
+      "grain": "task",
+      "kind": "aggregate"
+    },
+    {
+      "factCode": "runtime.current_date",
+      "grain": "evaluation",
+      "kind": "source"
+    },
+    {
+      "factCode": "rule.raw_data_completion_cutoff",
+      "grain": "evaluation",
+      "kind": "source"
+    },
+    {
+      "factCode": "rule.contract_countersign_cutoff",
+      "grain": "evaluation",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.quota_type",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.non_template_flag",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.effective_mode",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.countersign_date",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.receipt_status",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "contract.sign_method",
+      "grain": "contract",
+      "kind": "source"
+    },
+    {
+      "factCode": "report.merge_group_eligible",
+      "grain": "task",
+      "kind": "exists"
+    }
+  ],
+  "fileSha256": {
+    "business-confirmed-fact-catalog-3.0.0.json": "9f3d5f0abebc7aceeacb9277bca4b510d869cd1b41cbee8c03120d8bbb5e394b",
+    "fact-binding-requests-3.0.0.json": "ff6fef69adfab9f342944a7da9e49a8093efc8fa7c9e64c3bfdcd02763e8f128",
+    "rule-parse-result-3.0.0.json": "1c3811f74b7836047cd2ea8f85c6f1a3da07021cd9f202d00cc024889e5bb43d",
+    "rule-structure-candidate-3.0.0.json": "b353f055c32bbacd75cf3699135c8524eec99398e8b1a9b2d1b96998208a6f62",
+    "v3-agent2-readiness.json": "67e5ae2338183fe8449316cffde250a7d8fa5f1960aa879e081a421d7893bfc4"
+  },
+  "mongodbWritten": false,
+  "planSha256": "c049af189fc3689bac8e96408d9e7239a8c70b66bbcd15829e509c6d524b648f",
+  "ready": true,
+  "ruleBlockCharacterCount": 42437,
+  "ruleBlockSha256": "e04a686188f6f67393780be95a6054c06b9b50a17ff10ddd24104b5456422ff5",
+  "ruleVersion": "REPORT_RELEASE_ALL_001@20260920T085100000000Z-e04a686188f6-fe1a673845af",
+  "stages": {
+    "eligibility": [
+      {
+        "ruleCode": "R0_ZERO_ORDER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R1_SPECIAL_APPROVAL",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R9_BATCH_RELEASE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R4_RAW_DATA_RELEASED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R2_OVERSEAS_ORDER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R3_SPECIAL_PRODUCT",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R8_TIME_TRIGGER",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R5_ENTERPRISE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R6_NON_ENTERPRISE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "R7_FRAMEWORK",
+        "status": "active"
+      }
+    ],
+    "exclusions": [
+      {
+        "ruleCode": "OA_PROCESS_SCOPE",
+        "status": "active"
+      }
+    ],
+    "postGates": [
+      {
+        "ruleCode": "MERGED_REPORT_GATE",
+        "status": "active"
+      }
+    ],
+    "prerequisites": [
+      {
+        "ruleCode": "TASK_NOT_COMPLETED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "EXPERIMENT_STATUS_OFFLINE",
+        "status": "active"
+      },
+      {
+        "ruleCode": "EXPERIMENT_STATUS_PROBLEM",
+        "status": "active"
+      },
+      {
+        "ruleCode": "OFFLINE_REPORT_RELEASED",
+        "status": "active"
+      },
+      {
+        "ruleCode": "NO_PROJECT_REPORT",
+        "status": "active"
+      },
+      {
+        "ruleCode": "REPORT_AVAILABILITY_UNKNOWN",
+        "status": "active"
+      }
+    ],
+    "stateGuards": [
+      {
+        "ruleCode": "REPORT_STATUS_TERMINAL",
+        "status": "active"
+      }
+    ]
+  },
+  "status": "draft"
+}

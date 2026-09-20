@@ -148,7 +148,8 @@
         "multiply",
         "divide",
         "coalesce",
-        "dateAdd"
+        "dateAdd",
+        "today"
       ],
       "title": "ExpressionKind",
       "type": "string"

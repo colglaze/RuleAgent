@@ -50,6 +50,7 @@ class ExpressionKind(StrEnum):
     DIVIDE = "divide"
     COALESCE = "coalesce"
     DATE_ADD = "dateAdd"
+    TODAY = "today"
 
 
 class DateUnit(StrEnum):
@@ -125,6 +126,11 @@ class ExpressionNodeV2(ContractModelV2):
                 or self.value is not None
             ):
                 raise ValueError("dateAdd expressions require two children and unit")
+        elif self.kind is ExpressionKind.TODAY:
+            if self.fact_code is not None or self.value is not None or self.children or self.unit:
+                raise ValueError(
+                    "today expressions cannot contain factCode, value, children, or unit"
+                )
         return self
 
 
